@@ -552,15 +552,15 @@ class DataDAO extends AbstractDAO {
     * Adding new Client
     * params -client_name,company_id,website_url,pan,gstn,regisered_address,managing_director,mailing_address,contact_person,phone_number,email_id,status,date_created,created_by
     **/
-   public function addClients($client_name,$company_id,$website_url,$pan,$gstn,$regisered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$status,$date_created,$created_by)
+   public function addClients($client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$status,$date_created,$created_by)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_client_master(client_name,company_id,website_url,pan,gstn,regisered_address,managing_director,mailing_address,contact_person,phone_number,email_id,status,date_created,created_by)VALUES(:client_name,:company_id,:website_url,:pan,:gstn,:regisered_address,:managing_director,:mailing_address,:contact_person,:phone_number,:email_id,:status,:date_created,:created_by)";
+   		$query="INSERT INTO uni_client_master(client_name,company_id,website_url,pan,gstn,registered_address,managing_director,mailing_address,contact_person,phone_number,email_id,status,date_created,created_by)VALUES(:client_name,:company_id,:website_url,:pan,:gstn,:registered_address,:managing_director,:mailing_address,:contact_person,:phone_number,:email_id,:status,:date_created,:created_by)";
    		
-   		$bind_array=array("client_name"=>$client_name,"company_id"=>$company_id,"website_url"=>$website_url,"pan"=>$pan,"gstn"=>$gstn,"regisered_address"=>$regisered_address,"managing_director"=>$managing_director,"mailing_address"=>$mailing_address,"contact_person"=>$contact_person,"phone_number"=>$phone_number,"email_id"=>$email_id,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("client_name"=>$client_name,"company_id"=>$company_id,"website_url"=>$website_url,"pan"=>$pan,"gstn"=>$gstn,"registered_address"=>$registered_address,"managing_director"=>$managing_director,"mailing_address"=>$mailing_address,"contact_person"=>$contact_person,"phone_number"=>$phone_number,"email_id"=>$email_id,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -586,10 +586,10 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateClients($id,$client_name,$company_id,$website_url,$pan,$gstn,$regisered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$last_updated,$updated_by)
+   public static function updateClients($id,$client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$last_updated,$updated_by)
    {
    	try{
-   		$query="UPDATE  uni_client_master SET client_name='$client_name',company_id='$company_id',website_url='$website_url',pan='$pan',gstn='$gstn',regisered_address='$regisered_address',managing_director='$managing_director',mailing_address='$mailing_address',contact_person='$contact_person',phone_number='$phone_number',email_id='$email_id',last_updated='$last_updated',updated_by='$updated_by' WHERE id='$id'";
+   		$query="UPDATE  uni_client_master SET client_name='$client_name',company_id='$company_id',website_url='$website_url',pan='$pan',gstn='$gstn',registered_address='$registered_address',managing_director='$managing_director',mailing_address='$mailing_address',contact_person='$contact_person',phone_number='$phone_number',email_id='$email_id',last_updated='$last_updated',updated_by='$updated_by' WHERE id='$id'";
    		$rslt= self::updateQuery($query,array("id"=>$id,"client_name"=>$client_name,"company_id"=>$company_id,"website_url"=>$website_url,"pan"=>$pan,"gstn"=>$gstn,"regisered_address"=>$regisered_address,"managing_director"=>$managing_director,"mailing_address"=>$mailing_address,"contact_person"=>$contact_person,"phone_number"=>$phone_number,"email_id"=>$email_id,"last_updated"=>$last_updated,"last_updated"=>$updated_by));
    		if ($rslt) {
    			return $rslt;
@@ -668,7 +668,7 @@ class DataDAO extends AbstractDAO {
     * Adding new Project
     * params -project_name,client_id,company_id,start_date,end_date,project_type,date_created,status,billable_type,billing_type,team_id
     **/
-   public function addProject($project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$date_created,$status,$billable_type,$billing_type,$team_id)
+   public function addProject($id,$project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$last_updated,$updated_by,$billable_type,$billing_type,$team_id)
    {
    	$response = array();
    	
