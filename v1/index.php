@@ -16,7 +16,7 @@ $app = new \Slim\Slim();
 $user_id = NULL;
 
 
-/**
+/***
  * Adding Middle Layer to authenticate every request
  * Checking if the request has valid api key in the 'Authorization' header
  */
