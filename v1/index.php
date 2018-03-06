@@ -1,5 +1,5 @@
 <?php
-/***Sandeep is Kata, Aasish is the Developer**/
+
 require_once '../include/DataDAO.php';
 require_once '../include/PassHash.php';
 require_once '../commons/Utils.php';
@@ -16,7 +16,7 @@ $app = new \Slim\Slim();
 $user_id = NULL;
 
 
-/***
+/**
  * Adding Middle Layer to authenticate every request
  * Checking if the request has valid api key in the 'Authorization' header
  */
@@ -140,41 +140,26 @@ function echoRespnse($status_code, $response) {
  */
 $app->post('/login', function() use ($app) {
 	
-	//verifyRequiredParams(array('user_name', 'password'));
+	
 	$db = new DataDAO();
-	// reading post params
 	$userDetails = json_decode(file_get_contents("php://input"));
 	$users = $userDetails->LoginInfo;
 	$loginData = json_decode($users);
-	
-	//$e = $app->request()->post('EmailID');
-	
 	$email_id = $loginData->EmailID;
 	$password = $loginData->Password;
 	$salt ="*ISoftcons_Office_Suite*";
 	$pwd = $db->simple_encrypt($password, $salt);
 	$status = 1;
-	//echo "userbname is".$email_id." passwrod is>".$password;
 	$response = array();
 	$res = $db->checkLogin($email_id, $pwd, $status);
-	
-	//print_r($db->checkLogin($email_id, $password));
-	// check for correct email and password
 	if ($res == 'success') {
-		// get the user by email
-		// echo "login success";
 		$user = $db->getUserByUserId($email_id);
-		//returnJSONData($app, $user);
 		$response['error'] = false;
 		$response['message'] = 'Valid Credentials';
 		$response['value'] = $user;
-		//echoRespnse(201, $response);
 	} else {
-		// user credentials are wrong
-		//echo "login fail";
 		$response['error'] = true;
 		$response['message'] = 'Invalid Credentials';
-		//returnJSONData($app,$response);
 	}
 	echoRespnse(201, $response);
 });
@@ -288,11 +273,11 @@ $app->post('/login', function() use ($app) {
 			$companydetails=json_decode(file_get_contents("php://input"));
 			$company=$companydetails->CompanyInfo;
 			$companyData=json_decode($company);
-			
-			//$company_name = $companyData->company_name;
-			$contact_person=$companyData->contact_person;
+			$id = $companyData->id;
+			$company_name = $companyData->company_name;
+			$contact_person = $companyData->contact_person;
 			$address = $companyData->address;
-			$phone_no =$companyData->phone_no;
+			$phone_no = $companyData->phone_no;
 			$email_id = $companyData->email_id;
 			$subscription_date = $companyData->subscription_date;
 			//$expiry_date =$companyData->expiry_date;
@@ -305,7 +290,7 @@ $app->post('/login', function() use ($app) {
 			//$amount_paid = $companyData->amount_paid;
 			//$date_created = $companyData->date_created;
 			$last_updated = $companyData->last_updated;
-			//$nominal_flag = $companyData->nominal_flag;
+			$nominal_flag = $companyData->nominal_flag;
 			//$created_by = $companyData->created_by;
 			$updated_by = $companyData->updated_by;
 			$sprint_days = $companyData->sprint_days;
@@ -313,28 +298,22 @@ $app->post('/login', function() use ($app) {
 			
 			$companyExists = $db -> companyExists($company_name);
 			
-			if(!$companyExists){
-				$res = $db->updateCompany($company_name,$contact_person,$address,$phone_no,$email_id,$asset_limit,$subscription_date,
+				/*$res = $db->updateCompany($company_name,$contact_person,$address,$phone_no,$email_id,$asset_limit,$subscription_date,
 						$expiry_date,$asset_limit,$user_limit,$licence_num,$num_of_licence,$licence_version,$version,$amount_paid,
-						$status,$date_created,$last_updated,$nominal_flag,$created_by,$updated_by,$sprint_days);
-				if ($res !=0)
+						$status,$date_created,$last_updated,$nominal_flag,$created_by,$updated_by,$sprint_days);*/
+				$res = $db->updateCompany($id,$contact_person,$address,$phone_no,$email_id,$subscription_date,$last_updated,$nominal_flag,$updated_by,$sprint_days);						
+				if ($res)
 				{
 					$response["error"] = false;
-					$response["message"] = "You are Successfully added a Company";
-				} else if ($res == COMPANY_CREATE_FAILED) {
+					$response["message"] = "You are Successfully Updated a Company";
+				} else {
 					$response["error"] = true;
-					$response["message"] = "Oops! An error occurred while adding";
+					$response["message"] = "Oops! An error occurred while Updating";
 				}
-			}
-			else{
-				$response["error"] = true;
-				$response["message"] = "Sorry, this company already existed";
-			}
+	       echoRespnse(201, $response);
+	 });
 			
-			echoRespnse(201, $response);
-			
-			
-		});
+
     
 
 
@@ -353,12 +332,16 @@ $app->post('/login', function() use ($app) {
 			$DepartmentData=json_decode($Departments);
 			$company_id = $DepartmentData->company_id;
 			$department_name = $DepartmentData->department_name;
+			$department_head = $DepartmentData->department_head;
+			$department_location = $DepartmentData->department_location;
+			$department_function = $DepartmentData->department_function;
+			$department_members = $DepartmentData->department_members;
 			$status = 1;
 			$date_created= $DepartmentData->date_created;
 			$created_by= $DepartmentData->created_by;
 			
 			
-			$res = $db->addDepartment($company_id,$department_name,$status,$date_created,$created_by);
+			$res = $db->addDepartment($company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$status,$date_created,$created_by);
 			if ($res)
 			{
 				$response["error"] = false;
@@ -386,18 +369,20 @@ $app->post('/login', function() use ($app) {
 				$id = $DepartmentData->id;
 				$company_id=$DepartmentData->company_id;
 				$department_name=$DepartmentData->department_name;
+				$department_location = $DepartmentData->department_location;
+				$department_function = $DepartmentData->department_function;
+				$department_members = $DepartmentData->department_members;				
 				$last_updated=$DepartmentData->last_updated;
 				$updated_by= $DepartmentData->updated_by;
-				$result = $db->updateDepartment($id,$company_id,$department_name,$last_updated,$updated_by);
-				
+				$result = $db->updateDepartment($id,$company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$last_updated,$updated_by);
 				if ($result)
 				{
 					$response["error"] = false;
-					$response["message"] = "You are successfully updated";
+					$response["message"] = "You are successfully updated the Department";
 				} else
 				{
 					$response["error"] = true;
-					$response["message"] = "Oops! An error occurred while updating";
+					$response["message"] = "Oops! An error occurred while updating Department";
 				}
 				echoRespnse(201, $response);
 			});
@@ -459,45 +444,6 @@ $app->post('/login', function() use ($app) {
 			}
 		});
 							
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //***************************************************************Users********************************************************************************************************//
 	/**
 	 * Adding User
@@ -511,7 +457,6 @@ $app->post('/login', function() use ($app) {
 			$userDetails=json_decode(file_get_contents("php://input"));
 			$users=$userDetails->UserInfo;
 			$userData=json_decode($users);
-			//$id = $userData->id;
 			$first_name = $userData->first_name;
 			$last_name = $userData->last_name;
 			$company_id=$userData->company_id;
@@ -523,18 +468,24 @@ $app->post('/login', function() use ($app) {
 			$status = 1;
 			$date_created= $userData->date_created;
 			$created_by= $userData->created_by;
-			
-
-			$res = $db->addUser($first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$status,$date_created,$created_by);
-			if ($res)
-			{
-				$response["error"] = false;
-				$response["message"] = "User created successfully";
-			} else
-			{
+			$userRes = $db->userExists($email_id);
+			if(!$userRes){
+				$res = $db->addUser($first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$status,$date_created,$created_by);
+				if ($res)
+				{
+					$response["error"] = false;
+					$response["message"] = "User created successfully";
+				} else
+				{
+					$response["error"] = true;
+					$response["message"] = "Oops! An error occurred while creating User";
+				}				
+			}
+			else{
 				$response["error"] = true;
 				$response["message"] = "Oops! An error occurred while creating User";
 			}
+			echoRespnse(201, $response);
 			
 	  });
 		
@@ -562,8 +513,7 @@ $app->post('/login', function() use ($app) {
 				$last_updated= $userData->last_updated;
 				$updated_by= $userData->updated_by;
 				$result = $db->updateUser($id,$first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$last_updated,$updated_by);
-				
-				if ($result)
+			    if ($result)
 				{
 					$response["error"] = false;
 					$response["message"] = "You are successfully updated";
@@ -608,9 +558,7 @@ $app->post('/login', function() use ($app) {
  * method - GET
  * params 
  */
-
-		
-		$app->get('/getAllUsersList/',function() use($app){
+     $app->get('/getAllUsersList/',function() use($app){
 			$db = new DataDAO();
 			$res = $db->getAllUsersList();
 			if(sizeof($res))
@@ -648,14 +596,11 @@ $db = new DataDAO();
 $roleDetails=json_decode(file_get_contents("php://input"));
 $roles=$roleDetails->RoleInfo;
 $roleData=json_decode($roles);
-//$id = $roleData->id;
 $role_name = $roleData->role_name;
 $role_desc = $roleData->role_desc;
 $status = 1;
 $date_created= $roleData->date_created;
-//$last_updated= $roleData->last_updated;
 $created_by= $roleData->created_by;
-//$updated_by= $roleData->updated_by;
 $res = $db->addRole($role_name,$role_desc,$status,$date_created,$created_by);
 if ($res) 
 {
@@ -667,10 +612,6 @@ if ($res)
    $response["message"] = "Oops! An error occurred while creating ROLE";
 }
 echoRespnse(201, $response);
-
-
-
-
 }); 
 
 
@@ -678,7 +619,7 @@ echoRespnse(201, $response);
 	 * Updating Role
      * url - /updateRole
      * method - PUT
-     * params -id
+     * params -id,role_name,role_desc,last_updated,updated_by
  */
 	$app->post('/updateRole',  function() use($app) {
 	$db = new DataDAO();
@@ -705,12 +646,13 @@ echoRespnse(201, $response);
 	 echoRespnse(201, $response);
 	});
 	
+						
 /**
- * Updating Role
- * url - /updateRole
- * method - PUT
- * params -id
- */
+* Updating Roles by Making Status Inactive
+* url - /deleteRole
+* method - PUT
+* params -id
+*/
 $app->post('/deleteRole',  function() use($app) {
 	$db = new DataDAO();
 	$response = array();
@@ -740,9 +682,7 @@ $app->post('/deleteRole',  function() use($app) {
 	* method - GET All
 	* params
 */
-		
-		
-		$app->get('/getAllRoleList/',function() use($app){
+	$app->get('/getAllRoleList/',function() use($app){
 			$db = new DataDAO();
 			$res = $db->getAllRoleList();
 			if(sizeof($res))
@@ -770,7 +710,7 @@ $app->post('/deleteRole',  function() use($app) {
  * Adding Clients
  * url - /addClients
  * method - POST
- * params -client_name,company_id,date_created,created_by,status
+ * params -client_name,website_url,pan,gstn,regisered_address,mailing_address,managing_director,contact_person,phone_number,email_id,company_id,date_created,created_by,status
 */
 				$app->post('/addClients', function() use ($app) {
 					$response = array();
@@ -780,11 +720,20 @@ $app->post('/deleteRole',  function() use($app) {
 					$clientData=json_decode($clients);
 					//$id = $roleData->id;
 					$client_name = $clientData->client_name;
+					$website_url = $clientData->website_url;
+					$pan = $clientData->pan;
+					$gstn = $clientData->gstn;
+					$regisered_address = $clientData->regisered_address;
+					$mailing_address = $clientData->mailing_address;
+					$managing_director = $clientData->managing_director;
+					$contact_person = $clientData->contact_person;
+					$phone_number = $clientData->phone_number;
+					$email_id = $clientData->email_id;
 					$company_id = $clientData->company_id;
 					$date_created= $clientData->date_created;
 					$created_by= $clientData->created_by;
 					$status = 1;
-					$res = $db->addClients($client_name,$company_id,$date_created,$created_by,$status);
+					$res = $db->addClients($client_name,$website_url,$pan,$gstn,$regisered_address,$mailing_address,$managing_director,$contact_person,$phone_number,$email_id,$company_id,$date_created,$created_by,$status);
 					if ($res)
 					{
 						$response["error"] = false;
@@ -810,14 +759,23 @@ $app->post('/deleteRole',  function() use($app) {
 						$clientDetails=json_decode(file_get_contents("php://input"));
 						$clients=$clientDetails->ClientInfo;
 						$clientData=json_decode($clients);
-						$id = $clientData->$id;
+						$id = $clientData->id;
 						$client_name = $clientData->client_name;
+						$website_url = $clientData->website_url;
+						$pan = $clientData->pan;
+						$gstn = $clientData->gstn;
+						$regisered_address = $clientData->regisered_address;
+						$mailing_address = $clientData->mailing_address;
+						$managing_director = $clientData->managing_director;
+						$contact_person = $clientData->contact_person;
+						$phone_number = $clientData->phone_number;
+						$email_id = $clientData->email_id;						
 						$company_id = $clientData->company_id;
 						$last_updated= $clientData->last_updated;
 						$updated_by=$clientData->updated_by;
 						//$status = 1;
-						$res = $db->updateClients($id,$client_name,$company_id,$last_updated,$updated_by);
-						if ($result)
+						$res = $db->updateClients($id,$client_name,$website_url,$pan,$gstn,$regisered_address,$mailing_address,$managing_director,$contact_person,$phone_number,$email_id,$company_id,$last_updated,$updated_by);
+						if ($res)
 						{
 							$response["error"] = false;
 							$response["message"] = "You are successfully updated";
@@ -893,7 +851,7 @@ $app->post('/deleteRole',  function() use($app) {
   * Adding Project
   * url - /addProject
   * method - POST
-  * params -project_name,client_id,company_id,start_date,end_date,project_type,date_created,status
+  * params -project_name,client_id,company_id,start_date,end_date,project_type,date_created,status,billable_type,billing_type,team_id
   */
  $app->post('/addProject', function() use ($app) {
  	$response = array();
@@ -910,7 +868,10 @@ $app->post('/deleteRole',  function() use($app) {
  	$project_type= $projectData->project_type;
  	$date_created=$projectData->date_created;
     $status=1;
-    $res = $db->addProject($project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$date_created,$status);
+    $billable_type=$projectData->billable_type;
+    $billing_type=$projectData->billing_type;
+    $team_id=$projectData->team_id;
+    $res = $db->addProject($project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$date_created,$status,$billable_type,$billing_type,$team_id);
  	if ($res)
  	{
  		$response["error"] = false;
@@ -935,7 +896,7 @@ $app->post('/deleteRole',  function() use($app) {
  		$projectDetails=json_decode(file_get_contents("php://input"));
  		$project=$projectDetails->ProjectInfo;
  		$projectData=json_decode($project);
- 		$id = $projectData->$id;
+ 		$id = $projectData->id;
  		$project_name = $projectData->project_name;
  		$client_id = $projectData->client_id;
  		$company_id= $projectData->company_id;
@@ -943,7 +904,9 @@ $app->post('/deleteRole',  function() use($app) {
  		$end_date= $projectData->end_date;
  		$project_type= $projectData->project_type;
  		$last_updated= $projectData->last_updated;
- 		$result = $db->updateProject($id,$project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$last_updated);
+ 		$updated_by=$projectData->updated_by;
+ 		$team_id=$projectData->team_id;
+ 		$result = $db->updateProject($id,$project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$last_updated,$updated_by,$billable_type,$billing_type,$team_id);
  		
  		if ($result)
  		{
@@ -1047,6 +1010,7 @@ $app->post('/deleteRole',  function() use($app) {
  							$response["error"] = true;
  							$response["message"] = "Oops! An error occurred while creating Modules";
  						}
+						echoRespnse(201, $response);
  						
  					});
 /**
@@ -1152,7 +1116,7 @@ $app->post('/deleteRole',  function() use($app) {
  			$TeamDetails=json_decode(file_get_contents("php://input"));
  			$Teams=$TeamDetails->TeamInfo;
  			$TeamData=json_decode($Teams);
- 			$team_name = $TeamData->module_name;
+ 			$team_name = $TeamData->team_name;
  			$status = 1;
  			$company_id =$TeamData->company_id;
  			$project_id = $TeamData->project_id;
@@ -1170,9 +1134,406 @@ $app->post('/deleteRole',  function() use($app) {
  				$response["error"] = true;
  				$response["message"] = "Oops! An error occurred while creating Teams";
  			}
- 			
+ 			echoRespnse(201, $response);
  		});
+/**
+ * Updating Team
+ * url - /updateTeam
+ * method - PUT
+  * params -id
+*/
+ 						$app->post('/updateTeam',function() use($app) {
+ 							$db = new DataDAO();
+ 							$response = array();
+ 							$TeamDetails=json_decode(file_get_contents("php://input"));
+ 							$Teams=$TeamDetails->TeamInfo;
+ 							$TeamData=json_decode($Teams);
+ 							$id = $TeamData->id;
+ 							$team_name = $TeamData->team_name;
+ 							//$status = 1;
+ 							$company_id =$TeamData->company_id;
+ 							$project_id = $TeamData->project_id;
+ 							$last_updated= $TeamData->last_updated;
+ 							$updated_by= $TeamData->updated_by;
  							
+ 							$result = $db->updateTeam($id,$team_name,$company_id,$project_id,$last_updated,$updated_by);
+ 							
+ 							if ($result)
+ 							{
+ 								$response["error"] = false;
+ 								$response["message"] = "You are successfully updated";
+ 							} else
+ 							{
+ 								$response["error"] = true;
+ 								$response["message"] = "Oops! An error occurred while updating";
+ 							}
+ 							echoRespnse(201, $response);
+ 						});
+ /**
+ 	* Updating Teams by Making Status Inactive
+ 	* url - /deleteTeam
+ 	* method - PUT
+ 	* params -id
+*/
+ 							$app->post('/deleteTeam',function() use($app) {
+ 								$db = new DataDAO();
+ 								$response = array();
+ 								$TeamDetails=json_decode(file_get_contents("php://input"));
+ 								$Modules=$TeamDetails->TeamInfo;
+ 								$TeamData=json_decode($Modules);
+ 								$id = $TeamData->id;
+ 								$result = $db->deleteTeam($id);
+ 								
+ 								if ($result)
+ 								{
+ 									$response["error"] = false;
+ 									$response["message"] = "You are successfully made Inactive";
+ 								} else
+ 								{
+ 									$response["error"] = true;
+ 									$response["message"] = "Oops! An error occurred while making status Inactive";
+ 								}
+ 								echoRespnse(201, $response);
+ 							}); 	
+ /**
+ 	* Fetching All Team List
+ 	* url - /getAllTeamList
+ 	* method - GET
+ 	* params
+ */
+ 	$app->get('/getAllTeamList/',function() use($app){
+ 	$db = new DataDAO();
+ 	$res = $db->getAllTeamList();
+ 	if(sizeof($res))
+ 		{
+ 		echoRespnse(201, $res);
+ 		}
+ 	});
+ 									
+ /**
+ 	 * Fetching Team List based on the id
+ 	 * url-/getTeamListById
+ 	 * method - GET by Id
+ 	 * params - id
+ */
+ 	$app->get('/getTeamListById/:id',function($id) use($app){
+ 	$db = new DataDAO();
+ 	$res = $db->getTeamListById($id);
+ 	if(sizeof($res))
+ 	{
+ 	echoRespnse(201, $res);
+ 	}
+ 	});	
+//***************************************************************Team Members*************************************************************************************************************************************************//
+ 		/**
+ 		 * Adding TeamMembers
+ 		 * url - /addTeamMembers
+ 		 * method - POST
+ 		 * params-user_id,project_id,status,company_id,isteamlead,date_created,created_by
+ 		 */
+ 		$app->post('/addTeamMembers', function() use ($app) {
+ 			$response = array();
+ 			$db = new DataDAO();
+ 			$TeamMemberDetails=json_decode(file_get_contents("php://input"));
+ 			$TeamMembers=$TeamMemberDetails->TeamMemberInfo;
+ 			$TeamMemData=json_decode($TeamMembers);
+ 			$user_id = $TeamMemData->user_id;
+			$project_id = $TeamMemData->project_id;
+ 			$status = 1;
+ 			$company_id =$TeamMemData->company_id;
+ 			$isteamlead = $TeamMemData->isteamlead;
+ 			$date_created= $TeamMemData->date_created;
+ 			$created_by= $TeamMemData->created_by;
+ 			
+ 			
+ 			$res = $db->addTeamMembers($user_id,$project_id,$status,$company_id,$isteamlead,$date_created,$created_by);
+ 			if ($res)
+ 			{
+ 				$response["error"] = false;
+ 				$response["message"] = "TeamMembers are created successfully";
+ 			} else
+ 			{
+ 				$response["error"] = true;
+ 				$response["message"] = "Oops! An error occurred while creating TeamMembers";
+ 			}
+ 			echoRespnse(201, $response);
+ 		});	
+		
+/**
+ * Updating Team
+ * url - /updateTeam
+ * method - PUT
+  * params -id
+*/
+ 						$app->post('/updateTeamMembers',function() use($app) {
+ 							$db = new DataDAO();
+ 							$response = array();
+							$TeamMemberDetails=json_decode(file_get_contents("php://input"));
+							$TeamMembers=$TeamMemberDetails->TeamMemberInfo;
+							$TeamMemData=json_decode($TeamMembers);
+							$id = $TeamMemData->id;
+							$user_id = $TeamMemData->user_id;
+							$project_id = $TeamMemData->project_id;
+							$company_id =$TeamMemData->company_id;
+							$isteamlead = $TeamMemData->isteamlead;
+							$last_updated= $TeamMemData->last_updated;
+							$updated_by= $TeamMemData->updated_by;
+ 							
+ 							$result = $db->updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$last_updated,$updated_by);
+ 							
+ 							if ($result)
+ 							{
+ 								$response["error"] = false;
+ 								$response["message"] = "You are successfully updated TeamMembers";
+ 							} else
+ 							{
+ 								$response["error"] = true;
+ 								$response["message"] = "Oops! An error occurred while updating TeamMembers";
+ 							}
+ 							echoRespnse(201, $response);
+ 						});		
+						
+						
+ /**
+ 	* Updating Teams by Making Status Inactive
+ 	* url - /deleteTeam
+ 	* method - PUT
+ 	* params -id
+*/
+ 							$app->post('/deleteTeamMember',function() use($app) {
+ 								$db = new DataDAO();
+ 								$response = array();
+ 								$TeamMemberDetails=json_decode(file_get_contents("php://input"));
+ 								$TeamMembers=$TeamMemberDetails->TeamMemberInfo;
+ 								$TeamMemData=json_decode($TeamMembers);
+ 								$id = $TeamMemData->id;
+ 								$result = $db->deleteTeamMember($id);
+ 								
+ 								if ($result)
+ 								{
+ 									$response["error"] = false;
+ 									$response["message"] = "You are successfully made Inactive";
+ 								} else
+ 								{
+ 									$response["error"] = true;
+ 									$response["message"] = "Oops! An error occurred while making status Inactive";
+ 								}
+ 								echoRespnse(201, $response);
+ 							}); 			
+
+ /**
+ 	* Fetching All Team List
+ 	* url - /getAllTeamList
+ 	* method - GET
+ 	* params
+ */
+ 	$app->get('/getAllTeamMemberList/',function() use($app){
+ 	$db = new DataDAO();
+ 	$res = $db->getAllTeamMemberList();
+ 	if(sizeof($res))
+ 		{
+ 		echoRespnse(201, $res);
+ 		}
+ 	});
+ 									
+ /**
+ 	 * Fetching Team List based on the id
+ 	 * url-/getTeamListById
+ 	 * method - GET by Id
+ 	 * params - id
+ */
+ 	$app->get('/getTeamMemberListById/:id',function($id) use($app){
+ 	$db = new DataDAO();
+ 	$res = $db->getTeamMemberListById($id);
+ 	if(sizeof($res))
+ 	{
+ 	echoRespnse(201, $res);
+ 	}
+ 	});					
+
+
+//***************************************************************Sprint Plan*************************************************************************************************************************************************//
+ 		/**
+ 		 * Adding TeamMembers
+ 		 * url - /addTeamMembers
+ 		 * method - POST
+ 		 * params-sprint_name,status,company_id,team_id,start_date,end_date,date_created,created_by
+ 		 */
+ 		$app->post('/addSprint', function() use ($app) {
+ 			$response = array();
+ 			$db = new DataDAO();
+ 			$SprintDetails=json_decode(file_get_contents("php://input"));
+ 			$Sprint=$SprintDetails->SprintInfo;
+ 			$SprintData=json_decode($Sprint);
+ 			$status = 1;
+			$sprint_name = $SprintData->sprint_name;
+			$company_id =$SprintData->company_id;
+			$team_id =$SprintData->team_id;
+			$start_date = $SprintData->start_date;
+			$end_date = $SprintData->end_date;
+ 			$date_created= $SprintData->date_created;
+ 			$created_by= $SprintData->created_by;
+ 			
+ 			
+ 			$res = $db->addSprint($sprint_name,$status,$company_id,$team_id,$start_date,$end_date,$date_created,$created_by);
+ 			if ($res)
+ 			{
+ 				$response["error"] = false;
+ 				$response["message"] = "Sprint Plan are created successfully";
+ 			} else
+ 			{
+ 				$response["error"] = true;
+ 				$response["message"] = "Oops! An error occurred while creating Sprint Plan";
+ 			}
+ 			echoRespnse(201, $response);
+ 		});	
+		
+/**
+ * Updating Sprint
+ * url - /updateSprint
+ * method - PUT
+  * params -id
+*/
+ 						$app->post('/updateSprint',function() use($app) {
+ 							$db = new DataDAO();
+ 							$response = array();
+							$SprintDetails=json_decode(file_get_contents("php://input"));
+							$Sprint=$SprintDetails->SprintInfo;
+							$SprintData=json_decode($Sprint);
+							$id = $SprintData->id;
+							$sprint_name = $SprintData->sprint_name;
+							$company_id =$SprintData->company_id;
+							$team_id =$SprintData->team_id;
+							$start_date = $SprintData->start_date;
+							$end_date = $SprintData->end_date;
+							$last_updated= $SprintData->last_updated;
+							$updated_by= $SprintData->updated_by;
+ 							
+							$result = $db->updateSprint($id,$sprint_name,$company_id,$team_id,$start_date,$end_date,$last_updated,$updated_by);
+ 							
+ 							if ($result)
+ 							{
+ 								$response["error"] = false;
+ 								$response["message"] = "You are successfully updated Sprint Plan";
+ 							} else
+ 							{
+ 								$response["error"] = true;
+ 								$response["message"] = "Oops! An error occurred while updating Sprint Plan";
+ 							}
+ 							echoRespnse(201, $response);
+ 						});		
+						
+						
+ /**
+ 	* Updating Sprint by Making Status Inactive
+ 	* url - /deleteSprint
+ 	* method - PUT
+ 	* params -id
+*/
+ 							$app->post('/deleteSprint',function() use($app) {
+ 								$db = new DataDAO();
+ 								$response = array();
+ 								$SprintDetails=json_decode(file_get_contents("php://input"));
+ 								$Sprint=$SprintDetails->SprintInfo;
+ 								$SprintData=json_decode($Sprint);
+ 								$id = $SprintData->id;
+ 								$result = $db->deleteSprint($id);
+ 								
+ 								if ($result)
+ 								{
+ 									$response["error"] = false;
+ 									$response["message"] = "You are successfully made Inactive";
+ 								} else
+ 								{
+ 									$response["error"] = true;
+ 									$response["message"] = "Oops! An error occurred while making status Inactive";
+ 								}
+ 								echoRespnse(201, $response);
+ 							}); 			
+
+ /**
+ 	* Fetching All Sprint List
+ 	* url - /getAllSprintList
+ 	* method - GET
+ 	* params
+ */
+ 	$app->get('/getAllSprintList/',function() use($app){
+ 	$db = new DataDAO();
+ 	$res = $db->getAllSprintList();
+ 	if(sizeof($res))
+ 		{
+ 		echoRespnse(201, $res);
+ 		}
+ 	});
+ 									
+ /**
+ 	 * Fetching Sprint List based on the id
+ 	 * url-/getSprintListById
+ 	 * method - GET by Id
+ 	 * params - id
+ */
+ 	$app->get('/getSprintListById/:id',function($id) use($app){
+ 	$db = new DataDAO();
+ 	$res = $db->getSprintListById($id);
+ 	if(sizeof($res))
+ 	{
+ 	echoRespnse(201, $res);
+ 	}
+ 	});	
+
+
+//***************************************************************Forgot Password*************************************************************************************************************************************************//	
+
+
+   /**
+ * User Login
+ * url - /login
+ * method - POST
+ * params - email_id, password
+ */
+    $app->post('/forgotPassword', function() use ($app) {
+           $db = new DataDAO();
+            $userDetails = json_decode(file_get_contents("php://input"));
+			$users = $userDetails->ForgotPasswordInfo;
+			$forgotPasswordData = json_decode($users);			
+	        $email_id = $forgotPasswordData->EmailID;
+			$status = 1;
+			$res = $db->getPassword($email_id, $status);
+	        $salt ="*ISoftcons_Office_Suite*";
+            $pwd = $db->simple_decrypt($res[0]["password"], $salt);
+            $response = array();
+            if ($res) {
+				/*************** Mail Function Begins ***************/
+				//$Id=$result[0]["id"];
+				//$Username=$result[0]["user_name"];
+				/*$sendmail = new Mailer();
+				$subject = "SOS - Forgot Password";
+				$content = "Dear ".$res[0]['first_name'].",<br><br><span>Your Password for EmailID <b>$email_id</b> is <b>".$pwd."</b></span>";
+					$to = $email_id;
+				$mailresult = $sendmail->sendMail($subject,$content,$to);
+				if($mailresult == "Message sent!"){
+					   $response["error"] = false;
+					   $response["message"] = "Email Id is valid";
+				}
+				else{
+				   $response["error"] = true;
+				   $response["message"] = "Oops! Error Occured please try again!";
+				}*/
+				/*************** Mail Function Ends ***************/					
+                // get the user by email
+				$response['error'] = true;
+                $response['message'] = 'Valid EmailID';
+			
+            } else {
+                // user credentials are wrong
+                $response['error'] = true;
+                $response['message'] = 'Invalid EmailID';
+                //returnJSONData($app,$response);
+            }
+			echoRespnse(201, $res);
+        });   	
+	
+						
+		
  	$app->run();
- 	?>
 ?>
