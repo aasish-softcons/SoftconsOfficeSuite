@@ -449,7 +449,7 @@ $app->post('/login', function() use ($app) {
 	 * Adding User
 	 * url - /addUser
 	 * method - POST
-	 * params -first_name,last_name,company_id,email_id,password,user_address,phone_no,role_id,status,date_created,created_by
+	 * params -first_name,last_name,company_id,email_id,password,user_address,phone_no,role_id,status,date_created,created_by,department_id,position
 	 */
 		$app->post('/addUser', function() use ($app) {
 			$response = array();
@@ -468,9 +468,11 @@ $app->post('/login', function() use ($app) {
 			$status = 1;
 			$date_created= $userData->date_created;
 			$created_by= $userData->created_by;
+			$department_id= $userData->department_id;
+			$position= $userData->position;
 			$userRes = $db->userExists($email_id);
 			if(!$userRes){
-				$res = $db->addUser($first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$status,$date_created,$created_by);
+				$res = $db->addUser($first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$status,$date_created,$created_by,$department_id,$position);
 				if ($res)
 				{
 					$response["error"] = false;
@@ -512,7 +514,9 @@ $app->post('/login', function() use ($app) {
 				$role_id=$userData->role_id;
 				$last_updated= $userData->last_updated;
 				$updated_by= $userData->updated_by;
-				$result = $db->updateUser($id,$first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$last_updated,$updated_by);
+				$department_id= $userData->department_id;
+				$position= $userData->position;
+				$result = $db->updateUser($id,$first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$last_updated,$updated_by,$department_id,$position);
 			    if ($result)
 				{
 					$response["error"] = false;
