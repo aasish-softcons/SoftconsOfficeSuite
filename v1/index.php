@@ -737,7 +737,7 @@ $app->post('/deleteRole',  function() use($app) {
 					$date_created= $clientData->date_created;
 					$created_by= $clientData->created_by;
 					$status = 1;
-					$res = $db->addClients($client_name,$website_url,$pan,$gstn,$regisered_address,$mailing_address,$managing_director,$contact_person,$phone_number,$email_id,$company_id,$date_created,$created_by,$status);
+					$res = $db->addClients($client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$status,$date_created,$created_by);
 					if ($res)
 					{
 						$response["error"] = false;
@@ -778,7 +778,7 @@ $app->post('/deleteRole',  function() use($app) {
 						$last_updated= $clientData->last_updated;
 						$updated_by=$clientData->updated_by;
 						//$status = 1;
-						$res = $db->updateClients($id,$client_name,$website_url,$pan,$gstn,$regisered_address,$mailing_address,$managing_director,$contact_person,$phone_number,$email_id,$company_id,$last_updated,$updated_by);
+						$res = $db->updateClients($id,$client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$last_updated,$updated_by);
 						if ($res)
 						{
 							$response["error"] = false;
