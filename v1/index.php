@@ -714,7 +714,7 @@ $app->post('/deleteRole',  function() use($app) {
  * Adding Clients
  * url - /addClients
  * method - POST
- * params -client_name,website_url,pan,gstn,regisered_address,mailing_address,managing_director,contact_person,phone_number,email_id,company_id,date_created,created_by,status
+ * params -client_name,website_url,pan,gstn,registered_address,mailing_address,managing_director,contact_person,phone_number,email_id,company_id,date_created,created_by,status
 */
 				$app->post('/addClients', function() use ($app) {
 					$response = array();
@@ -727,7 +727,7 @@ $app->post('/deleteRole',  function() use($app) {
 					$website_url = $clientData->website_url;
 					$pan = $clientData->pan;
 					$gstn = $clientData->gstn;
-					$regisered_address = $clientData->regisered_address;
+					$registered_address = $clientData->registered_address;
 					$mailing_address = $clientData->mailing_address;
 					$managing_director = $clientData->managing_director;
 					$contact_person = $clientData->contact_person;
@@ -768,7 +768,7 @@ $app->post('/deleteRole',  function() use($app) {
 						$website_url = $clientData->website_url;
 						$pan = $clientData->pan;
 						$gstn = $clientData->gstn;
-						$regisered_address = $clientData->regisered_address;
+						$registered_address = $clientData->registered_address;
 						$mailing_address = $clientData->mailing_address;
 						$managing_director = $clientData->managing_director;
 						$contact_person = $clientData->contact_person;
