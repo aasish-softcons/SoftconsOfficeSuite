@@ -590,7 +590,7 @@ class DataDAO extends AbstractDAO {
    {
    	try{
    		$query="UPDATE  uni_client_master SET client_name='$client_name',company_id='$company_id',website_url='$website_url',pan='$pan',gstn='$gstn',registered_address='$registered_address',managing_director='$managing_director',mailing_address='$mailing_address',contact_person='$contact_person',phone_number='$phone_number',email_id='$email_id',last_updated='$last_updated',updated_by='$updated_by' WHERE id='$id'";
-   		$rslt= self::updateQuery($query,array("id"=>$id,"client_name"=>$client_name,"company_id"=>$company_id,"website_url"=>$website_url,"pan"=>$pan,"gstn"=>$gstn,"regisered_address"=>$regisered_address,"managing_director"=>$managing_director,"mailing_address"=>$mailing_address,"contact_person"=>$contact_person,"phone_number"=>$phone_number,"email_id"=>$email_id,"last_updated"=>$last_updated,"last_updated"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"client_name"=>$client_name,"company_id"=>$company_id,"website_url"=>$website_url,"pan"=>$pan,"gstn"=>$gstn,"registered_address"=>$registered_address,"managing_director"=>$managing_director,"mailing_address"=>$mailing_address,"contact_person"=>$contact_person,"phone_number"=>$phone_number,"email_id"=>$email_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
    		if ($rslt) {
    			return $rslt;
    		} else {
