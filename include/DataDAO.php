@@ -70,6 +70,124 @@ class DataDAO extends AbstractDAO {
     		return NULL;
     	}
     }
+    //**************************************************Timesheet_config************************************************************************/
+    /**
+     * Adding addTimesheetConfig
+     * params-company_id,timesheet_frequency,status,date_created,created_by,start_date,end_date
+     **/
+    
+    public function addTimesheetConfig($company_id,$timesheet_frequency,$status,$date_created,$created_by,$start_date,$end_date)
+    {
+    	$response = array();
+    	
+    	try
+    	{
+    		$query="INSERT INTO timesheet_config(company_id,timesheet_frequency,status,date_created,created_by,start_date,end_date)VALUES(:company_id,:timesheet_frequency,:status,:date_created,:created_by,:start_date,:end_date)";
+    		
+    		$bind_array=array("company_id"=>$company_id,"timesheet_frequency"=>$timesheet_frequency,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+    		
+    		$rslt=self::insertQuery($query,$bind_array);
+    		if ($rslt)
+    		{
+    			return $rslt;
+    		}
+    		else
+    		{
+    			return $rslt;
+    		}
+    	}
+    	catch (PDOException $pde)
+    	{
+    		throw $pde;
+    	}
+    }
+    /**
+     * Updating timesheet_config
+     * url - /updateTimesheetConfig
+     * method - PUT
+     * params -id
+     */
+    public static function updateTimesheetConfig($id,$company_id,$timesheet_frequency,$last_updated,$updated_by,$start_date,$end_date)
+    {
+    	try{
+    		$query="UPDATE  timesheet_config SET company_id=:company_id,timesheet_frequency=:timesheet_frequency,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
+    		
+    		$rslt= self::updateQuery($query,array("id"=>$id,"company_id"=>$company_id,"timesheet_frequency"=>$timesheet_frequency,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
+    		if ($rslt) {
+    			
+    			return $rslt;
+    		} else {
+    			
+    			return $rslt;
+    		}
+    	}
+    	catch (PDOException $pde) {
+    		throw $pde;
+    	}
+    }
+    
+    /**
+     * Updating Timesheet_config by Making Status Inactive
+     * url - /deleteTimesheetConfig
+     * method - PUT
+     * params -id
+     */
+    public static function deleteTimesheetConfig($id)
+    {
+    	try{
+    		$query="UPDATE  timesheet_config SET status=0 WHERE id=:id";
+    		$rslt= self::updateQuery($query,array("id"=>$id));
+    		if ($rslt) {
+    			
+    			return $rslt;
+    		} else {
+    			
+    			return $rslt;
+    		}
+    	}
+    	catch (PDOException $pde) {
+    		throw $pde;
+    	}
+    }
+    
+    /**
+	 * Fetching All Timesheet_config List
+	 * url-/getAllTimesheetConfigList
+	 * method - GET All
+	 * params 
+	 */
+    public function getAllTimesheetConfigList() {
+    	$query = "SELECT * FROM timesheet_config";
+        $rslt = self::fetchQuery($query,array());
+    	if (sizeof($rslt)) 
+    	{
+    	  return $rslt;
+    	} 
+    	else 
+    	{
+    	 return NULL;
+    	}
+    } 
+    
+    /**
+     * Fetching Timesheet_config List based on the id
+     * url-/getTimesheetConfigListById
+     * method - GET by Id
+     * params - id
+     */
+    public function getTimesheetConfigListById($id) {
+    	$query = "SELECT * FROM timesheet_config where id =:id";
+    	$rslt = self::fetchQuery($query,array("id"=>$id));
+    	if (sizeof($rslt))
+    	{
+    		return $rslt;
+    	}
+    	else
+    	{
+    		return NULL;
+    	}
+    }
+    
     //**************************************************Company************************************************************************/
     /**
 	 * Fetching All Company List
@@ -189,15 +307,15 @@ class DataDAO extends AbstractDAO {
      * params-company_id,department_name,status,date_created,created_by
      **/
     
-    public function addDepartment($company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$status,$date_created,$created_by)
+    public function addDepartment($company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$status,$date_created,$created_by,$start_date,$end_date)
     {
     	$response = array();
     	
     	try
     	{
-    		$query="INSERT INTO uni_department(company_id,department_name,department_head,department_location,department_function,department_members,status,date_created,created_by)VALUES(:company_id,:department_name,:department_head,:department_location,:department_function,:department_members,:status,:date_created,:created_by)";
+    		$query="INSERT INTO uni_department(company_id,department_name,department_head,department_location,department_function,department_members,status,date_created,created_by,start_date,end_date)VALUES(:company_id,:department_name,:department_head,:department_location,:department_function,:department_members,:status,:date_created,:created_by,:start_date,:end_date)";
     		
-    		$bind_array=array("company_id"=>$company_id,"department_name"=>$department_name,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+    		$bind_array=array("company_id"=>$company_id,"department_name"=>$department_name,"department_head"=>$department_head,"department_location"=>$department_location,"department_function"=>$department_function,"department_members"=>$department_members,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
     		
     		$rslt=self::insertQuery($query,$bind_array);
     		if ($rslt)
@@ -668,16 +786,16 @@ class DataDAO extends AbstractDAO {
     * Adding new Project
     * params -project_name,client_id,company_id,start_date,end_date,project_type,date_created,status,billable_type,billing_type,team_id
     **/
-   public function addProject($id,$project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$last_updated,$updated_by,$billable_type,$billing_type,$team_id)
+   public function addProject($project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$date_created,$status,$billable_type,$billing_type,$team_id,$created_by)
    {
    	$response = array();
    	
    	try
    	{
    		//$query="INSERT INTO uni_project_master(project_name,client_id,company_id,start_date,end_date,project_type,date_created,status)VALUES(:project_name,:client_id,:company_id,:start_date,:end_date,:project_type,:date_created,:status)";
-   		$query = "INSERT INTO uni_project_master(project_name,client_id,company_id,start_date,end_date,project_type,date_created,status,billable_type,billing_type,team_id)VALUES('$project_name','$client_id','$company_id','$start_date','$end_date','$project_type','$date_created','$status','$billable_type','$billing_type','$team_id')";
+   		$query = "INSERT INTO uni_project_master(project_name,client_id,company_id,start_date,end_date,project_type,date_created,status,billable_type,billing_type,team_id,created_by)VALUES('$project_name','$client_id','$company_id','$start_date','$end_date','$project_type','$date_created','$status','$billable_type','$billing_type','$team_id','$created_by')";
    		
-   		$bind_array=array("project_name"=>$project_name,"client_id"=>$client_id,"company_id"=>$company_id,"start_date"=>$start_date,"end_date"=>$end_date,"project_type=>$project_type","date_created"=>$date_created,"status"=>$status,"billable_type"=>$billable_type,"billing_type"=>$billing_type,"team_id"=>$team_id);
+   		$bind_array=array("project_name"=>$project_name,"client_id"=>$client_id,"company_id"=>$company_id,"start_date"=>$start_date,"end_date"=>$end_date,"project_type=>$project_type","date_created"=>$date_created,"status"=>$status,"billable_type"=>$billable_type,"billing_type"=>$billing_type,"team_id"=>$team_id,"created_by"=>$created_by);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -749,7 +867,7 @@ class DataDAO extends AbstractDAO {
     * method - GET All
     * params
     */
-   public  function getAllProjectList() {
+  /* public  function getAllProjectList() {
    	$query = "SELECT * FROM uni_project_master";
    	$rslt = self::fetchQuery($query,array());
    	if (sizeof($rslt))
@@ -760,7 +878,7 @@ class DataDAO extends AbstractDAO {
    	{
    		return NULL;
    	}
-   }
+   }*/
    
    /**
     * Fetching Project based on the id
@@ -768,7 +886,7 @@ class DataDAO extends AbstractDAO {
     * method - GET by Id
     * params - id
     */
-   public function getProjectListById($id) {
+  /* public function getProjectListById($id) {
    	$query = "SELECT * FROM uni_project_master where id =:id";
    	$rslt = self::fetchQuery($query,array("id"=>$id));
    	if (sizeof($rslt))
@@ -779,7 +897,7 @@ class DataDAO extends AbstractDAO {
    	{
    		return NULL;
    	}
-   } 
+   } */
    //***************************************************************Module*********************************************************************************************************//
    /**
     * Adding Module
