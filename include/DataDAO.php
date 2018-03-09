@@ -804,7 +804,7 @@ class DataDAO extends AbstractDAO {
    		}
    		else
    		{
-   			return $rslt;
+   			return $query;
    		}
    	}
    	catch (PDOException $pde)

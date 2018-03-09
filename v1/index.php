@@ -265,14 +265,17 @@ $app->post('/login', function() use ($app) {
 	 * params 
 	 */
 	
-	/*$app->get('/getAllTimesheetConfigList/',function() use($app){
+	$app->get('/getAllTimesheetConfigList/',function() use($app){
 		$db = new DataDAO();
 		$res = $db->getAllTimesheetConfigList();
 	    if(sizeof($res))
 	    {
 	     echoRespnse(201, $res);
-		}	
-	  }); */
+		}
+		else{
+			echoRespnse(201, $res);
+		}
+	  }); 
 					
 	
 /**
@@ -281,14 +284,14 @@ $app->post('/login', function() use ($app) {
 	 * method - GET by Id
 	 * params - id
 	 */
-	/*$app->get('/getTimesheetConfigListById/:id',function($id) use($app){
+	$app->get('/getTimesheetConfigListById/:id',function($id) use($app){
 		$db = new DataDAO();
 		$res = $db->getTimesheetConfigListById($id);
 		if(sizeof($res))
 		{
 		 echoRespnse(201, $res);
 		}
-		}); */
+		});
 			
 
 //**************************************************Company************************************************************************/
@@ -1006,8 +1009,10 @@ $app->post('/deleteRole',  function() use($app) {
     $billing_type=$projectData->billing_type;
     $team_id=$projectData->team_id;
     $created_by= $projectData->created_by;
+    //$query = "INSERT INTO uni_project_master(project_name,client_id,company_id,start_date,end_date,project_type,date_created,status,billable_type,billing_type,team_id,created_by)VALUES('$project_name','$client_id','$company_id','$start_date','$end_date','$project_type','$date_created','$status','$billable_type','$billing_type','$team_id','$created_by')";
     $res = $db->addProject($project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$date_created,$status,$billable_type,$billing_type,$team_id,$created_by);
- 	if ($res)
+    
+    if ($res)
  	{
  		$response["error"] = false;
  		$response["message"] = "Project created successfully";
@@ -1016,7 +1021,7 @@ $app->post('/deleteRole',  function() use($app) {
  		$response["error"] = true;
  		$response["message"] = "Oops! An error occurred while creating Project";
  	}
- 	echoRespnse(201,$response );
+ 	echoRespnse(201, $response);
  });
  
  /**
@@ -1671,5 +1676,4 @@ $app->post('/deleteRole',  function() use($app) {
 					
 		
  	$app->run();
-?>
 ?>
