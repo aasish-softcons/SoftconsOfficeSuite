@@ -163,6 +163,134 @@ $app->post('/login', function() use ($app) {
 	}
 	echoRespnse(201, $response);
 });
+	//***************************************************************Timesheet_config********************************************************************************************************//
+	/**
+	 * Adding timesheet_config
+	 * url - /addTimesheetConfig
+	 * method - POST
+	 * params-company_id,timesheet_frequency,status,date_created,created_by,start_date,end_date
+	 */
+	$app->post('/addTimesheetConfig', function() use ($app) {
+		$response = array();
+		$db = new DataDAO();
+		$timesheetDetails=json_decode(file_get_contents("php://input"));
+		$timesheet=$timesheetDetails->TimesheetInfo;
+		$timesheetData=json_decode($timesheet);
+		$company_id = $timesheetData->company_id;
+		$timesheet_frequency= $timesheetData->timesheet_frequency;
+		$status = 1;
+		$date_created= $timesheetData->date_created;
+		$created_by= $timesheetData->created_by;
+		$start_date = $timesheetData->start_date;
+		$end_date = $timesheetData->end_date;
+		
+		
+		$res = $db->addTimesheetConfig($company_id,$timesheet_frequency,$status,$date_created,$created_by,$start_date,$end_date);
+		if ($res)
+		{
+			$response["error"] = false;
+			$response["message"] = "timesheet_config created successfully";
+		} else
+		{
+			$response["error"] = true;
+			$response["message"] = "Oops! An error occurred while creating timesheet_config";
+		}
+		echoRespnse(201, $response);
+	});
+		
+		/**
+		 * Updating timesheet_config
+		 * url - /updateTimesheetConfig
+		 * method - PUT
+		 * params -id
+		 */
+		$app->post('/updateTimesheetConfig', function() use ($app) {
+			$response = array();
+			$db = new DataDAO();
+			$timesheetDetails=json_decode(file_get_contents("php://input"));
+			$timesheet=$timesheetDetails->TimeSheetInfo;
+			$timesheetData=json_decode($timesheet);
+			$id = $timesheetData->id;
+			$company_id=$timesheetData->company_id;
+			$timesheet_frequency=$timesheetData->timesheet_frequency;
+			$last_updated=$timesheetData->last_updated;
+			$updated_by= $timesheetData->updated_by;
+			$start_date = $timesheetData->start_date;
+			$end_date = $timesheetData->end_date;
+			$result = $db->updateTimesheetConfig($id,$company_id,$timesheet_frequency,$last_updated,$updated_by,$start_date,$end_date);
+			if ($result)
+			{
+				$response["error"] = false;
+				$response["message"] = "You are successfully updated the Timesheet_config";
+			} else
+			{
+				$response["error"] = true;
+				$response["message"] = "Oops! An error occurred while updating Timesheet_config";
+			}
+			echoRespnse(201, $id);
+		});
+		
+/**
+	* Updating Timesheet_config by Making Status Inactive
+	* url - /deleteTimesheetConfig
+	* method - PUT
+	* params -id
+*/
+			$app->post('/deleteTimesheetConfig',function() use($app) {
+				$db = new DataDAO();
+				$response = array();
+				$timesheetDetails=json_decode(file_get_contents("php://input"));
+				$timesheet=$timesheetDetails->TimeSheetInfo;
+				$timesheetData=json_decode($timesheet);
+				$id = $timesheetData->id;
+				$result = $db->deleteTimesheetConfig($id);
+				
+				if ($result)
+				{
+					$response["error"] = false;
+					$response["message"] = "You are successfully made Inactive";
+				} else
+				{
+					$response["error"] = true;
+					$response["message"] = "Oops! An error occurred while making status Inactive";
+				}
+				echoRespnse(201, $response);
+			});
+				
+			
+	/**
+	 * Fetching All Timesheet_config List
+	 * url-/getAllTimesheetConfigList
+	 * method - GET All
+	 * params 
+	 */
+	
+	/*$app->get('/getAllTimesheetConfigList/',function() use($app){
+		$db = new DataDAO();
+		$res = $db->getAllTimesheetConfigList();
+	    if(sizeof($res))
+	    {
+	     echoRespnse(201, $res);
+		}	
+	  }); */
+					
+	
+/**
+	 * Fetching Timesheet_config List based on the id
+	 * url-/getTimesheetConfigListById
+	 * method - GET by Id
+	 * params - id
+	 */
+	/*$app->get('/getTimesheetConfigListById/:id',function($id) use($app){
+		$db = new DataDAO();
+		$res = $db->getTimesheetConfigListById($id);
+		if(sizeof($res))
+		{
+		 echoRespnse(201, $res);
+		}
+		}); */
+			
+
 //**************************************************Company************************************************************************/
 
 	/**
@@ -339,9 +467,10 @@ $app->post('/login', function() use ($app) {
 			$status = 1;
 			$date_created= $DepartmentData->date_created;
 			$created_by= $DepartmentData->created_by;
+			$start_date= $DepartmentData->start_date;
+			$end_date= $DepartmentData->end_date;
 			
-			
-			$res = $db->addDepartment($company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$status,$date_created,$created_by);
+			$res = $db->addDepartment($company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$status,$date_created,$created_by,$start_date,$end_date);
 			if ($res)
 			{
 				$response["error"] = false;
@@ -351,8 +480,9 @@ $app->post('/login', function() use ($app) {
 				$response["error"] = true;
 				$response["message"] = "Oops! An error occurred while creating Department";
 			}
-			
+			echoRespnse(201, $response);
 		});
+			
 			
 		/**
 			 * Updating Department
@@ -855,7 +985,7 @@ $app->post('/deleteRole',  function() use($app) {
   * Adding Project
   * url - /addProject
   * method - POST
-  * params -project_name,client_id,company_id,start_date,end_date,project_type,date_created,status,billable_type,billing_type,team_id
+  * params -project_name,client_id,company_id,start_date,end_date,project_type,date_created,status,billable_type,billing_type,team_id,created_by
   */
  $app->post('/addProject', function() use ($app) {
  	$response = array();
@@ -875,7 +1005,8 @@ $app->post('/deleteRole',  function() use($app) {
     $billable_type=$projectData->billable_type;
     $billing_type=$projectData->billing_type;
     $team_id=$projectData->team_id;
-    $res = $db->addProject($project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$date_created,$status,$billable_type,$billing_type,$team_id);
+    $created_by= $projectData->created_by;
+    $res = $db->addProject($project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$date_created,$status,$billable_type,$billing_type,$team_id,$created_by);
  	if ($res)
  	{
  		$response["error"] = false;
@@ -1537,7 +1668,8 @@ $app->post('/deleteRole',  function() use($app) {
 			echoRespnse(201, $res);
         });   	
 	
-						
+					
 		
  	$app->run();
+?>
 ?>
