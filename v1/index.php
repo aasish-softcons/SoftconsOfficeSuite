@@ -1046,6 +1046,8 @@ $app->post('/deleteRole',  function() use($app) {
  		$last_updated= $projectData->last_updated;
  		$updated_by=$projectData->updated_by;
  		$team_id=$projectData->team_id;
+ 		$billable_type=$projectData->billable_type;
+ 		$billing_type=$projectData->billing_type;
  		$result = $db->updateProject($id,$project_name,$client_id,$company_id,$start_date,$end_date,$project_type,$last_updated,$updated_by,$billable_type,$billing_type,$team_id);
  		
  		if ($result)
