@@ -453,7 +453,7 @@ $app->post('/login', function() use ($app) {
 	 * Adding Department
 	 * url - /addDepartment
 	 * method - POST
-	 * params-company_id,department_name,status,date_created,created_by
+	 * params-company_id,department_name,department_head,department_location,department_function,department_members,status,date_created,created_by,start_date,end_date
 	 */
 		$app->post('/addDepartment', function() use ($app) {
 			$response = array();
@@ -502,12 +502,15 @@ $app->post('/login', function() use ($app) {
 				$id = $DepartmentData->id;
 				$company_id=$DepartmentData->company_id;
 				$department_name=$DepartmentData->department_name;
+				$department_head = $DepartmentData->department_head;
 				$department_location = $DepartmentData->department_location;
 				$department_function = $DepartmentData->department_function;
 				$department_members = $DepartmentData->department_members;				
 				$last_updated=$DepartmentData->last_updated;
 				$updated_by= $DepartmentData->updated_by;
-				$result = $db->updateDepartment($id,$company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$last_updated,$updated_by);
+				$start_date= $DepartmentData->start_date;
+				$end_date= $DepartmentData->end_date;
+				$result = $db->updateDepartment($id,$company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$last_updated,$updated_by,$start_date,$end_date);
 				if ($result)
 				{
 					$response["error"] = false;
@@ -582,7 +585,7 @@ $app->post('/login', function() use ($app) {
 	 * Adding User
 	 * url - /addUser
 	 * method - POST
-	 * params -first_name,last_name,company_id,email_id,password,user_address,phone_no,role_id,status,date_created,created_by,department_id,position
+	 * params -first_name,last_name,company_id,email_id,password,user_address,phone_no,role_id,department_id,status,date_created,created_by,password_activation,password_link_timestamp,version,position,start_date,end_date
 	 */
 		$app->post('/addUser', function() use ($app) {
 			$response = array();
@@ -598,14 +601,20 @@ $app->post('/login', function() use ($app) {
 			$user_address=$userData->user_address;
 			$phone_no=$userData->phone_no;
 			$role_id=$userData->role_id;
+			//$department_id=$userData->department_id;
 			$status = 1;
 			$date_created= $userData->date_created;
 			$created_by= $userData->created_by;
+			//$password_activation=1;
+			//$password_link_timestamp=$userData->password_link_timestamp;
+			//$version=$userData->version;
 			$department_id= $userData->department_id;
 			$position= $userData->position;
+			$start_date= $userData->start_date;
+			$end_date= $userData->end_date;
 			$userRes = $db->userExists($email_id);
 			if(!$userRes){
-				$res = $db->addUser($first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$status,$date_created,$created_by,$department_id,$position);
+				$res = $db->addUser($first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$status,$date_created,$created_by,$department_id,$position,$start_date,$end_date);
 				if ($res)
 				{
 					$response["error"] = false;
@@ -649,7 +658,9 @@ $app->post('/login', function() use ($app) {
 				$updated_by= $userData->updated_by;
 				$department_id= $userData->department_id;
 				$position= $userData->position;
-				$result = $db->updateUser($id,$first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$last_updated,$updated_by,$department_id,$position);
+				$start_date= $userData->start_date;
+				$end_date= $userData->end_date;
+				$result = $db->updateUser($id,$first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$last_updated,$updated_by,$department_id,$position,$start_date,$end_date);
 			    if ($result)
 				{
 					$response["error"] = false;
@@ -725,7 +736,7 @@ $app->post('/login', function() use ($app) {
 	 * Adding Role
      * url - /addRole
      * method - POST
-     * params -role_name,role_desc,status,date_created,last_updated,created_by,updated_by
+     * params -role_name,role_desc,status,date_created,created_by,start_date,end_date
  */
 $app->post('/addRole', function() use ($app) {
 $response = array();
@@ -738,7 +749,9 @@ $role_desc = $roleData->role_desc;
 $status = 1;
 $date_created= $roleData->date_created;
 $created_by= $roleData->created_by;
-$res = $db->addRole($role_name,$role_desc,$status,$date_created,$created_by);
+$start_date= $roleData->start_date;
+$end_date= $roleData->end_date;
+$res = $db->addRole($role_name,$role_desc,$status,$date_created,$created_by,$start_date,$end_date);
 if ($res) 
 {
   $response["error"] = false;
@@ -756,7 +769,7 @@ echoRespnse(201, $response);
 	 * Updating Role
      * url - /updateRole
      * method - PUT
-     * params -id,role_name,role_desc,last_updated,updated_by
+     * params -id,role_name,role_desc,last_updated,updated_by,start_date,end_date
  */
 	$app->post('/updateRole',  function() use($app) {
 	$db = new DataDAO();
@@ -769,7 +782,9 @@ echoRespnse(201, $response);
 	$role_desc = $roleData->role_desc;
 	$last_updated= $roleData->last_updated;
 	$updated_by= $roleData->updated_by;
-	$result = $db->updateRole($id,$role_name,$role_desc,$last_updated,$updated_by);
+	$start_date= $roleData->start_date;
+	$end_date= $roleData->end_date;
+	$result = $db->updateRole($id,$role_name,$role_desc,$last_updated,$updated_by,$start_date,$end_date);
 	
 	if ($result) 
 	{
@@ -847,7 +862,7 @@ $app->post('/deleteRole',  function() use($app) {
  * Adding Clients
  * url - /addClients
  * method - POST
- * params -client_name,website_url,pan,gstn,registered_address,mailing_address,managing_director,contact_person,phone_number,email_id,company_id,date_created,created_by,status
+ * params -client_name,website_url,pan,gstn,registered_address,mailing_address,managing_director,contact_person,phone_number,email_id,company_id,date_created,created_by,status,start_date,end_date
 */
 				$app->post('/addClients', function() use ($app) {
 					$response = array();
@@ -870,7 +885,9 @@ $app->post('/deleteRole',  function() use($app) {
 					$date_created= $clientData->date_created;
 					$created_by= $clientData->created_by;
 					$status = 1;
-					$res = $db->addClients($client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$status,$date_created,$created_by);
+					$start_date= $clientData->start_date;
+					$end_date= $clientData->end_date;
+					$res = $db->addClients($client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$status,$date_created,$created_by,$start_date,$end_date);
 					if ($res)
 					{
 						$response["error"] = false;
@@ -910,8 +927,12 @@ $app->post('/deleteRole',  function() use($app) {
 						$company_id = $clientData->company_id;
 						$last_updated= $clientData->last_updated;
 						$updated_by=$clientData->updated_by;
+						$start_date= $clientData->start_date;
+						$end_date= $clientData->end_date;
+						$start_date= $clientData->start_date;
+						$end_date= $clientData->end_date;
 						//$status = 1;
-						$res = $db->updateClients($id,$client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$last_updated,$updated_by);
+						$res = $db->updateClients($id,$client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$last_updated,$updated_by,$start_date,$end_date);
 						if ($res)
 						{
 							$response["error"] = false;
@@ -1126,7 +1147,7 @@ $app->post('/deleteRole',  function() use($app) {
  	* Adding Modules
  	* url - /addModules
  	* method - POST
- 	* params-module_name,status,company_id,project_id,date_created,created_by
+ 	* params-module_name,status,company_id,project_id,date_created,created_by,start_date,end_date
  */
  					$app->post('/addModules', function() use ($app) {
  						$response = array();
@@ -1140,9 +1161,10 @@ $app->post('/deleteRole',  function() use($app) {
  						$project_id = $ModuletData->project_id;
  						$date_created= $ModuletData->date_created;
  						$created_by= $ModuletData->created_by;
+ 						$start_date= $ModuletData->start_date;
+ 						$end_date= $ModuletData->end_date;
  						
- 						
- 						$res = $db->addModules($module_name,$status,$company_id,$project_id,$date_created,$created_by);
+ 						$res = $db->addModules($module_name,$status,$company_id,$project_id,$date_created,$created_by,$start_date,$end_date);
  						if ($res)
  						{
  							$response["error"] = false;
@@ -1174,8 +1196,10 @@ $app->post('/deleteRole',  function() use($app) {
  							$project_id = $ModuletData->project_id;
  							$last_updated= $ModuletData->last_updated;
  							$updated_by= $ModuletData->updated_by;
+ 							$start_date= $ModuletData->start_date;
+ 							$end_date= $ModuletData->end_date;
  							
- 							$result = $db->updateModule($id,$module_name,$company_id,$project_id,$last_updated,$updated_by);
+ 							$result = $db->updateModule($id,$module_name,$company_id,$project_id,$last_updated,$updated_by,$start_date,$end_date);
  							
  							if ($result)
  							{
@@ -1250,7 +1274,7 @@ $app->post('/deleteRole',  function() use($app) {
  		 * Adding Team
  		 * url - /addTeams
  		 * method - POST
- 		 * params-team_name,status,company_id,project_id,date_created,created_by
+ 		 * params-team_name,status,company_id,date_created,created_by,start_date,end_date
  		 */
  		$app->post('/addTeams', function() use ($app) {
  			$response = array();
@@ -1261,12 +1285,13 @@ $app->post('/deleteRole',  function() use($app) {
  			$team_name = $TeamData->team_name;
  			$status = 1;
  			$company_id =$TeamData->company_id;
- 			$project_id = $TeamData->project_id;
+ 			//$project_id = $TeamData->project_id;
  			$date_created= $TeamData->date_created;
  			$created_by= $TeamData->created_by;
+ 			$start_date= $TeamData->start_date;
+ 			$end_date= $TeamData->end_date;
  			
- 			
- 			$res = $db->addTeams($team_name,$status,$company_id,$project_id,$date_created,$created_by);
+ 			$res = $db->addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date);
  			if ($res)
  			{
  				$response["error"] = false;
@@ -1294,11 +1319,13 @@ $app->post('/deleteRole',  function() use($app) {
  							$team_name = $TeamData->team_name;
  							//$status = 1;
  							$company_id =$TeamData->company_id;
- 							$project_id = $TeamData->project_id;
+ 							//$project_id = $TeamData->project_id;
  							$last_updated= $TeamData->last_updated;
  							$updated_by= $TeamData->updated_by;
+ 							$start_date= $TeamData->start_date;
+ 							$end_date= $TeamData->end_date;
  							
- 							$result = $db->updateTeam($id,$team_name,$company_id,$project_id,$last_updated,$updated_by);
+ 							$result = $db->updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date);
  							
  							if ($result)
  							{
@@ -1384,11 +1411,13 @@ $app->post('/deleteRole',  function() use($app) {
  			$status = 1;
  			$company_id =$TeamMemData->company_id;
  			$isteamlead = $TeamMemData->isteamlead;
+ 			$start_date = $TeamMemData->start_date;
+ 			$end_date = $TeamMemData->end_date; 
  			$date_created= $TeamMemData->date_created;
  			$created_by= $TeamMemData->created_by;
  			
  			
- 			$res = $db->addTeamMembers($user_id,$project_id,$status,$company_id,$isteamlead,$date_created,$created_by);
+ 			$res = $db->addTeamMembers($user_id,$project_id,$status,$company_id,$isteamlead,$start_date,$end_date,$date_created,$created_by);
  			if ($res)
  			{
  				$response["error"] = false;
@@ -1403,7 +1432,7 @@ $app->post('/deleteRole',  function() use($app) {
 		
 /**
  * Updating Team
- * url - /updateTeam
+ * url - /updateTeamMembers
  * method - PUT
   * params -id
 */
@@ -1418,10 +1447,12 @@ $app->post('/deleteRole',  function() use($app) {
 							$project_id = $TeamMemData->project_id;
 							$company_id =$TeamMemData->company_id;
 							$isteamlead = $TeamMemData->isteamlead;
+							$start_date = $TeamMemData->start_date;
+							$end_date = $TeamMemData->end_date; 
 							$last_updated= $TeamMemData->last_updated;
 							$updated_by= $TeamMemData->updated_by;
  							
- 							$result = $db->updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$last_updated,$updated_by);
+							$result = $db->updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$start_date,$end_date,$last_updated,$updated_by);
  							
  							if ($result)
  							{
@@ -1627,6 +1658,7 @@ $app->post('/deleteRole',  function() use($app) {
 //***************************************************************Forgot Password*************************************************************************************************************************************************//	
 
 
+ 		
    /**
  * User Login
  * url - /login
@@ -1639,19 +1671,22 @@ $app->post('/deleteRole',  function() use($app) {
 			$users = $userDetails->ForgotPasswordInfo;
 			$forgotPasswordData = json_decode($users);			
 	        $email_id = $forgotPasswordData->EmailID;
+			$current_time = $forgotPasswordData->current_time;
+			$res = $db->forgotPassword($email_id,$current_time);
 			$status = 1;
-			$res = $db->getPassword($email_id, $status);
-	        $salt ="*ISoftcons_Office_Suite*";
-            $pwd = $db->simple_decrypt($res[0]["password"], $salt);
+			//$res = $db->getPassword($email_id, $status);
+	        //$salt ="*ISoftcons_Office_Suite*";
+            //$pwd = $db->simple_decrypt($res[0]["password"], $salt);
             $response = array();
             if ($res) {
 				/*************** Mail Function Begins ***************/
 				//$Id=$result[0]["id"];
 				//$Username=$result[0]["user_name"];
-				/*$sendmail = new Mailer();
+				$sendmail = new Mailer();
 				$subject = "SOS - Forgot Password";
-				$content = "Dear ".$res[0]['first_name'].",<br><br><span>Your Password for EmailID <b>$email_id</b> is <b>".$pwd."</b></span>";
-					$to = $email_id;
+				//$content = "Dear ".$res[0]['first_name'].",<br><br><span>Your Password for EmailID <b>$email_id</b> is <b>".$pwd."</b></span>";
+				$content = "Dear ".$res[0]['first_name'].",<br><br><a href='http://106.51.72.111:8083/SoftconsSuiteRestService/#forgotPassword/".$res[0]['id']."'>Click here to reset your password.</a><br><br><span style='color:#ff0000;font-weight:bold;'>Note: This reset password link is valid for 1 hour.</span>";
+				$to = $email_id;
 				$mailresult = $sendmail->sendMail($subject,$content,$to);
 				if($mailresult == "Message sent!"){
 					   $response["error"] = false;
@@ -1660,7 +1695,7 @@ $app->post('/deleteRole',  function() use($app) {
 				else{
 				   $response["error"] = true;
 				   $response["message"] = "Oops! Error Occured please try again!";
-				}*/
+				}		
 				/*************** Mail Function Ends ***************/					
                 // get the user by email
 				$response['error'] = true;
@@ -1672,8 +1707,48 @@ $app->post('/deleteRole',  function() use($app) {
                 $response['message'] = 'Invalid EmailID';
                 //returnJSONData($app,$response);
             }
-			echoRespnse(201, $res);
+			echoRespnse(201, $response);
         });   	
+		
+$app->post('/changePassword',  function() use($app) {
+    $db = new DataDAO();
+//$aes= new AES();
+    $response = array();
+    
+                   // $user = json_decode($app->request->post('user'));
+					$changePasswordDetails = json_decode(file_get_contents("php://input"));
+					$changePasswords = $changePasswordDetails->ChangePasswordInfo;
+					$changePasswordData = json_decode($changePasswords);			
+					$id = $changePasswordData->UserID;				   
+					$password = $changePasswordData->NewPassword;
+					$current_time = $changePasswordData->current_time;
+
+			$salt ="*ISoftcons_Office_Suite*";
+            $pwd = $db->simple_encrypt($password, $salt);
+
+	//$password=$user->password;
+	//$current_time=$user->current_time;
+       //#Encrypt
+        //$encrypted = $aes->encrypt($password);   
+       // #Decrypt
+        //$decrypted = $aes->decrypt($encrypted);    
+        //$updated_by = $user->updated_by;
+	
+        	$result = $db->changePassword($id, $pwd, $current_time);
+                  if ($result) {
+                      $response["error"] = false;
+                      $response["message"] = "Password Updated Successfully";
+                  } else if ($result) {
+                      $response["error"] = true;
+                      $response["message"] = "Oops! An error occurred while updating Password";
+                  } else if ($result == "Password Link Expired") {
+                      $response["error"] = true;
+                      $response["message"] = "Oops! Password Activation Link Expired";
+                  }
+        // echo json response
+            echoRespnse(201, $result);
+});		
+	
 	
 					
 		

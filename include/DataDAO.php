@@ -304,7 +304,7 @@ class DataDAO extends AbstractDAO {
     //***************************************************************Department***********************************************************************************************//
     /**
      * Adding Department
-     * params-company_id,department_name,status,date_created,created_by
+     * params-company_id,department_name,department_head,department_location,department_function,department_members,status,date_created,created_by,start_date,end_date
      **/
     
     public function addDepartment($company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$status,$date_created,$created_by,$start_date,$end_date)
@@ -338,12 +338,12 @@ class DataDAO extends AbstractDAO {
      * method - PUT
      * params -id
      */
-    public static function updateDepartment($id,$company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$last_updated,$updated_by)
+    public static function updateDepartment($id,$company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$last_updated,$updated_by,$start_date,$end_date)
     {
     	try{
-    		$query="UPDATE  uni_department SET company_id=:company_id,department_name=:department_name,department_head=:department_head,department_location=:department_location,department_function=:department_function,department_members=:department_members,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+    		$query="UPDATE  uni_department SET company_id=:company_id,department_name=:department_name,department_head=:department_head,department_location=:department_location,department_function=:department_function,department_members=:department_members,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
     		
-    		$rslt= self::updateQuery($query,array("id"=>$id,"company_id"=>$company_id,"department_name"=>$department_name,"department_head"=>$department_head,"department_location"=>$department_location,"department_function"=>$department_function,"department_members"=>$department_members,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+    		$rslt= self::updateQuery($query,array("id"=>$id,"company_id"=>$company_id,"department_name"=>$department_name,"department_head"=>$department_head,"department_location"=>$department_location,"department_function"=>$department_function,"department_members"=>$department_members,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
     		if ($rslt) {
     			
     			return $rslt;
@@ -422,19 +422,19 @@ class DataDAO extends AbstractDAO {
     //***************************************************************Users****************************************************************************************************//
     /**
      * Adding new User
-     * params-first_name,last_name,company_id,email_id,password,user_address,phone_no,role_id,status,date_created,created_by,position,department_id,position
+     * params-first_name,last_name,company_id,email_id,password,user_address,phone_no,role_id,department_id,status,date_created,created_by,password_activation,password_link_timestamp,version,position,start_date,end_date
      **/
-    public function addUser($first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$status,$date_created,$created_by,$department_id,$position)
+    public function addUser($first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$status,$date_created,$created_by,$department_id,$position,$start_date,$end_date)
     {
     	$response = array();
     	
     	try
     	{
-    		$query="INSERT INTO uni_user_master(first_name,last_name,company_id,email_id,password,user_address,phone_no,role_id,status,date_created,created_by,department_id,position)
-            VALUES(:first_name,:last_name,:company_id,:email_id,:password,:user_address,:phone_no,:role_id,:status,:date_created,:created_by,:department_id,:position)";
+    		$query="INSERT INTO uni_user_master(first_name,last_name,company_id,email_id,password,user_address,phone_no,role_id,status,date_created,created_by,department_id,position,start_date,end_date)
+            VALUES(:first_name,:last_name,:company_id,:email_id,:password,:user_address,:phone_no,:role_id,:status,:date_created,:created_by,:department_id,:position,:start_date,:end_date)";
     		
     		$bind_array=array("first_name"=>$first_name,"last_name"=>$last_name,"company_id"=>$company_id,"email_id"=>$email_id,"password"=>$password,
-    				"user_address"=>$user_address,"phone_no"=>$phone_no,"role_id"=>$role_id,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"department_id"=>$department_id,"position"=>$position);
+    				"user_address"=>$user_address,"phone_no"=>$phone_no,"role_id"=>$role_id,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"department_id"=>$department_id,"position"=>$position,"start_date"=>$start_date,"end_date"=>$end_date);
     		
     		$rslt=self::insertQuery($query,$bind_array);
     		if ($rslt)
@@ -458,14 +458,14 @@ class DataDAO extends AbstractDAO {
      * method - PUT
      * params -id
      */
-    public static function updateUser($id,$first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$last_updated,$updated_by,$department_id,$position)
+    public static function updateUser($id,$first_name,$last_name,$company_id,$email_id,$password,$user_address,$phone_no,$role_id,$last_updated,$updated_by,$department_id,$position,$start_date,$end_date)
     {
     	try{
     		$query="UPDATE  uni_user_master SET first_name=:first_name,last_name=:last_name,company_id=:company_id,email_id=:email_id,password=:password,
-                    user_address=:user_address,phone_no=:phone_no,role_id=:role_id,last_updated=:last_updated,updated_by=:updated_by,department_id=:department_id,position=:position WHERE id=:id";
+                    user_address=:user_address,phone_no=:phone_no,role_id=:role_id,last_updated=:last_updated,updated_by=:updated_by,department_id=:department_id,position=:position,start_date=:start_date,end_date=:end_date WHERE id=:id";
     		
     		$rslt= self::updateQuery($query,array("id"=>$id,"first_name"=>$first_name,"last_name"=>$last_name,"company_id"=>$company_id,"email_id"=>$email_id,"password"=>$password,
-    				"user_address"=>$user_address,"phone_no"=>$phone_no,"role_id"=>$role_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"department_id"=>$department_id,"position"=>$position));
+    				"user_address"=>$user_address,"phone_no"=>$phone_no,"role_id"=>$role_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"department_id"=>$department_id,"position"=>$position,"start_date"=>$start_date,"end_date"=>$end_date));
     		if ($rslt) {
     			
     			return $rslt;
@@ -546,17 +546,17 @@ class DataDAO extends AbstractDAO {
     
 /**
    * Adding new role
-   * params -role_name,role_desc,status,date_created,last_updated,created_by,updated_by
+   * params -role_name,role_desc,status,date_created,created_by,start_date,end_date
 **/
-    public function addRole($role_name,$role_desc,$status,$date_created,$created_by)
+    public function addRole($role_name,$role_desc,$status,$date_created,$created_by,$start_date,$end_date)
     {
     $response = array();
 
     try 
     {
-     $query="INSERT INTO uni_role(role_name,role_desc,status,date_created,created_by)VALUES(:role_name,:role_desc,:status,:date_created,:created_by)";
+     $query="INSERT INTO uni_role(role_name,role_desc,status,date_created,created_by,start_date,end_date)VALUES(:role_name,:role_desc,:status,:date_created,:created_by,:start_date,:end_date)";
      
-     $bind_array=array("role_name"=>$role_name,"role_desc"=>$role_desc,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+     $bind_array=array("role_name"=>$role_name,"role_desc"=>$role_desc,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
      
      $rslt=self::insertQuery($query,$bind_array);
      if ($rslt) 
@@ -582,11 +582,11 @@ class DataDAO extends AbstractDAO {
      * method - PUT
      * params -id
  */
-   public static function updateRole($id,$role_name,$role_desc,$last_updated,$updated_by)
+   public static function updateRole($id,$role_name,$role_desc,$last_updated,$updated_by,$start_date,$end_date)
    {
    	try{
-   		$query="UPDATE  uni_role SET role_name=:role_name,role_desc=:role_desc,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
-   		$rslt= self::updateQuery($query,array("id"=>$id,"role_name"=>$role_name,"role_desc"=>$role_desc,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$query="UPDATE  uni_role SET role_name=:role_name,role_desc=:role_desc,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
+   		$rslt= self::updateQuery($query,array("id"=>$id,"role_name"=>$role_name,"role_desc"=>$role_desc,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
    		if ($rslt) {
    			// User successfully inserted
    			return $rslt;
@@ -668,17 +668,17 @@ class DataDAO extends AbstractDAO {
    
    /**
     * Adding new Client
-    * params -client_name,company_id,website_url,pan,gstn,regisered_address,managing_director,mailing_address,contact_person,phone_number,email_id,status,date_created,created_by
+    * params -client_name,company_id,website_url,pan,gstn,regisered_address,managing_director,mailing_address,contact_person,phone_number,email_id,status,date_created,created_by,start_date,end_date
     **/
-   public function addClients($client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$status,$date_created,$created_by)
+   public function addClients($client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$status,$date_created,$created_by,$start_date,$end_date)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_client_master(client_name,company_id,website_url,pan,gstn,registered_address,managing_director,mailing_address,contact_person,phone_number,email_id,status,date_created,created_by)VALUES(:client_name,:company_id,:website_url,:pan,:gstn,:registered_address,:managing_director,:mailing_address,:contact_person,:phone_number,:email_id,:status,:date_created,:created_by)";
+   		$query="INSERT INTO uni_client_master(client_name,company_id,website_url,pan,gstn,registered_address,managing_director,mailing_address,contact_person,phone_number,email_id,status,date_created,created_by,start_date,end_date)VALUES(:client_name,:company_id,:website_url,:pan,:gstn,:registered_address,:managing_director,:mailing_address,:contact_person,:phone_number,:email_id,:status,:date_created,:created_by,:start_date,:end_date)";
    		
-   		$bind_array=array("client_name"=>$client_name,"company_id"=>$company_id,"website_url"=>$website_url,"pan"=>$pan,"gstn"=>$gstn,"registered_address"=>$registered_address,"managing_director"=>$managing_director,"mailing_address"=>$mailing_address,"contact_person"=>$contact_person,"phone_number"=>$phone_number,"email_id"=>$email_id,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("client_name"=>$client_name,"company_id"=>$company_id,"website_url"=>$website_url,"pan"=>$pan,"gstn"=>$gstn,"registered_address"=>$registered_address,"managing_director"=>$managing_director,"mailing_address"=>$mailing_address,"contact_person"=>$contact_person,"phone_number"=>$phone_number,"email_id"=>$email_id,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -704,11 +704,11 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateClients($id,$client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$last_updated,$updated_by)
+   public static function updateClients($id,$client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$last_updated,$updated_by,$start_date,$end_date)
    {
    	try{
-   		$query="UPDATE  uni_client_master SET client_name='$client_name',company_id='$company_id',website_url='$website_url',pan='$pan',gstn='$gstn',registered_address='$registered_address',managing_director='$managing_director',mailing_address='$mailing_address',contact_person='$contact_person',phone_number='$phone_number',email_id='$email_id',last_updated='$last_updated',updated_by='$updated_by' WHERE id='$id'";
-   		$rslt= self::updateQuery($query,array("id"=>$id,"client_name"=>$client_name,"company_id"=>$company_id,"website_url"=>$website_url,"pan"=>$pan,"gstn"=>$gstn,"registered_address"=>$registered_address,"managing_director"=>$managing_director,"mailing_address"=>$mailing_address,"contact_person"=>$contact_person,"phone_number"=>$phone_number,"email_id"=>$email_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$query="UPDATE  uni_client_master SET client_name='$client_name',company_id='$company_id',website_url='$website_url',pan='$pan',gstn='$gstn',registered_address='$registered_address',managing_director='$managing_director',mailing_address='$mailing_address',contact_person='$contact_person',phone_number='$phone_number',email_id='$email_id',last_updated='$last_updated',updated_by='$updated_by',start_date='$start_date',end_date='$end_date' WHERE id='$id'";
+   		$rslt= self::updateQuery($query,array("id"=>$id,"client_name"=>$client_name,"company_id"=>$company_id,"website_url"=>$website_url,"pan"=>$pan,"gstn"=>$gstn,"registered_address"=>$registered_address,"managing_director"=>$managing_director,"mailing_address"=>$mailing_address,"contact_person"=>$contact_person,"phone_number"=>$phone_number,"email_id"=>$email_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>'$start_date',"end_date"=>'$end_date'));
    		if ($rslt) {
    			return $rslt;
    		} else {
@@ -901,18 +901,18 @@ class DataDAO extends AbstractDAO {
    //***************************************************************Module*********************************************************************************************************//
    /**
     * Adding Module
-    * params-module_name,status,company_id,project_id,date_created,created_by
+    * params-module_name,status,company_id,project_id,date_created,created_by,start_date,end_date
     **/
    
-   public function addModules($module_name,$status,$company_id,$project_id,$date_created,$created_by)
+   public function addModules($module_name,$status,$company_id,$project_id,$date_created,$created_by,$start_date,$end_date)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_module(module_name,status,company_id,project_id,date_created,created_by)VALUES(:module_name,:status,:company_id,:project_id,:date_created,:created_by)";
+   		$query="INSERT INTO uni_module(module_name,status,company_id,project_id,date_created,created_by,start_date,end_date)VALUES(:module_name,:status,:company_id,:project_id,:date_created,:created_by,:start_date,:end_date)";
    		
-   		$bind_array=array("module_name"=>$module_name,"status"=>$status,"company_id"=>$company_id,"project_id"=>$project_id,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("module_name"=>$module_name,"status"=>$status,"company_id"=>$company_id,"project_id"=>$project_id,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -935,12 +935,12 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateModule($id,$module_name,$company_id,$project_id,$last_updated,$updated_by)
+   public static function updateModule($id,$module_name,$company_id,$project_id,$last_updated,$updated_by,$start_date,$end_date)
    {
    	try{
-   		$query="UPDATE  uni_module SET module_name=:module_name,company_id=:company_id,	project_id=:project_id,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		$query="UPDATE  uni_module SET module_name=:module_name,company_id=:company_id,	project_id=:project_id,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"module_name"=>$module_name,"company_id"=>$company_id,"project_id"=>$project_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"module_name"=>$module_name,"company_id"=>$company_id,"project_id"=>$project_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
    		if ($rslt) {
    			
    			return $rslt;
@@ -1017,18 +1017,18 @@ class DataDAO extends AbstractDAO {
    //***************************************************************Team*********************************************************************************************************//
    /**
     * Adding Team
-    * params-team_name,status,company_id,project_id,date_created,created_by
+    * params-team_name,status,company_id,date_created,created_by,start_date,end_date
     **/
    
-   public function addTeams($team_name,$status,$company_id,$project_id,$date_created,$created_by)
+   public function addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO  uni_team(team_name,status,company_id,project_id,date_created,created_by)VALUES(:team_name,:status,:company_id,:project_id,:date_created,:created_by)";
+   		$query="INSERT INTO  uni_team(team_name,status,company_id,date_created,created_by,start_date,end_date)VALUES(:team_name,:status,:company_id,:date_created,:created_by,:start_date,:end_date)";
    		
-   		$bind_array=array("team_name"=>$team_name,"status"=>$status,"company_id"=>$company_id,"project_id"=>$project_id,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("team_name"=>$team_name,"status"=>$status,"company_id"=>$company_id,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -1051,12 +1051,12 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateTeam($id,$team_name,$company_id,$project_id,$last_updated,$updated_by)
+   public static function updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date)
    {
    	try{
-   		$query="UPDATE  uni_team SET team_name=:team_name,company_id=:company_id,project_id=:project_id,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		$query="UPDATE  uni_team SET team_name=:team_name,company_id=:company_id,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"team_name"=>$team_name,"company_id"=>$company_id,"project_id"=>$project_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"team_name"=>$team_name,"company_id"=>$company_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
    		if ($rslt) {
    			
    			return $rslt;
@@ -1135,15 +1135,15 @@ class DataDAO extends AbstractDAO {
     * params-user_id,project_id,status,company_id,isteamlead,date_created,created_by
     **/
    
-   public function addTeamMembers($user_id,$project_id,$status,$company_id,$isteamlead,$date_created,$created_by)
+   public function addTeamMembers($user_id,$project_id,$status,$company_id,$isteamlead,$start_date,$end_date,$date_created,$created_by)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_team_members(user_id,project_id,status,company_id,isteamlead,date_created,created_by)VALUES(:user_id,:project_id,:status,:company_id,:isteamlead,:date_created,:created_by)";
+   		$query="INSERT INTO uni_team_members(user_id,project_id,status,company_id,isteamlead,start_date,end_date,date_created,created_by)VALUES(:user_id,:project_id,:status,:company_id,:isteamlead,:start_date,:end_date,:date_created,:created_by)";
    		
-   		$bind_array=array("user_id"=>$user_id,"project_id"=>$project_id,"status"=>$status,"company_id"=>$company_id,"isteamlead"=>$isteamlead,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("user_id"=>$user_id,"project_id"=>$project_id,"status"=>$status,"company_id"=>$company_id,"isteamlead"=>$isteamlead,"start_date"=>$start_date,"end_date"=>$end_date,"date_created"=>$date_created,"created_by"=>$created_by);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -1167,12 +1167,12 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$last_updated,$updated_by)
+   public static function updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$start_date,$end_date,$last_updated,$updated_by)
    {
    	try{
-   		$query="UPDATE  uni_team_members SET user_id=:user_id,isteamlead=:isteamlead,company_id=:company_id,project_id=:project_id,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		$query="UPDATE  uni_team_members SET user_id=:user_id,isteamlead=:isteamlead,start_date=:start_date,end_date=:end_date,company_id=:company_id,project_id=:project_id,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"user_id"=>$user_id,"isteamlead"=>$isteamlead,"company_id"=>$company_id,"project_id"=>$project_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"user_id"=>$user_id,"isteamlead"=>$isteamlead,"start_date"=>$start_date,"end_date"=>$end_date,"company_id"=>$company_id,"project_id"=>$project_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
    		if ($rslt) {
    			
    			return $rslt;
@@ -1375,6 +1375,70 @@ class DataDAO extends AbstractDAO {
    
    
 //***************************************************************Forgot Password*********************************************************************************************************//   
+
+   
+   
+   /**
+    *
+    * Forgot Password
+    * @param emailid
+    */
+   public static function forgotPassword($email_id,$password_link_timestamp)
+   {
+   	$query="UPDATE uni_user_master SET password_activation=1,password_link_timestamp=:password_link_timestamp WHERE email_id=:email_id";
+   	$rslt= self::updateQuery($query,array("email_id"=>$email_id,"password_link_timestamp"=>$password_link_timestamp));
+   	
+   	$query="select * from uni_user_master where email_id=:email_id";
+   	$rslt = self::fetchQuery($query,array("email_id"=>$email_id));
+   	if(sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else{
+   		return NULL;
+   	}
+   	
+   }
+   
+   /**
+    *
+    * Change Password
+    * @param id,password,update_by
+    */
+   public static function changePassword($id,$password,$current_time)
+   {
+   	try{
+   		$query="select password_link_timestamp from uni_user_master where id=$id AND password_activation=1";
+   		$result = self::fetchQuery($query,array("id"=>$id));
+   		if($result){
+   			$date1=date_create($current_time);
+   			$date2=date_create($result[0]["password_link_timestamp"]);
+   			$diff=date_diff($date1,$date2);
+   			if($diff->format("%h") < 1){
+   				$query="UPDATE uni_user_master SET password=:password,password_activation=0 WHERE id=:id";
+   				$rslt= self::updateQuery($query,array("id"=>$id,"password"=>$password));
+   				if ($rslt) {
+   					// User successfully inserted
+   					return "Password Updated Succesfully";
+   				} else {
+   					// Failed to create user
+   					return "Password Not Updated";
+   				}
+   			}
+   			else{
+   				return "Password Link Expired";
+   			}
+   		}
+   		else{
+   			return "Password Link Expired";
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   
    
      /**
      * Creating new user 
@@ -1413,7 +1477,7 @@ class DataDAO extends AbstractDAO {
      */
     public static function getPassword($email_id, $status)
     {
-		$query = "select * FROM uni_user_master WHERE email_id='$email_id' AND status=$status";
+		$query = "select * FROM uni_user_master WHERE email_id='$email_id' AND status='$status'";
 		$rslt = self::fetchQuery($query,array("email_id"=>$email_id,"status"=>$status));
         if(sizeof($rslt))
         {
