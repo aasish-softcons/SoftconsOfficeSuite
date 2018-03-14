@@ -13,8 +13,8 @@
  */
 class MailConfiguration{
     public static $mailconfig = array(
-        'Host' => 'smtp.gmail.com',
-        'Port' => '587',
-        'Username' => 'abc@softcons.net',
-        'Password' => '123456');
+    		'Host' => 'smtp.office365.com',
+    		'Port' => '587',
+    		'Username' => 'support@softcons.net',
+    		'Password' => 'Softcons@123');
 }

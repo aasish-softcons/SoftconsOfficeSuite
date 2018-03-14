@@ -420,7 +420,8 @@ $app->post('/login', function() use ($app) {
 			//$version = $companyData->version;
 			//$amount_paid = $companyData->amount_paid;
 			//$date_created = $companyData->date_created;
-			$last_updated = $companyData->last_updated;
+			//$last_updated = $companyData->last_updated;
+			$last_updated = $db->ISTConversion();
 			$nominal_flag = $companyData->nominal_flag;
 			//$created_by = $companyData->created_by;
 			$updated_by = $companyData->updated_by;
@@ -468,11 +469,11 @@ $app->post('/login', function() use ($app) {
 			$department_function = $DepartmentData->department_function;
 			$department_members = $DepartmentData->department_members;
 			$status = 1;
-			$date_created= $DepartmentData->date_created;
+			//$date_created= $DepartmentData->date_created;
 			$created_by= $DepartmentData->created_by;
 			$start_date= $DepartmentData->start_date;
 			$end_date= $DepartmentData->end_date;
-			
+			$date_created = $db->ISTConversion();
 			$res = $db->addDepartment($company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$status,$date_created,$created_by,$start_date,$end_date);
 			if ($res)
 			{
@@ -506,7 +507,8 @@ $app->post('/login', function() use ($app) {
 				$department_location = $DepartmentData->department_location;
 				$department_function = $DepartmentData->department_function;
 				$department_members = $DepartmentData->department_members;				
-				$last_updated=$DepartmentData->last_updated;
+				//$last_updated=$DepartmentData->last_updated;
+				$last_updated = $db->ISTConversion();
 				$updated_by= $DepartmentData->updated_by;
 				$start_date= $DepartmentData->start_date;
 				$end_date= $DepartmentData->end_date;
@@ -579,6 +581,27 @@ $app->post('/login', function() use ($app) {
 			echoRespnse(201, $res);
 			}
 		});
+	
+	
+/**
+		 * Fetching Department List based on the company_id
+		 * url-/getAllDepartmentByCId
+		 * method - GET by company_id
+		 * params - id
+ */
+		$app->get('/getAllDepartmentByCId/:company_id',function($company_id) use($app){
+			$db = new DataDAO();
+			$cDate = $db->ISTConversion();
+			$res = $db->getAllDepartmentByCId($company_id,$cDate);
+			if(sizeof($res))
+			{
+				echoRespnse(201, $res);
+			}
+			;
+		});
+			
+
+
 							
 //***************************************************************Users********************************************************************************************************//
 	/**
@@ -603,7 +626,8 @@ $app->post('/login', function() use ($app) {
 			$role_id=$userData->role_id;
 			//$department_id=$userData->department_id;
 			$status = 1;
-			$date_created= $userData->date_created;
+			//$date_created= $userData->date_created;
+			$date_created = $db->ISTConversion();
 			$created_by= $userData->created_by;
 			//$password_activation=1;
 			//$password_link_timestamp=$userData->password_link_timestamp;
@@ -654,7 +678,8 @@ $app->post('/login', function() use ($app) {
 				$user_address=$userData->user_address;
 				$phone_no=$userData->phone_no;
 				$role_id=$userData->role_id;
-				$last_updated= $userData->last_updated;
+				//$last_updated= $userData->last_updated;
+				$last_updated = $db->ISTConversion();
 				$updated_by= $userData->updated_by;
 				$department_id= $userData->department_id;
 				$position= $userData->position;
@@ -731,6 +756,24 @@ $app->post('/login', function() use ($app) {
 			});
 				
 			
+/**
+	* Fetching User List based on the company_id
+    * url-/getAllUserByCId
+	* method - GET by company_id
+	* params - id
+ */
+				$app->get('/getAllUserByCId/:company_id',function($company_id) use($app){
+					$db = new DataDAO();
+					$cDate = $db->ISTConversion();
+					$res = $db->getAllUserByCId($company_id,$cDate);
+					if(sizeof($res))
+					{
+						echoRespnse(201, $res);
+					}
+			
+				});
+					
+			
 //***************************************************************Role*************************************************//
 /** 
 	 * Adding Role
@@ -747,7 +790,8 @@ $roleData=json_decode($roles);
 $role_name = $roleData->role_name;
 $role_desc = $roleData->role_desc;
 $status = 1;
-$date_created= $roleData->date_created;
+//$date_created= $roleData->date_created;
+$date_created = $db->ISTConversion();
 $created_by= $roleData->created_by;
 $start_date= $roleData->start_date;
 $end_date= $roleData->end_date;
@@ -780,7 +824,8 @@ echoRespnse(201, $response);
 	$id = $roleData->id;
 	$role_name = $roleData->role_name;
 	$role_desc = $roleData->role_desc;
-	$last_updated= $roleData->last_updated;
+	//$last_updated= $roleData->last_updated;
+	$last_updated = $db->ISTConversion();
 	$updated_by= $roleData->updated_by;
 	$start_date= $roleData->start_date;
 	$end_date= $roleData->end_date;
@@ -844,7 +889,7 @@ $app->post('/deleteRole',  function() use($app) {
 		});
 			
 /**
-	* Fetching Users List based on the id
+	* Fetching Roles List based on the id
 	* url-/getUserListById
 	* method - GET by Id
 	* params - id
@@ -857,6 +902,24 @@ $app->post('/deleteRole',  function() use($app) {
 					echoRespnse(201, $res);
 				}
 			});
+			
+/**
+	* Fetching Roles List based on the company_id
+	* url-/getAllRoleByCId
+	* method - GET by company_id
+	* params - id
+ */
+				$app->get('/getAllRoleByCId/:company_id',function($company_id) use($app){
+					$db = new DataDAO();
+					$cDate = $db->ISTConversion();
+					$res = $db->getAllRoleByCId($company_id,$cDate);
+					if(sizeof($res))
+					{
+						echoRespnse(201, $res);
+					}
+					
+				});
+					
 //***************************************************************Clients******************************************************************************//
 /**
  * Adding Clients
@@ -882,7 +945,8 @@ $app->post('/deleteRole',  function() use($app) {
 					$phone_number = $clientData->phone_number;
 					$email_id = $clientData->email_id;
 					$company_id = $clientData->company_id;
-					$date_created= $clientData->date_created;
+					//$date_created= $clientData->date_created;
+					$date_created = $db->ISTConversion();
 					$created_by= $clientData->created_by;
 					$status = 1;
 					$start_date= $clientData->start_date;
@@ -925,7 +989,8 @@ $app->post('/deleteRole',  function() use($app) {
 						$phone_number = $clientData->phone_number;
 						$email_id = $clientData->email_id;						
 						$company_id = $clientData->company_id;
-						$last_updated= $clientData->last_updated;
+						//$last_updated= $clientData->last_updated;
+						$last_updated = $db->ISTConversion();
 						$updated_by=$clientData->updated_by;
 						$start_date= $clientData->start_date;
 						$end_date= $clientData->end_date;
@@ -1003,6 +1068,24 @@ $app->post('/deleteRole',  function() use($app) {
 		echoRespnse(201, $res);
 		}
 	});
+	
+		/**
+		 * Fetching Client List based on the company_id
+		 * url-/getAllClientByCId
+		 * method - GET by company_id
+		 * params - id
+		 */
+		$app->get('/getAllClientByCId/:company_id',function($company_id) use($app){
+			$db = new DataDAO();
+			$cDate = $db->ISTConversion();
+			$res = $db->getAllClientByCId($company_id,$cDate);
+			if(sizeof($res))
+			{
+				echoRespnse(201, $res);
+			}
+			
+		});
+			
  
  //***************************************************************Project*************************************************//
  /**
@@ -1024,7 +1107,8 @@ $app->post('/deleteRole',  function() use($app) {
     $start_date= $projectData->start_date;
  	$end_date= $projectData->end_date;
  	$project_type= $projectData->project_type;
- 	$date_created=$projectData->date_created;
+ //	$date_created=$projectData->date_created;
+ 	$date_created = $db->ISTConversion();
     $status=1;
     $billable_type=$projectData->billable_type;
     $billing_type=$projectData->billing_type;
@@ -1064,7 +1148,8 @@ $app->post('/deleteRole',  function() use($app) {
  		$start_date= $projectData->start_date;
  		$end_date= $projectData->end_date;
  		$project_type= $projectData->project_type;
- 		$last_updated= $projectData->last_updated;
+ 		//$last_updated= $projectData->last_updated;
+ 		$last_updated = $db->ISTConversion();
  		$updated_by=$projectData->updated_by;
  		$team_id=$projectData->team_id;
  		$billable_type=$projectData->billable_type;
@@ -1142,6 +1227,23 @@ $app->post('/deleteRole',  function() use($app) {
  					}
  				});
  				
+ /**
+ 	 * Fetching Project List based on the company_id
+     * url-/getAllProjectByCId
+ 	 * method - GET by company_id
+ 	 * params - id
+  */
+ 					$app->get('/getAllProjectByCId/:company_id',function($company_id) use($app){
+ 						$db = new DataDAO();
+ 						$cDate = $db->ISTConversion();
+ 						$res = $db->getAllProjectByCId($company_id,$cDate);
+ 						if(sizeof($res))
+ 						{
+ 							echoRespnse(201, $res);
+ 						}
+ 						
+ 					});
+ 						
 //***************************************************************Modules*************************************************************************************************************************************************//
  /**
  	* Adding Modules
@@ -1159,7 +1261,8 @@ $app->post('/deleteRole',  function() use($app) {
  						$status = 1;
  						$company_id =$ModuletData->company_id;
  						$project_id = $ModuletData->project_id;
- 						$date_created= $ModuletData->date_created;
+ 						//$date_created= $ModuletData->date_created;
+ 						$date_created = $db->ISTConversion();
  						$created_by= $ModuletData->created_by;
  						$start_date= $ModuletData->start_date;
  						$end_date= $ModuletData->end_date;
@@ -1194,7 +1297,8 @@ $app->post('/deleteRole',  function() use($app) {
  							//$status = 1;
  							$company_id =$ModuletData->company_id;
  							$project_id = $ModuletData->project_id;
- 							$last_updated= $ModuletData->last_updated;
+ 							//$last_updated= $ModuletData->last_updated;
+ 							$last_updated = $db->ISTConversion();
  							$updated_by= $ModuletData->updated_by;
  							$start_date= $ModuletData->start_date;
  							$end_date= $ModuletData->end_date;
@@ -1269,6 +1373,23 @@ $app->post('/deleteRole',  function() use($app) {
  	}
  	});
  	
+ 	/**
+ 		 * Fetching Module List based on the company_id
+ 		 * url-/getAllModuleByCId
+ 		 * method - GET by company_id
+ 		 * params - id
+ 		 */
+ 		$app->get('/getAllModuleByCId/:company_id',function($company_id) use($app){
+ 			$db = new DataDAO();
+ 			$cDate = $db->ISTConversion();
+ 			$res = $db->getAllModuleByCId($company_id,$cDate);
+ 			if(sizeof($res))
+ 			{
+ 				echoRespnse(201, $res);
+ 			}
+ 			
+ 		});
+ 			
  //***************************************************************Team*************************************************************************************************************************************************//
  		/**
  		 * Adding Team
@@ -1286,7 +1407,8 @@ $app->post('/deleteRole',  function() use($app) {
  			$status = 1;
  			$company_id =$TeamData->company_id;
  			//$project_id = $TeamData->project_id;
- 			$date_created= $TeamData->date_created;
+ 			//$date_created= $TeamData->date_created;
+ 			$date_created = $db->ISTConversion();
  			$created_by= $TeamData->created_by;
  			$start_date= $TeamData->start_date;
  			$end_date= $TeamData->end_date;
@@ -1320,7 +1442,8 @@ $app->post('/deleteRole',  function() use($app) {
  							//$status = 1;
  							$company_id =$TeamData->company_id;
  							//$project_id = $TeamData->project_id;
- 							$last_updated= $TeamData->last_updated;
+ 							//$last_updated= $TeamData->last_updated;
+ 							$last_updated = $db->ISTConversion();
  							$updated_by= $TeamData->updated_by;
  							$start_date= $TeamData->start_date;
  							$end_date= $TeamData->end_date;
@@ -1393,6 +1516,23 @@ $app->post('/deleteRole',  function() use($app) {
  	echoRespnse(201, $res);
  	}
  	});	
+ 		/**
+ 		 * Fetching Team List based on the company_id
+ 		 * url-/getAllTeamByCId
+ 		 * method - GET by company_id
+ 		 * params - id
+ 		 */
+ 		$app->get('/getAllTeamByCId/:company_id',function($company_id) use($app){
+ 			$db = new DataDAO();
+ 			$cDate = $db->ISTConversion();
+ 			$res = $db->getAllTeamByCId($company_id,$cDate);
+ 			if(sizeof($res))
+ 			{
+ 				echoRespnse(201, $res);
+ 			}
+ 			
+ 		});
+ 			
 //***************************************************************Team Members*************************************************************************************************************************************************//
  		/**
  		 * Adding TeamMembers
@@ -1413,7 +1553,8 @@ $app->post('/deleteRole',  function() use($app) {
  			$isteamlead = $TeamMemData->isteamlead;
  			$start_date = $TeamMemData->start_date;
  			$end_date = $TeamMemData->end_date; 
- 			$date_created= $TeamMemData->date_created;
+ 			//$date_created= $TeamMemData->date_created;
+ 			$date_created = $db->ISTConversion();
  			$created_by= $TeamMemData->created_by;
  			
  			
@@ -1449,7 +1590,8 @@ $app->post('/deleteRole',  function() use($app) {
 							$isteamlead = $TeamMemData->isteamlead;
 							$start_date = $TeamMemData->start_date;
 							$end_date = $TeamMemData->end_date; 
-							$last_updated= $TeamMemData->last_updated;
+							//$last_updated= $TeamMemData->last_updated;
+							$last_updated = $db->ISTConversion();
 							$updated_by= $TeamMemData->updated_by;
  							
 							$result = $db->updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$start_date,$end_date,$last_updated,$updated_by);
@@ -1522,15 +1664,32 @@ $app->post('/deleteRole',  function() use($app) {
  	{
  	echoRespnse(201, $res);
  	}
- 	});					
-
+ 	});	
+ 	
+ 		/**
+ 		 * Fetching TeamMember List based on the company_id
+ 		 * url-/getAllTeamMemberByCId
+ 		 * method - GET by company_id
+ 		 * params - id
+ 		 */
+ 		$app->get('/getAllTeamMemberByCId/:company_id',function($company_id) use($app){
+ 			$db = new DataDAO();
+ 			$cDate = $db->ISTConversion();
+ 			$res = $db->getAllTeamMemberByCId($company_id,$cDate);
+ 			if(sizeof($res))
+ 			{
+ 				echoRespnse(201, $res);
+ 			}
+ 		
+ 		});
+ 			
 
 //***************************************************************Sprint Plan*************************************************************************************************************************************************//
  		/**
  		 * Adding TeamMembers
  		 * url - /addTeamMembers
  		 * method - POST
- 		 * params-sprint_name,status,company_id,team_id,start_date,end_date,date_created,created_by
+ 		 * params-sprint_name,status,company_id,no_of_timesheets,timesheet_type,start_date,end_date,date_created,created_by
  		 */
  		$app->post('/addSprint', function() use ($app) {
  			$response = array();
@@ -1541,14 +1700,16 @@ $app->post('/deleteRole',  function() use($app) {
  			$status = 1;
 			$sprint_name = $SprintData->sprint_name;
 			$company_id =$SprintData->company_id;
-			$team_id =$SprintData->team_id;
+			$no_of_timesheets =$SprintData->no_of_timesheets;
+			$timesheet_type =$SprintData->timesheet_type;
 			$start_date = $SprintData->start_date;
 			$end_date = $SprintData->end_date;
- 			$date_created= $SprintData->date_created;
+ 			///$date_created= $SprintData->date_created;
+			$date_created = $db->ISTConversion();
  			$created_by= $SprintData->created_by;
  			
  			
- 			$res = $db->addSprint($sprint_name,$status,$company_id,$team_id,$start_date,$end_date,$date_created,$created_by);
+ 			$res = $db->addSprint($sprint_name,$status,$company_id,$no_of_timesheets,$timesheet_type,$start_date,$end_date,$date_created,$created_by);
  			if ($res)
  			{
  				$response["error"] = false;
@@ -1576,13 +1737,15 @@ $app->post('/deleteRole',  function() use($app) {
 							$id = $SprintData->id;
 							$sprint_name = $SprintData->sprint_name;
 							$company_id =$SprintData->company_id;
-							$team_id =$SprintData->team_id;
+							$no_of_timesheets =$SprintData->no_of_timesheets;
+							$timesheet_type =$SprintData->timesheet_type;
 							$start_date = $SprintData->start_date;
 							$end_date = $SprintData->end_date;
-							$last_updated= $SprintData->last_updated;
+							//$last_updated= $SprintData->last_updated;
+							$last_updated = $db->ISTConversion();
 							$updated_by= $SprintData->updated_by;
  							
-							$result = $db->updateSprint($id,$sprint_name,$company_id,$team_id,$start_date,$end_date,$last_updated,$updated_by);
+							$result = $db->updateSprint($id,$sprint_name,$company_id,$no_of_timesheets,$timesheet_type,$start_date,$end_date,$last_updated,$updated_by);
  							
  							if ($result)
  							{
@@ -1653,7 +1816,24 @@ $app->post('/deleteRole',  function() use($app) {
  	echoRespnse(201, $res);
  	}
  	});	
-
+ 	
+ 	/**
+ 		 * Fetching Sprint List based on the company_id
+ 		 * url-/getAllSprintByCId
+ 		 * method - GET by company_id
+ 		 * params - id
+ 		 */
+ 		$app->get('/getAllSprintByCId/:company_id',function($company_id) use($app){
+ 			$db = new DataDAO();
+ 			$cDate = $db->ISTConversion();
+ 			$res = $db->getAllSprintByCId($company_id,$cDate);
+ 			if(sizeof($res))
+ 			{
+ 				echoRespnse(201, $res);
+ 			}
+ 			
+ 		});
+ 			
 
 //***************************************************************Forgot Password*************************************************************************************************************************************************//	
 

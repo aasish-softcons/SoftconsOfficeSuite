@@ -30,6 +30,11 @@ class DataDAO extends AbstractDAO {
         return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
     }	
     
+    public static function ISTConversion()
+    { 
+    	$time = new DateTime('now', new DateTimeZone('Asia/Calcutta'));
+    	return $time->format('Y-m-d H:i:s');
+    }
     
     //***************************************************    Rest API     **********************************************************************************
     /**
@@ -418,6 +423,28 @@ class DataDAO extends AbstractDAO {
     	}
     } 
     
+    /**
+   		 * Fetching Department List based on the company_id
+		 * url-/getAllDepartmentByCId
+		 * method - GET by company_id
+		 * params - id
+     */
+    public function getAllDepartmentByCId($company_id,$cDate) {
+    	//$cDate = ISTConversion();
+
+    	$query = "SELECT * FROM uni_department where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+    	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+    	if (sizeof($rslt))
+    	{
+    		return $rslt;
+    	}
+    	else
+    	{
+    		return NULL;
+    	}
+    	//return $time;
+    } 
+    
     
     //***************************************************************Users****************************************************************************************************//
     /**
@@ -542,6 +569,28 @@ class DataDAO extends AbstractDAO {
     		return NULL;
     	}
     } 
+    
+    /**
+     * Fetching User List based on the company_id
+     * url-/getAllUserByCId
+     * method - GET by company_id
+     * params - id
+     */
+    public function getAllUserByCId($company_id,$cDate) {
+    	
+    	
+    	$query = "SELECT * FROM uni_user_master where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+    	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+    	if (sizeof($rslt))
+    	{
+    		return $rslt;
+    	}
+    	else
+    	{
+    		return NULL;
+    	}
+    	
+    } 
 //***************************************************************Role*********************************************************************************************************//
     
 /**
@@ -662,6 +711,28 @@ class DataDAO extends AbstractDAO {
    	{
    		return NULL;
    	}
+   }
+   
+   /**
+    * Fetching Role List based on the company_id
+    * url-/getAllRoleByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllRoleByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_role where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
    } 
    
    //***************************************************************Clients*********************************************************************************************************//
@@ -781,6 +852,28 @@ class DataDAO extends AbstractDAO {
    		return NULL;
    	}
    } 
+   
+   /**
+    * Fetching Client List based on the company_id
+    * url-/getAllClientByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllClientByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_client_master where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   } 
 //***************************************************************Project*************************************************//
    /**
     * Adding new Project
@@ -867,7 +960,7 @@ class DataDAO extends AbstractDAO {
     * method - GET All
     * params
     */
-  /* public  function getAllProjectList() {
+   public  function getAllProjectList() {
    	$query = "SELECT * FROM uni_project_master";
    	$rslt = self::fetchQuery($query,array());
    	if (sizeof($rslt))
@@ -878,7 +971,7 @@ class DataDAO extends AbstractDAO {
    	{
    		return NULL;
    	}
-   }*/
+   }
    
    /**
     * Fetching Project based on the id
@@ -886,7 +979,7 @@ class DataDAO extends AbstractDAO {
     * method - GET by Id
     * params - id
     */
-  /* public function getProjectListById($id) {
+   public function getProjectListById($id) {
    	$query = "SELECT * FROM uni_project_master where id =:id";
    	$rslt = self::fetchQuery($query,array("id"=>$id));
    	if (sizeof($rslt))
@@ -897,7 +990,29 @@ class DataDAO extends AbstractDAO {
    	{
    		return NULL;
    	}
-   } */
+   } 
+   
+   /**
+    * Fetching Project List based on the company_id
+    * url-/getAllProjectByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllProjectByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_project_master where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   } 
    //***************************************************************Module*********************************************************************************************************//
    /**
     * Adding Module
@@ -1014,6 +1129,28 @@ class DataDAO extends AbstractDAO {
    		return NULL;
    	}
    }
+   
+   /**
+    * Fetching Module List based on the company_id
+    * url-/getAllModuleByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllModuleByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_module where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   } 
    //***************************************************************Team*********************************************************************************************************//
    /**
     * Adding Team
@@ -1129,6 +1266,28 @@ class DataDAO extends AbstractDAO {
    		return NULL;
    	}
    }
+   
+   /**
+    * Fetching Team List based on the company_id
+    * url-/getAllTeamByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllTeamByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_team where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   } 
 //***************************************************************Team Members*********************************************************************************************************//
    /**
     * Adding TeamMembers
@@ -1250,23 +1409,43 @@ class DataDAO extends AbstractDAO {
    	}
    }
 
-
+   /**
+    * Fetching TeamMembers list  based on the company_id
+    * url-/getAllTeamMemberByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllTeamMemberByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_team_members where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   } 
 
 //***************************************************************Sprint Plan*********************************************************************************************************//
    /**
     * Adding Sprint Plan
-    * params-sprint_name,status,company_id,team_id,start_date,end_date,date_created,created_by
+    * params-sprint_name,status,company_id,no_of_timesheets,timesheet_type,start_date,end_date,date_created,created_by
     **/
    
-   public function addSprint($sprint_name,$status,$company_id,$team_id,$start_date,$end_date,$date_created,$created_by)
+   public function addSprint($sprint_name,$status,$company_id,$no_of_timesheets,$timesheet_type,$start_date,$end_date,$date_created,$created_by)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_sprint_plan(sprint_name,status,company_id,team_id,start_date,end_date,date_created,created_by)VALUES(:sprint_name,:status,:company_id,:team_id,:start_date,:end_date,:date_created,:created_by)";
+   		$query="INSERT INTO uni_sprint_plan(sprint_name,status,company_id,no_of_timesheets,timesheet_type,start_date,end_date,date_created,created_by)VALUES(:sprint_name,:status,:company_id,:no_of_timesheets,:timesheet_type,:start_date,:end_date,:date_created,:created_by)";
    		
-   		$bind_array=array("sprint_name"=>$sprint_name,"status"=>$status,"company_id"=>$company_id,"team_id"=>$team_id,"start_date"=>$start_date,"end_date"=>$end_date,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("sprint_name"=>$sprint_name,"status"=>$status,"company_id"=>$company_id,"no_of_timesheets"=>$no_of_timesheets,"timesheet_type"=>$timesheet_type,"start_date"=>$start_date,"end_date"=>$end_date,"date_created"=>$date_created,"created_by"=>$created_by);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -1290,12 +1469,12 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateSprint($id,$sprint_name,$company_id,$team_id,$start_date,$end_date,$last_updated,$updated_by)
+   public static function updateSprint($id,$sprint_name,$company_id,$no_of_timesheets,$timesheet_type,$start_date,$end_date,$last_updated,$updated_by)
    {
    	try{
-   		$query="UPDATE  uni_sprint_plan SET sprint_name=:sprint_name,start_date=:start_date,end_date=:end_date,company_id=:company_id,team_id=:team_id,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		$query="UPDATE  uni_sprint_plan SET sprint_name=:sprint_name,company_id=:company_id,no_of_timesheets=:no_of_timesheets,timesheet_type=:timesheet_type,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"sprint_name"=>$sprint_name,"company_id"=>$company_id,"team_id"=>$team_id,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"sprint_name"=>$sprint_name,"company_id"=>$company_id,"no_of_timesheets"=>$no_of_timesheets,"timesheet_type"=>$timesheet_type,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
    		if ($rslt) {
    			
    			return $rslt;
@@ -1311,7 +1490,7 @@ class DataDAO extends AbstractDAO {
 
 
 
-      /**
+   /**
     * Updating Sprint Plan by Making Status Inactive
     * url - /deleteModule
     * method - PUT
@@ -1355,7 +1534,7 @@ class DataDAO extends AbstractDAO {
    }
    
    /**
-    * Fetching Sprint Plan based on the id
+    * Fetching Sprint Plan list based on the id
     * url-/getSprintListById
     * method - GET by Id
     * params - id
@@ -1372,7 +1551,27 @@ class DataDAO extends AbstractDAO {
    		return NULL;
    	}
    }   
-   
+   /**
+    * Fetching  Sprint Plan list based on the company_id
+    * url-/getAllSprintByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllSprintByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_sprint_plan where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   } 
    
 //***************************************************************Forgot Password*********************************************************************************************************//   
 
@@ -1414,7 +1613,7 @@ class DataDAO extends AbstractDAO {
    			$date1=date_create($current_time);
    			$date2=date_create($result[0]["password_link_timestamp"]);
    			$diff=date_diff($date1,$date2);
-   			if($diff->format("%h") < 1){
+   			if($diff->format("%h") < 48){
    				$query="UPDATE uni_user_master SET password=:password,password_activation=0 WHERE id=:id";
    				$rslt= self::updateQuery($query,array("id"=>$id,"password"=>$password));
    				if ($rslt) {
@@ -1440,35 +1639,35 @@ class DataDAO extends AbstractDAO {
    
    
    
-     /**
-     * Creating new user 
-     * @param String asset_type_id 
-     * @param String field_name,field_type,,created_by,updated_by
-     * 
-     */
-	public function updatePassword($pwd, $user_id)
-    {
-        $response = array();
-        
-        // First check if asset type already existed in db
-            try {
-            	$query="UPDATE uni_user_master SET 	password = '$pwd' where email_id='$email_id'";
-            	$bind_array=array("pwd"=>$pwd,"email_id"=>$email_id);
-                    $rslt=self::updateQuery($query,$bind_array);
-                    if ($rslt) {
-                        // asset type config successfully inserted
-                        //return $rslt;
-						return PASSWORD_UPDATED_SUCCESSFULLY;
-                    } else {
-                        // Failed to create user
-                        //return $rslt;
-						return PASSWORD_UPDATED_FAILED;
-                    }
-                } 
-                catch (PDOException $pde) {
-                    throw $pde;
-                } 
-    }		
+   /**
+    * Creating new user
+    * @param String asset_type_id
+    * @param String field_name,field_type,,created_by,updated_by
+    *
+    */
+   public function updatePassword($pwd, $user_id)
+   {
+   	$response = array();
+   	
+   	// First check if asset type already existed in db
+   	try {
+   		$query="UPDATE uni_user_master SET 	password = '$pwd' where email_id='$email_id'";
+   		$bind_array=array("pwd"=>$pwd,"email_id"=>$email_id);
+   		$rslt=self::updateQuery($query,$bind_array);
+   		if ($rslt) {
+   			// asset type config successfully inserted
+   			//return $rslt;
+   			return PASSWORD_UPDATED_SUCCESSFULLY;
+   		} else {
+   			// Failed to create user
+   			//return $rslt;
+   			return PASSWORD_UPDATED_FAILED;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }		
 	
 
 
