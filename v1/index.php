@@ -1686,8 +1686,8 @@ $app->post('/deleteRole',  function() use($app) {
 
 //***************************************************************Sprint Plan*************************************************************************************************************************************************//
  		/**
- 		 * Adding TeamMembers
- 		 * url - /addTeamMembers
+ 		 * Adding Sprint Plan
+ 		 * url - /addSprintPlan
  		 * method - POST
  		 * params-sprint_name,status,company_id,no_of_timesheets,timesheet_type,start_date,end_date,date_created,created_by
  		 */
@@ -1833,8 +1833,461 @@ $app->post('/deleteRole',  function() use($app) {
  			}
  			
  		});
- 			
+//***************************************************************Tags*************************************************************************************************************************************************//
+ 			/**
+ 			 * Adding Tags
+ 			 * url - /addTags
+ 			 * method - POST
+ 			 * params-tag_name,tag_description,start_date,end_date,status,date_created,created_by
+ 			 */
+ 			$app->post('/addTags', function() use ($app) {
+ 				$response = array();
+ 				$db = new DataDAO();
+ 				$TagsDetails=json_decode(file_get_contents("php://input"));
+ 				$Tags=$TagsDetails->TagInfo;
+ 				$TagData=json_decode($Tags);
+ 				$tag_name = $TagData->tag_name;
+ 				$tag_description = $TagData->tag_description;
+ 				$start_date = $TagData->start_date;
+ 				$end_date = $TagData->end_date;
+ 				$status = 1;
+ 				//$date_created= $TagData->date_created;
+ 				$date_created = $db->ISTConversion();
+ 				$created_by= $TagData->created_by;
+ 				
+ 				
+ 				$res = $db->addTags($tag_name,$tag_description,$start_date,$end_date,$status,$date_created,$created_by);
+ 				if ($res)
+ 				{
+ 					$response["error"] = false;
+ 					$response["message"] = "Tags are created successfully";
+ 				} else
+ 				{
+ 					$response["error"] = true;
+ 					$response["message"] = "Oops! An error occurred while creating Tags";
+ 				}
+ 				echoRespnse(201, $response);
+ 			});
+ 				
+ 				/**
+ 				 * Updating Tags
+ 				 * url - /updateTags
+ 				 * method - PUT
+ 				 * params -id
+ 				 */
+ 				$app->post('/updateTags',function() use($app) {
+ 					$db = new DataDAO();
+ 					$response = array();
+ 					$TagsDetails=json_decode(file_get_contents("php://input"));
+ 					$Tags=$TagsDetails->TagInfo;
+ 					$TagData=json_decode($Tags);
+ 					$id = $TagData->id;
+ 					$tag_name = $TagData->tag_name;
+ 					$tag_description = $TagData->tag_description;
+ 					$start_date = $TagData->start_date;
+ 					$end_date = $TagData->end_date;
+ 					//$last_updated= $TagData->last_updated;
+ 					$last_updated = $db->ISTConversion();
+ 					$updated_by= $TagData->updated_by;
+ 					
+ 					$result = $db->updateTags($id,$tag_name,$tag_description,$start_date,$end_date,$last_updated,$updated_by);
+ 					
+ 					if ($result)
+ 					{
+ 						$response["error"] = false;
+ 						$response["message"] = "You are successfully updated Tags";
+ 					} else
+ 					{
+ 						$response["error"] = true;
+ 						$response["message"] = "Oops! An error occurred while updating Tags";
+ 					}
+ 					echoRespnse(201, $response);
+ 				});
+ 					
+ 					
+ 					/**
+ 					 * Updating Tags by Making Status Inactive
+ 					 * url - /deleteTags
+ 					 * method - PUT
+ 					 * params -id
+ 					 */
+ 					$app->post('/deleteTags',function() use($app) {
+ 						$db = new DataDAO();
+ 						$response = array();
+ 						$TagsDetails=json_decode(file_get_contents("php://input"));
+ 						$Tags=$TagsDetails->TagInfo;
+ 						$TagData=json_decode($Tags);
+ 						$id = $TagData->id;
+ 						$result = $db->deleteTags($id);
+ 						
+ 						if ($result)
+ 						{
+ 							$response["error"] = false;
+ 							$response["message"] = "You are successfully made Inactive";
+ 						} else
+ 						{
+ 							$response["error"] = true;
+ 							$response["message"] = "Oops! An error occurred while making status Inactive";
+ 						}
+ 						echoRespnse(201, $response);
+ 					});
+ 						
+ 						/**
+ 						 * Fetching All Tags List
+ 						 * url - /getAllTagsList
+ 						 * method - GET
+ 						 * params
+ 						 */
+ 						$app->get('/getAllTagsList/',function() use($app){
+ 							$db = new DataDAO();
+ 							$res = $db->getAllTagsList();
+ 							if(sizeof($res))
+ 							{
+ 								echoRespnse(201, $res);
+ 							}
+ 						});
+ 							
+ 							/**
+ 							 * Fetching Tags List based on the id
+ 							 * url-/getTagsListById
+ 							 * method - GET by Id
+ 							 * params - id
+ 							 */
+ 							$app->get('/getTagsListById/:id',function($id) use($app){
+ 								$db = new DataDAO();
+ 								$res = $db->getTagsListById($id);
+ 								if(sizeof($res))
+ 								{
+ 									echoRespnse(201, $res);
+ 								}
+ 							});
+ 								
+ 								/**
+ 								 * Fetching Tags List based on the company_id
+ 								 * url-/getAllTagsByCId
+ 								 * method - GET by company_id
+ 								 * params - id
+ 								 */
+ 								$app->get('/getAllTagsByCId/:company_id',function($company_id) use($app){
+ 									$db = new DataDAO();
+ 									$cDate = $db->ISTConversion();
+ 									$res = $db->getAllTagsByCId($company_id,$cDate);
+ 									if(sizeof($res))
+ 									{
+ 										echoRespnse(201, $res);
+ 									}
+ 									
+ 								});
+//***************************************************************Token Master*************************************************************************************************************************************************//
+ 									/**
+ 									 * Adding Token Master
+ 									 * url - /addTokenMaster
+ 									 * method - POST
+ 									 * params-user_id,auth_token,issued_on,	issued_for,expireson,date_created,created_by,start_date,end_date
+ 									 */
+ 									$app->post('/addTokenMaster', function() use ($app) {
+ 										$response = array();
+ 										$db = new DataDAO();
+ 										$TokenMasterDetails=json_decode(file_get_contents("php://input"));
+ 										$TokenMaster=$TokenMasterDetails->TokenMasterInfo;
+ 										$TokenMasterData=json_decode($TokenMaster);
+ 										$status = 1;
+ 										$user_id = $TokenMasterData->user_id;
+ 										$auth_token =$TokenMasterData->auth_token;
+ 										$issued_on =$TokenMasterData->issued_on;
+ 										$issued_for =$TokenMasterData->issued_for;
+ 										$expireson =$TokenMasterData->expireson;
+ 										$date_created = $db->ISTConversion();
+ 										$created_by= $TokenMasterData->created_by;
+ 										$start_date = $TokenMasterData->start_date;
+ 										$end_date = $TokenMasterData->end_date;
+ 										///$date_created= $SprintData->date_created;
+ 								
+ 										
+ 										$res = $db->addTokenMaster($user_id,$auth_token,$auth_token,$issued_on,$issued_for,$expireson,$date_created,$created_by,$start_date,$end_date);
+ 										if ($res)
+ 										{
+ 											$response["error"] = false;
+ 											$response["message"] = "Token Master are created successfully";
+ 										} else
+ 										{
+ 											$response["error"] = true;
+ 											$response["message"] = "Oops! An error occurred while creating Token Master";
+ 										}
+ 										echoRespnse(201, $response);
+ 									});
+ 										
+ 										/**
+ 										 * Updating Token Master
+ 										 * url - /updateTokenMaster
+ 										 * method - PUT
+ 										 * params -id
+ 										 */
+ 										$app->post('/updateTokenMaster',function() use($app) {
+ 											$db = new DataDAO();
+ 											$response = array();
+ 											$TokenMasterDetails=json_decode(file_get_contents("php://input"));
+ 											$TokenMaster=$TokenMasterDetails->TokenMasterInfo;
+ 											$TokenMasterData=json_decode($TokenMaster);
+ 											$id = $TokenMasterData->id;
+ 											$user_id = $TokenMasterData->user_id;
+ 											$auth_token =$TokenMasterData->auth_token;
+ 											$issued_on =$TokenMasterData->issued_on;
+ 											$issued_for =$TokenMasterData->issued_for;
+ 											$expireson =$TokenMasterData->expireson;
+ 											$start_date = $TokenMasterData->start_date;
+ 											$end_date = $TokenMasterData->end_date;
+ 											//$last_updated= $SprintData->last_updated;
+ 											$last_updated = $db->ISTConversion();
+ 											$updated_by= $TokenMasterData->updated_by;
+ 											
+ 											$result = $db->updateTokenMaster($id,$user_id,$auth_token,$issued_on,$issued_for,$expireson,$start_date,$end_date,$last_updated,$updated_by);
+ 											
+ 											if ($result)
+ 											{
+ 												$response["error"] = false;
+ 												$response["message"] = "You are successfully updated Token Master";
+ 											} else
+ 											{
+ 												$response["error"] = true;
+ 												$response["message"] = "Oops! An error occurred while updating Token Master";
+ 											}
+ 											echoRespnse(201, $response);
+ 										});
+ 											
+ 											
+ 											/**
+ 											 * Updating Token Master by Making Status Inactive
+ 											 * url - /deleteTokenMaster
+ 											 * method - PUT
+ 											 * params -id
+ 											 */
+ 											$app->post('/deleteTokenMaster',function() use($app) {
+ 												$db = new DataDAO();
+ 												$response = array();
+ 												$TokenMasterDetails=json_decode(file_get_contents("php://input"));
+ 												$TokenMaster=$TokenMasterDetails->TokenMasterInfo;
+ 												$TokenMasterData=json_decode($TokenMaster);
+ 												$id = $TokenMasterData->id;
+ 												$result = $db->deleteTokenMaster($id);
+ 												
+ 												if ($result)
+ 												{
+ 													$response["error"] = false;
+ 													$response["message"] = "You are successfully made Inactive";
+ 												} else
+ 												{
+ 													$response["error"] = true;
+ 													$response["message"] = "Oops! An error occurred while making status Inactive";
+ 												}
+ 												echoRespnse(201, $response);
+ 											});
+ 												
+ 												/**
+ 												 * Fetching All TokenMaster List
+ 												 * url - /getAllTokenMasterList
+ 												 * method - GET
+ 												 * params
+ 												 */
+ 												$app->get('/getAllTokenMasterList/',function() use($app){
+ 													$db = new DataDAO();
+ 													$res = $db->getAllTokenMasterList();
+ 													if(sizeof($res))
+ 													{
+ 														echoRespnse(201, $res);
+ 													}
+ 												});
+ 													
+ 													/**
+ 													 * Fetching TokenMaster List based on the id
+ 													 * url-/getTokenMasterListById
+ 													 * method - GET by Id
+ 													 * params - id
+ 													 */
+ 													$app->get('/getTokenMasterListById/:id',function($id) use($app){
+ 														$db = new DataDAO();
+ 														$res = $db->getTokenMasterListById($id);
+ 														if(sizeof($res))
+ 														{
+ 															echoRespnse(201, $res);
+ 														}
+ 													});
+ 														
+ 														/**
+ 														 * Fetching TokenMaster List based on the company_id
+ 														 * url-/getAllTokenMasterByCId
+ 														 * method - GET by company_id
+ 														 * params - id
+ 														 */
+ 														$app->get('/getAllTokenMasterByCId/:company_id',function($company_id) use($app){
+ 															$db = new DataDAO();
+ 															$cDate = $db->ISTConversion();
+ 															$res = $db->getAllTokenMasterByCId($company_id,$cDate);
+ 															if(sizeof($res))
+ 															{
+ 																echoRespnse(201, $res);
+ 															}
+ 															
+ 														});
 
+//***************************************************************Tickets*************************************************************************************************************************************************//
+ 	/**
+ 		* Adding Tickets
+ 		* url - /addTickets
+ 		* method - POST
+ 		* params-ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by
+ 	*/
+ 															/*$app->post('/addTickets', function() use ($app) {
+ 																$response = array();
+ 																$db = new DataDAO();
+ 																$TicketDetails=json_decode(file_get_contents("php://input"));
+ 																$Ticket=$TicketDetails->TicketInfo;
+ 																$TicketData=json_decode($Ticket);
+ 																$ticket_number = $TicketData->ticket_number;
+ 																$is_billable = $TicketData->is_billable;
+ 																$sprint_id = $TicketData->sprint_id;
+ 																$ticket_type = $TicketData->ticket_type;
+ 																$project_id = $TicketData->project_id;
+ 																$ticket_description = $TicketData->ticket_description;
+ 																$ticket_date = $TicketData->ticket_date;
+ 																$priority = $TicketData->priority;
+ 																$ticket_status = $TicketData->ticket_status;
+ 																$due_date = $TicketData->due_date;
+ 																$team_id = $TicketData->team_id;
+ 																$external_ticket_id = $TicketData->external_ticket_id;
+ 																$estimated_hours = $TicketData->estimated_hours;
+ 																$tag_id = $TicketData->tag_id;
+ 																$start_date = $TicketData->start_date;
+ 																$end_date = $TicketData->end_date;
+ 																$status = 1;
+ 																//$date_created= $TagData->date_created;
+ 																$date_created = $db->ISTConversion();
+ 																$created_by= $TicketData->created_by;
+ 																
+ 																
+ 																$res = $db->addTickets($ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$status,$date_created,$created_by);
+ 																if ($res)
+ 																{
+ 																	$response["error"] = false;
+ 																	$response["message"] = "Tickets are created successfully";
+ 																} else
+ 																{
+ 																	$response["error"] = true;
+ 																	$response["message"] = "Oops! An error occurred while creating Tickets";
+ 																}
+ 																echoRespnse(201, $response);
+ 															});*/
+ 																
+ 																/**
+ 																 * Updating Tags
+ 																 * url - /updateTags
+ 																 * method - PUT
+ 																 * params -id
+ 																 */
+ 															/*	$app->post('/updateTags',function() use($app) {
+ 																	$db = new DataDAO();
+ 																	$response = array();
+ 																	$TagsDetails=json_decode(file_get_contents("php://input"));
+ 																	$Tags=$TagsDetails->TagInfo;
+ 																	$TagData=json_decode($Tags);
+ 																	$id = $TagData->id;
+ 																	$tag_name = $TagData->tag_name;
+ 																	$tag_description = $TagData->tag_description;
+ 																	$start_date = $TagData->start_date;
+ 																	$end_date = $TagData->end_date;
+ 																	//$last_updated= $TagData->last_updated;
+ 																	$last_updated = $db->ISTConversion();
+ 																	$updated_by= $TagData->updated_by;
+ 																	
+ 																	$result = $db->updateTags($id,$tag_name,$tag_description,$start_date,$end_date,$last_updated,$updated_by);
+ 																	
+ 																	if ($result)
+ 																	{
+ 																		$response["error"] = false;
+ 																		$response["message"] = "You are successfully updated Tags";
+ 																	} else
+ 																	{
+ 																		$response["error"] = true;
+ 																		$response["message"] = "Oops! An error occurred while updating Tags";
+ 																	}
+ 																	echoRespnse(201, $response);
+ 																});*/
+ 																	
+ 																	
+ 																	/**
+ 																	 * Updating Tags by Making Status Inactive
+ 																	 * url - /deleteTags
+ 																	 * method - PUT
+ 																	 * params -id
+ 																	 */
+ 																/*	$app->post('/deleteTags',function() use($app) {
+ 																		$db = new DataDAO();
+ 																		$response = array();
+ 																		$TagsDetails=json_decode(file_get_contents("php://input"));
+ 																		$Tags=$TagsDetails->TagInfo;
+ 																		$TagData=json_decode($Tags);
+ 																		$id = $TagData->id;
+ 																		$result = $db->deleteTags($id);
+ 																		
+ 																		if ($result)
+ 																		{
+ 																			$response["error"] = false;
+ 																			$response["message"] = "You are successfully made Inactive";
+ 																		} else
+ 																		{
+ 																			$response["error"] = true;
+ 																			$response["message"] = "Oops! An error occurred while making status Inactive";
+ 																		}
+ 																		echoRespnse(201, $response);
+ 																	});*/
+ 																		
+ 																		/**
+ 																		 * Fetching All Tags List
+ 																		 * url - /getAllTagsList
+ 																		 * method - GET
+ 																		 * params
+ 																		 */
+ 																	/*	$app->get('/getAllTagsList/',function() use($app){
+ 																			$db = new DataDAO();
+ 																			$res = $db->getAllTagsList();
+ 																			if(sizeof($res))
+ 																			{
+ 																				echoRespnse(201, $res);
+ 																			}
+ 																		});*/
+ 																			
+ 																			/**
+ 																			 * Fetching Tags List based on the id
+ 																			 * url-/getTagsListById
+ 																			 * method - GET by Id
+ 																			 * params - id
+ 																			 */
+ 																		/*	$app->get('/getTagsListById/:id',function($id) use($app){
+ 																				$db = new DataDAO();
+ 																				$res = $db->getTagsListById($id);
+ 																				if(sizeof($res))
+ 																				{
+ 																					echoRespnse(201, $res);
+ 																				}
+ 																			});*/
+ 																				
+ 																				/**
+ 																				 * Fetching Tags List based on the company_id
+ 																				 * url-/getAllTagsByCId
+ 																				 * method - GET by company_id
+ 																				 * params - id
+ 																				 */
+ 																				/*$app->get('/getAllTagsByCId/:company_id',function($company_id) use($app){
+ 																					$db = new DataDAO();
+ 																					$cDate = $db->ISTConversion();
+ 																					$res = $db->getAllTagsByCId($company_id,$cDate);
+ 																					if(sizeof($res))
+ 																					{
+ 																						echoRespnse(201, $res);
+ 																					}
+ 																					
+ 																				});
+ 																					*/
 //***************************************************************Forgot Password*************************************************************************************************************************************************//	
 
 
@@ -1928,7 +2381,6 @@ $app->post('/changePassword',  function() use($app) {
         // echo json response
             echoRespnse(201, $result);
 });		
-	
 	
 					
 		

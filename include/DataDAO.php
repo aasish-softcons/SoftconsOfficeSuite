@@ -1001,7 +1001,7 @@ class DataDAO extends AbstractDAO {
    public function getAllProjectByCId($company_id,$cDate) {
    	
    	
-   	$query = "SELECT * FROM uni_project_master where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$query = "SELECT up.*, ut.team_name, uc.client_name FROM uni_project_master as up, uni_team as ut, uni_client_master as uc where up.start_date <= '$cDate' AND up.end_date >= '$cDate' AND up.company_id = '$company_id' AND up.status=1";
    	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
    	if (sizeof($rslt))
    	{
@@ -1561,6 +1561,290 @@ class DataDAO extends AbstractDAO {
    	
    	
    	$query = "SELECT * FROM uni_sprint_plan where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   } 
+   //***************************************************************Tags*********************************************************************************************************//
+   /**
+    * Adding Tags
+    * params-tag_name,tag_description,start_date,end_date,status,date_created,created_by
+    **/
+   
+   public function addTags($tag_name,$tag_description,$start_date,$end_date,$status,$date_created,$created_by)
+   {
+   	$response = array();
+   	
+   	try
+   	{
+   		$query="INSERT INTO uni_tags(tag_name,tag_description,start_date,end_date,status,date_created,created_by)VALUES(:tag_name,:tag_description,:start_date,:end_date,:status,:date_created,:created_by)";
+   		
+   		$bind_array=array("tag_name"=>$tag_name,"tag_description"=>$tag_description,"start_date"=>$start_date,"end_date"=>$end_date,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+   		
+   		$rslt=self::insertQuery($query,$bind_array);
+   		if ($rslt)
+   		{
+   			return $rslt;
+   		}
+   		else
+   		{
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde)
+   	{
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Updating Tags
+    * url - /updateTags
+    * method - PUT
+    * params -id
+    */
+   public static function updateTags($id,$tag_name,$tag_description,$start_date,$end_date,$last_updated,$updated_by)
+   {
+   	try{
+   		$query="UPDATE  uni_tags SET tag_name=:tag_name,tag_description=:tag_description,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		
+   		$rslt= self::updateQuery($query,array("id"=>$id,"tag_name"=>$tag_name,"tag_description"=>$tag_description,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   
+   
+   /**
+    * Updating Tags by Making Status Inactive
+    * url - /deleteTags
+    * method - PUT
+    * params -id
+    */
+   public static function deleteTags($id)
+   {
+   	try{
+   		$query="UPDATE  uni_tags SET status=0 WHERE id=:id";
+   		$rslt= self::updateQuery($query,array("id"=>$id));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Fetching All Tags
+    * url-/getAllTagsList
+    * method - GET All
+    * params
+    */
+   public  function getAllTagsList() {
+   	$query = "SELECT * FROM uni_tags";
+   	$rslt = self::fetchQuery($query,array());
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching Tags based on the id
+    * url-/getTagsListById
+    * method - GET by Id
+    * params - id
+    */
+   public function getTagsListById($id) {
+   	$query = "SELECT * FROM uni_tags where id =:id";
+   	$rslt = self::fetchQuery($query,array("id"=>$id));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching Tags List  based on the company_id
+    * url-/getAllTagsByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllTagsByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_tags where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   }
+   
+   //***************************************************************Token Master*********************************************************************************************************//
+   /**
+    * Adding Token Master
+    * params-user_id,auth_token,issued_on,issued_for,expireson,date_created,created_by,start_date,end_date
+    **/
+   
+   public function addTokenMaster($user_id,$auth_token,$auth_token,$issued_on,$issued_for,$expireson,$date_created,$created_by,$start_date,$end_date)
+   {
+   	$response = array();
+   	
+   	try
+   	{
+   		$query="INSERT INTO uni_tokenmaster(user_id,auth_token,issued_on,issued_for,expireson,date_created,created_by,start_date,end_date)VALUES(:user_id,:auth_token,:issued_on,:issued_for,:expireson,:date_created,:created_by,:start_date,:end_date)";
+   		
+   		$bind_array=array("user_id"=>$user_id,"auth_token"=>$auth_token,"issued_on"=>$issued_on,"issued_for"=>$issued_for,"expireson"=>$expireson,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+   		
+   		$rslt=self::insertQuery($query,$bind_array);
+   		if ($rslt)
+   		{
+   			return $rslt;
+   		}
+   		else
+   		{
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde)
+   	{
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Updating Token Master
+    * url - /updateTokenMaster
+    * method - PUT
+    * params -id
+    */
+   public static function updateTokenMaster($id,$user_id,$auth_token,$issued_on,$issued_for,$expireson,$start_date,$end_date,$last_updated,$updated_by)
+   {
+   	try{
+   		$query="UPDATE  uni_tokenmaster SET user_id=:user_id,auth_token=:auth_token,issued_on=:issued_on,issued_for=:issued_for,expireson=:expireson,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		
+   		$rslt= self::updateQuery($query,array("id"=>$id,"user_id"=>$user_id,"auth_token"=>$auth_token,"issued_on"=>$issued_on,"issued_for"=>$issued_for,"expireson"=>$expireson,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   
+   
+   /**
+    * Updating Token Master by Making Status Inactive
+    * url - /deleteTokenMaster
+    * method - PUT
+    * params -id
+    */
+   public static function deleteTokenMaster($id)
+   {
+   	try{
+   		$query="UPDATE  uni_tokenmaster SET status=0 WHERE id=:id";
+   		$rslt= self::updateQuery($query,array("id"=>$id));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Fetching All Token Master
+    * url-/getAllTokenMasterList
+    * method - GET All
+    * params
+    */
+   public  function getAllTokenMasterList() {
+   	$query = "SELECT * FROM uni_tokenmaster";
+   	$rslt = self::fetchQuery($query,array());
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching Token Master list based on the id
+    * url-/getTokenMasterListById
+    * method - GET by Id
+    * params - id
+    */
+   public function getTokenMasterListById($id) {
+   	$query = "SELECT * FROM uni_tokenmaster where id =:id";
+   	$rslt = self::fetchQuery($query,array("id"=>$id));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   /**
+    * Fetching  Token Master list based on the company_id
+    * url-/getAllTokenMasterByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllTokenMasterByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_tokenmaster where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
    	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
    	if (sizeof($rslt))
    	{
