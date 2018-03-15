@@ -2137,7 +2137,7 @@ $app->post('/deleteRole',  function() use($app) {
  		* method - POST
  		* params-ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by
  	*/
- 															/*$app->post('/addTickets', function() use ($app) {
+ 															$app->post('/addTickets', function() use ($app) {
  																$response = array();
  																$db = new DataDAO();
  																$TicketDetails=json_decode(file_get_contents("php://input"));
@@ -2176,7 +2176,7 @@ $app->post('/deleteRole',  function() use($app) {
  																	$response["message"] = "Oops! An error occurred while creating Tickets";
  																}
  																echoRespnse(201, $response);
- 															});*/
+ 															});
  																
  																/**
  																 * Updating Tags
@@ -2184,7 +2184,7 @@ $app->post('/deleteRole',  function() use($app) {
  																 * method - PUT
  																 * params -id
  																 */
- 															/*	$app->post('/updateTags',function() use($app) {
+ 																$app->post('/updateTags',function() use($app) {
  																	$db = new DataDAO();
  																	$response = array();
  																	$TagsDetails=json_decode(file_get_contents("php://input"));
@@ -2211,7 +2211,7 @@ $app->post('/deleteRole',  function() use($app) {
  																		$response["message"] = "Oops! An error occurred while updating Tags";
  																	}
  																	echoRespnse(201, $response);
- 																});*/
+ 																});
  																	
  																	
  																	/**
@@ -2220,7 +2220,7 @@ $app->post('/deleteRole',  function() use($app) {
  																	 * method - PUT
  																	 * params -id
  																	 */
- 																/*	$app->post('/deleteTags',function() use($app) {
+ 																	$app->post('/deleteTags',function() use($app) {
  																		$db = new DataDAO();
  																		$response = array();
  																		$TagsDetails=json_decode(file_get_contents("php://input"));
@@ -2239,7 +2239,7 @@ $app->post('/deleteRole',  function() use($app) {
  																			$response["message"] = "Oops! An error occurred while making status Inactive";
  																		}
  																		echoRespnse(201, $response);
- 																	});*/
+ 																	});
  																		
  																		/**
  																		 * Fetching All Tags List
@@ -2247,14 +2247,14 @@ $app->post('/deleteRole',  function() use($app) {
  																		 * method - GET
  																		 * params
  																		 */
- 																	/*	$app->get('/getAllTagsList/',function() use($app){
+ 																	$app->get('/getAllTagsList/',function() use($app){
  																			$db = new DataDAO();
  																			$res = $db->getAllTagsList();
  																			if(sizeof($res))
  																			{
  																				echoRespnse(201, $res);
  																			}
- 																		});*/
+ 																		});
  																			
  																			/**
  																			 * Fetching Tags List based on the id
@@ -2262,14 +2262,14 @@ $app->post('/deleteRole',  function() use($app) {
  																			 * method - GET by Id
  																			 * params - id
  																			 */
- 																		/*	$app->get('/getTagsListById/:id',function($id) use($app){
+ 																		$app->get('/getTagsListById/:id',function($id) use($app){
  																				$db = new DataDAO();
  																				$res = $db->getTagsListById($id);
  																				if(sizeof($res))
  																				{
  																					echoRespnse(201, $res);
  																				}
- 																			});*/
+ 																			});
  																				
  																				/**
  																				 * Fetching Tags List based on the company_id
@@ -2277,7 +2277,7 @@ $app->post('/deleteRole',  function() use($app) {
  																				 * method - GET by company_id
  																				 * params - id
  																				 */
- 																				/*$app->get('/getAllTagsByCId/:company_id',function($company_id) use($app){
+ 																				$app->get('/getAllTagsByCId/:company_id',function($company_id) use($app){
  																					$db = new DataDAO();
  																					$cDate = $db->ISTConversion();
  																					$res = $db->getAllTagsByCId($company_id,$cDate);
@@ -2287,7 +2287,7 @@ $app->post('/deleteRole',  function() use($app) {
  																					}
  																					
  																				});
- 																					*/
+ 																					
 //***************************************************************Forgot Password*************************************************************************************************************************************************//	
 
 

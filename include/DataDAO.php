@@ -579,7 +579,7 @@ class DataDAO extends AbstractDAO {
     public function getAllUserByCId($company_id,$cDate) {
     	
     	
-    	$query = "SELECT * FROM uni_user_master where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+    	$query = "SELECT uu.*, ud.department_name, ur.role_name FROM uni_user_master as uu, uni_department as ud, uni_role as ur where uu.start_date <= '$cDate' AND uu.end_date >= '$cDate' AND uu.company_id = '$company_id' AND uu.status=1";
     	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
     	if (sizeof($rslt))
     	{
@@ -1856,6 +1856,38 @@ class DataDAO extends AbstractDAO {
    	}
    	
    } 
+ //***************************************************************Tickets*************************************************************************************************************************************************//
+   /** Adding Tickets
+   * url - /addTickets
+   * method - POST
+   * params-ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by
+   */
+   
+   public function addTokenMasteraddTickets($ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$status,$date_created,$created_by)
+   {
+   	$response = array();
+   	
+   	try
+   	{
+   		$query="INSERT INTO uni_tokenmaster(user_id,auth_token,issued_on,issued_for,expireson,date_created,created_by,start_date,end_date)VALUES(:user_id,:auth_token,:issued_on,:issued_for,:expireson,:date_created,:created_by,:start_date,:end_date)";
+   		
+   		$bind_array=array("user_id"=>$user_id,"auth_token"=>$auth_token,"issued_on"=>$issued_on,"issued_for"=>$issued_for,"expireson"=>$expireson,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+   		
+   		$rslt=self::insertQuery($query,$bind_array);
+   		if ($rslt)
+   		{
+   			return $rslt;
+   		}
+   		else
+   		{
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde)
+   	{
+   		throw $pde;
+   	}
+   }
    
 //***************************************************************Forgot Password*********************************************************************************************************//   
 
