@@ -193,6 +193,28 @@ class DataDAO extends AbstractDAO {
     	}
     }
     
+    /**
+     * Fetching Timesheet_config List based on the company_id
+     * url-/getTimesheetConfigListByCId
+     * method - GET by company_id
+     * params - id
+     */
+    public function getTimesheetConfigListByCId($company_id,$cDate) {
+    	//$cDate = ISTConversion();
+    	
+    	$query = "SELECT * FROM timesheet_config where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+    	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+    	if (sizeof($rslt))
+    	{
+    		return $rslt;
+    	}
+    	else
+    	{
+    		return NULL;
+    	}
+    	//return $time;
+    }
+    
     //**************************************************Company************************************************************************/
     /**
 	 * Fetching All Company List
@@ -1154,18 +1176,18 @@ class DataDAO extends AbstractDAO {
    //***************************************************************Team*********************************************************************************************************//
    /**
     * Adding Team
-    * params-team_name,status,company_id,date_created,created_by,start_date,end_date
+    * params-team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members
     **/
    
-   public function addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date)
+   public function addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date,$location,$function,$teamlead,$members)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO  uni_team(team_name,status,company_id,date_created,created_by,start_date,end_date)VALUES(:team_name,:status,:company_id,:date_created,:created_by,:start_date,:end_date)";
+   		$query="INSERT INTO  uni_team(team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members)VALUES(:team_name,:status,:company_id,:date_created,:created_by,:start_date,:end_date,:location,:function,:teamlead,:members)";
    		
-   		$bind_array=array("team_name"=>$team_name,"status"=>$status,"company_id"=>$company_id,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+   		$bind_array=array("team_name"=>$team_name,"status"=>$status,"company_id"=>$company_id,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date,"location"=>$location,"function"=>$function,"teamlead"=>$teamlead,"members"=>$members);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -1188,12 +1210,14 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date)
+   public static function updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date,$location,$function,$teamlead,$members)
    {
    	try{
-   		$query="UPDATE  uni_team SET team_name=:team_name,company_id=:company_id,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
+   		$query="UPDATE  uni_team SET team_name=:team_name,company_id=:company_id,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date,location=:location,function=:function,
+         teamlead=:teamlead,members=:members WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"team_name"=>$team_name,"company_id"=>$company_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"team_name"=>$team_name,"company_id"=>$company_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date,"location"=>$location,
+   				"function"=>$function,"teamlead"=>$teamlead,"members"=>$members));
    		if ($rslt) {
    			
    			return $rslt;
@@ -1863,15 +1887,16 @@ class DataDAO extends AbstractDAO {
    * params-ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by
    */
    
-   public function addTokenMasteraddTickets($ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$status,$date_created,$created_by)
+   public function addTickets($ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$status,$date_created,$created_by)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_tokenmaster(user_id,auth_token,issued_on,issued_for,expireson,date_created,created_by,start_date,end_date)VALUES(:user_id,:auth_token,:issued_on,:issued_for,:expireson,:date_created,:created_by,:start_date,:end_date)";
+   		$query="INSERT INTO uni_tickets(ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by)
+                VALUES(:ticket_number,:is_billable,:sprint_id,:ticket_type,:project_id,:ticket_description,:ticket_date,:priority,:ticket_status,:due_date,:team_id,:external_ticket_id,:estimated_hours,:tag_id,:start_date,:end_date,:status,:date_created,:created_by)";
    		
-   		$bind_array=array("user_id"=>$user_id,"auth_token"=>$auth_token,"issued_on"=>$issued_on,"issued_for"=>$issued_for,"expireson"=>$expireson,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+   		$bind_array=array("ticket_number"=>$ticket_number,"is_billable"=>$is_billable,"sprint_id"=>$sprint_id,"ticket_type"=>$ticket_type,"project_id"=>$project_id,"ticket_description"=>$ticket_description,"ticket_date"=>$ticket_date,"priority"=>$priority,"ticket_status"=>$ticket_status,"due_date"=>$due_date,"team_id"=>$team_id,"external_ticket_id"=>$external_ticket_id,"estimated_hours"=>$estimated_hours,"tag_id"=>$tag_id,"start_date"=>$start_date,"end_date"=>$end_date,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -1887,6 +1912,401 @@ class DataDAO extends AbstractDAO {
    	{
    		throw $pde;
    	}
+   }
+   /**
+    * Updating Tickets
+    * url - /updateTickets
+    * method - PUT
+    * params -id
+    */
+   public static function updateTickets($id,$ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$last_updated,$updated_by)
+   {
+   	try{
+   		$query="UPDATE  uni_tickets SET ticket_number=:ticket_number,is_billable=:is_billable,sprint_id=:sprint_id,ticket_type=:ticket_type,project_id=:project_id,ticket_description=:ticket_description,
+        ticket_date=:ticket_date,ticket_date=:ticket_date,priority=:priority,ticket_status=:ticket_status,due_date=:due_date,team_id=:team_id,external_ticket_id=:external_ticket_id,tag_id=:tag_id,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		
+   		$rslt= self::updateQuery($query,array("id"=>$id,"ticket_number"=>$ticket_number,"is_billable"=>$is_billable,"sprint_id"=>$sprint_id,"ticket_type"=>$ticket_type,"project_id"=>$project_id,"ticket_description"=>$ticket_description,"ticket_date"=>$ticket_date,"priority"=>$priority,"ticket_status"=>$ticket_status,"due_date"=>$due_date,"team_id"=>$team_id,"external_ticket_id"=>$external_ticket_id,"estimated_hours"=>$estimated_hours,"tag_id"=>$tag_id,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   /**
+    * Updating Tickets by Making Status Inactive
+    * url - /deleteTickets
+    * method - PUT
+    * params -id
+    */
+   public static function deleteTickets($id)
+   {
+   	try{
+   		$query="UPDATE  uni_tickets SET status=0 WHERE id=:id";
+   		$rslt= self::updateQuery($query,array("id"=>$id));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Fetching All Tickets
+    * url-/getAllTicketList
+    * method - GET All
+    * params
+    */
+   public  function getAllTicketList() {
+   	$query = "SELECT * FROM uni_tickets";
+   	$rslt = self::fetchQuery($query,array());
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching Tickets list based on the id
+    * url-/getTicketsListById
+    * method - GET by Id
+    * params - id
+    */
+   public function getTicketsListById($id) {
+   	$query = "SELECT * FROM uni_tickets where id =:id";
+   	$rslt = self::fetchQuery($query,array("id"=>$id));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   /**
+    * Fetching  Tickets list based on the company_id
+    * url-/getAllTicketsByCId
+    * method - GET by company_id
+    * params - id
+    */
+   public function getAllTicketsByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_tickets where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   } 
+   //***************************************************************Sprint Projects*********************************************************************************************************//
+   /**
+    * Adding Sprint Projects
+    * params-sprint_id,project_id,start_date,end_date,status,date_created,created_by
+    **/
+   
+   public function addSprintProjects($sprint_id,$project_id,$start_date,$end_date,$status,$date_created,$created_by)
+   {
+   	$response = array();
+   	
+   	try
+   	{
+   		$query="INSERT INTO uni_sprint_projects(sprint_id,project_id,start_date,end_date,status,date_created,created_by)VALUES(:sprint_id,:project_id,:start_date,:end_date,:status,:date_created,:created_by)";
+   		
+   		$bind_array=array("sprint_id"=>$sprint_id,"project_id"=>$project_id,"start_date"=>$start_date,"end_date"=>$end_date,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+   		
+   		$rslt=self::insertQuery($query,$bind_array);
+   		if ($rslt)
+   		{
+   			return $rslt;
+   		}
+   		else
+   		{
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde)
+   	{
+   		throw $pde;
+   	}
+   }
+   
+    /**
+ 	 * Updating Tags
+ 	 * url - /updateSprintProjects
+ 	 * method - PUT
+ 	 * params -id
+  */
+   public static function updateSprintProjects($id,$sprint_id,$project_id,$start_date,$end_date,$last_updated,$updated_by)
+   {
+   	try{
+   		$query="UPDATE  uni_sprint_projects SET sprint_id=:sprint_id,project_id=:project_id,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		
+   		$rslt= self::updateQuery($query,array("id"=>$id,"sprint_id"=>$sprint_id,"project_id"=>$project_id,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   
+   
+   /**
+    * Updating Token Master by Making Status Inactive
+    * url - /deleteSprintProjects
+    * method - PUT
+    * params -id
+    */
+   public static function deleteSprintProjects($id)
+   {
+   	try{
+   		$query="UPDATE  uni_sprint_projects SET status=0 WHERE id=:id";
+   		$rslt= self::updateQuery($query,array("id"=>$id));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Fetching All SprintProjects List
+    * url - /getAllSprintProjectsList
+    * method - GET
+    * params
+    */
+   
+   public  function getAllSprintProjectsList() {
+   	$query = "SELECT * FROM uni_sprint_projects";
+   	$rslt = self::fetchQuery($query,array());
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching SprintProjects List based on the id
+    * url-/getSprintProjectsListById
+    * method - GET by Id
+    * params - id
+    */
+   public function getSprintProjectsListById($id) {
+   	$query = "SELECT * FROM uni_sprint_projects where id =:id";
+   	$rslt = self::fetchQuery($query,array("id"=>$id));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   /**
+    * Fetching SprintProjects List based on the company_id
+    * url-/getAllSprintProjectsByCId
+    * method - GET by company_id
+    * params - id
+    */
+   
+   public function getAllSprintProjectsByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_sprint_projects where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   } 
+   
+ 
+   //***************************************************************Permissions*********************************************************************************************************//
+   /**
+    * Adding permissions
+    * url - /addpermissions
+    * method - POST
+    * params-	page_name,permission,role_id,status,date_created,created_by
+    */
+   
+   public function addpermissions($page_name,$permission,$role_id,$status,$date_created,$created_by)
+   {
+   	$response = array();
+   	
+   	try
+   	{
+   		$query="INSERT INTO permissions(page_name,permission,role_id,status,date_created,created_by)VALUES(:page_name,:permission,:role_id,:status,:date_created,:created_by)";
+   		
+   		$bind_array=array("page_name"=>$page_name,"permission"=>$permission,"role_id"=>$role_id,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+   		
+   		$rslt=self::insertQuery($query,$bind_array);
+   		if ($rslt)
+   		{
+   			return $rslt;
+   		}
+   		else
+   		{
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde)
+   	{
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Updating permissions
+    * url - /updatepermissions
+    * method - PUT
+    * params -id
+    */
+   public static function updatepermissions($id,$page_name,$permission,$role_id,$last_updated,$updated_by)
+   {
+   	try{
+   		$query="UPDATE  permissions SET page_name=:page_name,permission=:permission,role_id=:role_id,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		
+   		$rslt= self::updateQuery($query,array("id"=>$id,"page_name"=>$page_name,"permission"=>$permission,"role_id"=>$role_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Updating permissions by Making Status Inactive
+    * url - /deletepermissions
+    * method - PUT
+    * params -id
+    */
+   public static function deletepermissions($id)
+   {
+   	try{
+   		$query="UPDATE  permissions SET status=0 WHERE id=:id";
+   		$rslt= self::updateQuery($query,array("id"=>$id));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Fetching All permissions
+    * url-/getAllpermissionsList
+    * method - GET All
+    * params
+    */
+   public  function getAllpermissionsList() {
+   	$query = "SELECT * FROM permissions";
+   	$rslt = self::fetchQuery($query,array());
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching permissions list based on the id
+    * url-/getpermissionsListById
+    * method - GET by Id
+    * params - id
+    */
+   public function getpermissionsListById($id) {
+   	$query = "SELECT * FROM permissions where id =:id";
+   	$rslt = self::fetchQuery($query,array("id"=>$id));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching permissions List based on the company_id
+    * url-/getAllpermissionsByCId
+    * method - GET by company_id
+    * params - id
+    */
+   
+   public function getAllpermissionsByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM permissions where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
    }
    
 //***************************************************************Forgot Password*********************************************************************************************************//   

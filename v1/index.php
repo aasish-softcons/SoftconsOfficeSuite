@@ -292,6 +292,23 @@ $app->post('/login', function() use ($app) {
 		 echoRespnse(201, $res);
 		}
 		});
+	
+/**
+		 * Fetching Timesheet_config List based on the company_id
+		 * url-/getTimesheetConfigListByCId
+		 * method - GET by company_id
+		 * params - id
+*/
+		$app->get('/getTimesheetConfigListByCId/:company_id',function($company_id) use($app){
+			$db = new DataDAO();
+			$cDate = $db->ISTConversion();
+			$res = $db->getTimesheetConfigListByCId($company_id,$cDate);
+			if(sizeof($res))
+			{
+				echoRespnse(201, $res);
+			}
+			;
+		});
 			
 
 //**************************************************Company************************************************************************/
@@ -1395,7 +1412,7 @@ $app->post('/deleteRole',  function() use($app) {
  		 * Adding Team
  		 * url - /addTeams
  		 * method - POST
- 		 * params-team_name,status,company_id,date_created,created_by,start_date,end_date
+ 		 * params-team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members
  		 */
  		$app->post('/addTeams', function() use ($app) {
  			$response = array();
@@ -1412,8 +1429,11 @@ $app->post('/deleteRole',  function() use($app) {
  			$created_by= $TeamData->created_by;
  			$start_date= $TeamData->start_date;
  			$end_date= $TeamData->end_date;
- 			
- 			$res = $db->addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date);
+ 			$location= $TeamData->location;
+ 			$function= $TeamData->function;
+ 			$teamlead= $TeamData->teamlead;
+ 			$members= $TeamData->members;
+ 			$res = $db->addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date,$location,$function,$teamlead,$members);
  			if ($res)
  			{
  				$response["error"] = false;
@@ -1447,8 +1467,11 @@ $app->post('/deleteRole',  function() use($app) {
  							$updated_by= $TeamData->updated_by;
  							$start_date= $TeamData->start_date;
  							$end_date= $TeamData->end_date;
- 							
- 							$result = $db->updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date);
+ 							$location= $TeamData->location;
+ 							$function= $TeamData->function;
+ 							$teamlead= $TeamData->teamlead;
+ 							$members= $TeamData->members;
+ 							$result = $db->updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date,$location,$function,$teamlead,$members);
  							
  							if ($result)
  							{
@@ -2179,55 +2202,67 @@ $app->post('/deleteRole',  function() use($app) {
  															});
  																
  																/**
- 																 * Updating Tags
- 																 * url - /updateTags
+ 																 * Updating Tickets
+ 																 * url - /updateTickets
  																 * method - PUT
  																 * params -id
  																 */
- 																$app->post('/updateTags',function() use($app) {
- 																	$db = new DataDAO();
+ 																$app->post('/updateTickets', function() use ($app) {
  																	$response = array();
- 																	$TagsDetails=json_decode(file_get_contents("php://input"));
- 																	$Tags=$TagsDetails->TagInfo;
- 																	$TagData=json_decode($Tags);
- 																	$id = $TagData->id;
- 																	$tag_name = $TagData->tag_name;
- 																	$tag_description = $TagData->tag_description;
- 																	$start_date = $TagData->start_date;
- 																	$end_date = $TagData->end_date;
+ 																	$db = new DataDAO();
+ 																	$TicketDetails=json_decode(file_get_contents("php://input"));
+ 																	$Ticket=$TicketDetails->TicketInfo;
+ 																	$TicketData=json_decode($Ticket);
+ 																	$id = $TicketData->id;
+ 																	$ticket_number = $TicketData->ticket_number;
+ 																	$is_billable = $TicketData->is_billable;
+ 																	$sprint_id = $TicketData->sprint_id;
+ 																	$ticket_type = $TicketData->ticket_type;
+ 																	$project_id = $TicketData->project_id;
+ 																	$ticket_description = $TicketData->ticket_description;
+ 																	$ticket_date = $TicketData->ticket_date;
+ 																	$priority = $TicketData->priority;
+ 																	$ticket_status = $TicketData->ticket_status;
+ 																	$due_date = $TicketData->due_date;
+ 																	$team_id = $TicketData->team_id;
+ 																	$external_ticket_id = $TicketData->external_ticket_id;
+ 																	$estimated_hours = $TicketData->estimated_hours;
+ 																	$tag_id = $TicketData->tag_id;
+ 																	$start_date = $TicketData->start_date;
+ 																	$end_date = $TicketData->end_date;
  																	//$last_updated= $TagData->last_updated;
  																	$last_updated = $db->ISTConversion();
- 																	$updated_by= $TagData->updated_by;
+ 																	$updated_by= $TicketData->updated_by;
  																	
- 																	$result = $db->updateTags($id,$tag_name,$tag_description,$start_date,$end_date,$last_updated,$updated_by);
+ 																	$result = $db->updateTickets($id,$ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$last_updated,$updated_by);
  																	
  																	if ($result)
  																	{
  																		$response["error"] = false;
- 																		$response["message"] = "You are successfully updated Tags";
+ 																		$response["message"] = "You are successfully updated Tickets";
  																	} else
  																	{
  																		$response["error"] = true;
- 																		$response["message"] = "Oops! An error occurred while updating Tags";
+ 																		$response["message"] = "Oops! An error occurred while updating Tickets";
  																	}
  																	echoRespnse(201, $response);
  																});
  																	
  																	
  																	/**
- 																	 * Updating Tags by Making Status Inactive
- 																	 * url - /deleteTags
+ 																	 * Updating Tickets by Making Status Inactive
+ 																	 * url - /deleteTickets
  																	 * method - PUT
  																	 * params -id
  																	 */
- 																	$app->post('/deleteTags',function() use($app) {
+ 																	$app->post('/deleteTickets',function() use($app) {
  																		$db = new DataDAO();
  																		$response = array();
- 																		$TagsDetails=json_decode(file_get_contents("php://input"));
- 																		$Tags=$TagsDetails->TagInfo;
- 																		$TagData=json_decode($Tags);
- 																		$id = $TagData->id;
- 																		$result = $db->deleteTags($id);
+ 																		$TicketDetails=json_decode(file_get_contents("php://input"));
+ 																		$Ticket=$TicketDetails->TicketInfo;
+ 																		$TicketData=json_decode($Ticket);
+ 																		$id = $TicketData->id;
+ 																		$result = $db->deleteTickets($id);
  																		
  																		if ($result)
  																		{
@@ -2242,14 +2277,14 @@ $app->post('/deleteRole',  function() use($app) {
  																	});
  																		
  																		/**
- 																		 * Fetching All Tags List
- 																		 * url - /getAllTagsList
+ 																		 * Fetching All Tickets List
+ 																		 * url - /getAllTicketList
  																		 * method - GET
  																		 * params
  																		 */
- 																	$app->get('/getAllTagsList/',function() use($app){
+ 																	$app->get('/getAllTicketList/',function() use($app){
  																			$db = new DataDAO();
- 																			$res = $db->getAllTagsList();
+ 																			$res = $db->getAllTicketList();
  																			if(sizeof($res))
  																			{
  																				echoRespnse(201, $res);
@@ -2257,14 +2292,14 @@ $app->post('/deleteRole',  function() use($app) {
  																		});
  																			
  																			/**
- 																			 * Fetching Tags List based on the id
- 																			 * url-/getTagsListById
+ 																			 * Fetching Tickets List based on the id
+ 																			 * url-/getTicketsListById
  																			 * method - GET by Id
  																			 * params - id
  																			 */
- 																		$app->get('/getTagsListById/:id',function($id) use($app){
+ 																		$app->get('/getTicketsListById/:id',function($id) use($app){
  																				$db = new DataDAO();
- 																				$res = $db->getTagsListById($id);
+ 																				$res = $db->getTicketsListById($id);
  																				if(sizeof($res))
  																				{
  																					echoRespnse(201, $res);
@@ -2272,22 +2307,317 @@ $app->post('/deleteRole',  function() use($app) {
  																			});
  																				
  																				/**
- 																				 * Fetching Tags List based on the company_id
- 																				 * url-/getAllTagsByCId
+ 																				 * Fetching Tickets List based on the company_id
+ 																				 * url-/getAllTicketsByCId
  																				 * method - GET by company_id
  																				 * params - id
  																				 */
- 																				$app->get('/getAllTagsByCId/:company_id',function($company_id) use($app){
+ 																				$app->get('/getAllTicketsByCId/:company_id',function($company_id) use($app){
  																					$db = new DataDAO();
  																					$cDate = $db->ISTConversion();
- 																					$res = $db->getAllTagsByCId($company_id,$cDate);
+ 																					$res = $db->getAllTicketsByCId($company_id,$cDate);
  																					if(sizeof($res))
  																					{
  																						echoRespnse(201, $res);
  																					}
  																					
  																				});
- 																					
+ //***************************************************************Sprint Projects*************************************************************************************************************************************************//
+ /**
+ 		* Adding Sprint Projects
+ 		* url - /addSprintProjects
+ 		* method - POST
+ 		* params-sprint_id,project_id,start_date,end_date,status,date_created,created_by
+ */
+ 			$app->post('/addSprintProjects', function() use ($app) {
+ 			$response = array();
+ 			$db = new DataDAO();
+ 			$SprintProjectsDetails=json_decode(file_get_contents("php://input"));
+ 			$SprintProjects=$SprintProjectsDetails->SprintProjectsInfo;
+ 			$SprintProjectsData=json_decode($SprintProjects);
+ 			$sprint_id = $SprintProjectsData->sprint_id;
+ 			$project_id = $SprintProjectsData->project_id;
+ 			$start_date= $SprintProjectsData->start_date;
+ 			$end_date= $SprintProjectsData->end_date;
+ 			$status = 1;
+ 		    //$date_created= $SprintProjectsData->date_created;
+ 			$date_created = $db->ISTConversion();
+ 			$created_by= $SprintProjectsData->created_by;
+ 			
+ 			$res = $db->addSprintProjects($sprint_id,$project_id,$start_date,$end_date,$status,$date_created,$created_by);
+ 			if ($res)
+ 				{
+ 				$response["error"] = false;
+ 				$response["message"] = "Sprint Projects created successfully";
+ 				} else
+ 				{
+ 				$response["error"] = true;
+ 				$response["message"] = "Oops! An error occurred while creating Sprint Projects";
+ 				}
+ 				echoRespnse(201, $response);
+ 																						
+ 				});
+ 				
+ /**
+ 	 * Updating Tags
+ 	 * url - /updateSprintProjects
+ 	 * method - PUT
+ 	 * params -id
+  */
+ 				$app->post('/updateSprintProjects',function() use($app) {
+ 					$db = new DataDAO();
+ 					$response = array();
+ 					$SprintProjectsDetails=json_decode(file_get_contents("php://input"));
+ 					$SprintProjectsDetails=json_decode(file_get_contents("php://input"));
+ 					$SprintProjects=$SprintProjectsDetails->SprintProjectsInfo;
+ 					$SprintProjectsData=json_decode($SprintProjects);
+ 					$id = $SprintProjectsData->id;
+ 					$sprint_id = $SprintProjectsData->sprint_id;
+ 					$project_id = $SprintProjectsData->project_id;
+ 					$start_date= $SprintProjectsData->start_date;
+ 					$end_date= $SprintProjectsData->end_date;
+ 					//$last_updated= $TagData->last_updated;
+ 					$last_updated = $db->ISTConversion();
+ 					$updated_by= $SprintProjectsData->updated_by;
+ 					
+ 					$result = $db->updateSprintProjects($id,$sprint_id,$project_id,$start_date,$end_date,$last_updated,$updated_by);
+ 					
+ 					if ($result)
+ 					{
+ 						$response["error"] = false;
+ 						$response["message"] = "You are successfully updated SprintProjects";
+ 					} else
+ 					{
+ 						$response["error"] = true;
+ 						$response["message"] = "Oops! An error occurred while updating SprintProjects";
+ 					}
+ 					echoRespnse(201, $response);
+ 				});
+ 					
+ /**
+ 	 * Updating SprintProjects by Making Status Inactive
+ 	 * url - /deleteSprintProjects
+ 	 * method - PUT
+ 	 * params -id
+ */
+ 					$app->post('/deleteSprintProjects',function() use($app) {
+ 						$db = new DataDAO();
+ 						$response = array();
+ 						$SprintProjectsDetails=json_decode(file_get_contents("php://input"));
+ 						$SprintProjects=$SprintProjectsDetails->SprintProjectsInfo;
+ 						$SprintProjectsData=json_decode($SprintProjects);
+ 						$id = $SprintProjectsData->id;
+ 						$result = $db->deleteSprintProjects($id);
+ 						
+ 						if ($result)
+ 						{
+ 							$response["error"] = false;
+ 							$response["message"] = "You are successfully made Inactive";
+ 						} else
+ 						{
+ 							$response["error"] = true;
+ 							$response["message"] = "Oops! An error occurred while making status Inactive";
+ 						}
+ 						echoRespnse(201, $response);
+ 					});
+ 						
+ /**
+ 	* Fetching All SprintProjects List
+ 	* url - /getAllSprintProjectsList
+    * method - GET
+ 	* params
+  */
+ 						$app->get('/getAllSprintProjectsList/',function() use($app){
+ 							$db = new DataDAO();
+ 							$res = $db->getAllSprintProjectsList();
+ 							if(sizeof($res))
+ 							{
+ 								echoRespnse(201, $res);
+ 							}
+ 						});
+ 							
+/**
+ 	* Fetching SprintProjects List based on the id
+ 	* url-/getSprintProjectsListById
+ 	* method - GET by Id
+ 	* params - id
+ */
+ 							$app->get('/getSprintProjectsListById/:id',function($id) use($app){
+ 								$db = new DataDAO();
+ 								$res = $db->getSprintProjectsListById($id);
+ 								if(sizeof($res))
+ 								{
+ 									echoRespnse(201, $res);
+ 								}
+ 							});
+ 								
+/**
+ 	* Fetching SprintProjects List based on the company_id
+ 	* url-/getAllSprintProjectsByCId
+ 	* method - GET by company_id
+ 	* params - id
+*/
+ 								$app->get('/getAllSprintProjectsByCId/:company_id',function($company_id) use($app){
+ 									$db = new DataDAO();
+ 									$cDate = $db->ISTConversion();
+ 									$res = $db->getAllSprintProjectsByCId($company_id,$cDate);
+ 									if(sizeof($res))
+ 									{
+ 										echoRespnse(201, $res);
+ 									}
+ 									
+ 
+ 								});
+ 								
+ 								
+ 									
+//***************************************************************permissions*************************************************************************************************************************************************//
+ 									
+ 									/**
+ 									 * Adding permissions
+ 									 * url - /addpermissions
+ 									 * method - POST
+ 									 * params-	page_name,permission,role_id,status,date_created,created_by
+ 									 */
+ 									$app->post('/addpermissions', function() use ($app) {
+ 										$response = array();
+ 										$db = new DataDAO();
+ 										$permissionDetails=json_decode(file_get_contents("php://input"));
+ 										$permissions=$permissionDetails->PermissionInfo;
+ 										$permissionData=json_decode($permissions);
+ 										$page_name = $permissionData->page_name;
+ 										$permission = $permissionData->permission;
+ 										$role_id = $permissionData->role_id;
+ 									
+ 										$status = 1;
+ 										//$date_created= $permissionData->date_created;
+ 										$date_created = $db->ISTConversion();
+ 										$created_by= $permissionData->created_by;
+ 										
+ 										
+ 										$res = $db->addpermissions($page_name,$permission,$role_id,$status,$date_created,$created_by);
+ 										if ($res)
+ 										{
+ 											$response["error"] = false;
+ 											$response["message"] = "Permissions are created successfully";
+ 										} else
+ 										{
+ 											$response["error"] = true;
+ 											$response["message"] = "Oops! An error occurred while creating Permissions";
+ 										}
+ 										echoRespnse(201, $response);
+ 									});
+ /**
+ 	* Updating permissions
+ 	* url - /updatepermissions
+ 	* method - PUT
+ 	* params -id
+ */
+ 										$app->post('/updatepermissions',function() use($app) {
+ 											$db = new DataDAO();
+ 											$response = array();
+ 											$permissionDetails=json_decode(file_get_contents("php://input"));
+ 											$permissions=$permissionDetails->PermissionInfo;
+ 											$permissionData=json_decode($permissions);
+ 											$page_name = $permissionData->page_name;
+ 											$permission = $permissionData->permission;
+ 											$role_id = $permissionData->role_id;
+ 											$id = $permissionData->id;
+ 											
+ 											//$last_updated= $TagData->last_updated;
+ 											$last_updated = $db->ISTConversion();
+ 											$updated_by= $permissionData->updated_by;
+ 											
+ 											$result = $db->updatepermissions($id,$page_name,$permission,$role_id,$last_updated,$updated_by);
+ 											
+ 											if ($result)
+ 											{
+ 												$response["error"] = false;
+ 												$response["message"] = "You are successfully updated Permissions";
+ 											} else
+ 											{
+ 												$response["error"] = true;
+ 												$response["message"] = "Oops! An error occurred while updating Permissions";
+ 											}
+ 											echoRespnse(201, $response);
+ 										});
+ 										
+/**
+ 	* Updating permissions by Making Status Inactive
+ 	* url - /deletepermissions
+ 	* method - PUT
+ 	* params -id
+*/
+ 											$app->post('/deletepermissions',function() use($app) {
+ 												$db = new DataDAO();
+ 												$response = array();
+ 												$permissionDetails=json_decode(file_get_contents("php://input"));
+ 												$permissions=$permissionDetails->PermissionInfo;
+ 												$permissionData=json_decode($permissions);
+ 												$id = $permissionData->id;
+ 												$result = $db->deletepermissions($id);
+ 												
+ 												if ($result)
+ 												{
+ 													$response["error"] = false;
+ 													$response["message"] = "You are successfully made Inactive";
+ 												} else
+ 												{
+ 													$response["error"] = true;
+ 													$response["message"] = "Oops! An error occurred while making status Inactive";
+ 												}
+ 												echoRespnse(201, $response);
+ 											});
+ 												
+/**
+ 	* Fetching All permissions List
+ 	* url - /getAllpermissionsList
+ 	* method - GET
+ 	* params
+*/
+ 												$app->get('/getAllpermissionsList/',function() use($app){
+ 													$db = new DataDAO();
+ 													$res = $db->getAllpermissionsList();
+ 													if(sizeof($res))
+ 													{
+ 														echoRespnse(201, $res);
+ 													}
+ 												});
+ 													
+/**
+ 	* Fetching permissions List based on the id
+ 	* url-/getpermissionsListById
+ 	* method - GET by Id
+ 	* params - id
+ */
+ 													$app->get('/getpermissionsListById/:id',function($id) use($app){
+ 														$db = new DataDAO();
+ 														$res = $db->getpermissionsListById($id);
+ 														if(sizeof($res))
+ 														{
+ 															echoRespnse(201, $res);
+ 														}
+ 													});
+ 														
+/**
+ 	* Fetching permissions List based on the company_id
+ 	* url-/getAllpermissionsByCId
+ 	* method - GET by company_id
+ 	* params - id
+ */
+ 														$app->get('/getAllpermissionsByCId/:company_id',function($company_id) use($app){
+ 															$db = new DataDAO();
+ 															$cDate = $db->ISTConversion();
+ 															$res = $db->getAllpermissionsByCId($company_id,$cDate);
+ 															if(sizeof($res))
+ 															{
+ 																echoRespnse(201, $res);
+ 															}
+ 															
+ 															
+ 														});
+ 															
+ 											
 //***************************************************************Forgot Password*************************************************************************************************************************************************//	
 
 
