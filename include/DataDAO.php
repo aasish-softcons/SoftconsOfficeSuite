@@ -1160,8 +1160,8 @@ class DataDAO extends AbstractDAO {
     */
    public function getAllModuleByCId($company_id,$cDate) {
    	
-   	
-   	$query = "SELECT * FROM uni_module where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$query = "SELECT um.*, up.project_name FROM uni_module as um, uni_project_master as up where um.start_date <= '$cDate' AND um.end_date >= '$cDate' AND um.company_id = '$company_id' AND um.status=1";
+   	//$query = "SELECT * FROM uni_module where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
    	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
    	if (sizeof($rslt))
    	{
@@ -1173,7 +1173,7 @@ class DataDAO extends AbstractDAO {
    	}
    	
    } 
-   //***************************************************************Team*********************************************************************************************************//
+   //***********************************************************************************************************************Team*************************************************************************************************************************************//
    /**
     * Adding Team
     * params-team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members
@@ -1190,9 +1190,19 @@ class DataDAO extends AbstractDAO {
    		$bind_array=array("team_name"=>$team_name,"status"=>$status,"company_id"=>$company_id,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date,"location"=>$location,"function"=>$function,"teamlead"=>$teamlead,"members"=>$members);
    		
    		$rslt=self::insertQuery($query,$bind_array);
+   		/*if ($rslt)
+   		{
+   			
+   			return $rslt;
+   			
+   		}*/
    		if ($rslt)
    		{
-   			return $rslt;
+   		$team_id = $rslt;
+   		$query="INSERT INTO uni_team_members(status,company_id,isteamlead,team_id)VALUES(:status,:company_id,1,:team_id)";
+   		$bind_array=array("status"=>$status,"company_id"=>$company_id,"team_id"=>$team_id);
+   		$rslt1=self::insertQuery($query,$bind_array);
+   		return $rslt1;
    		}
    		else
    		{
@@ -1318,15 +1328,15 @@ class DataDAO extends AbstractDAO {
     * params-user_id,project_id,status,company_id,isteamlead,date_created,created_by
     **/
    
-   public function addTeamMembers($user_id,$project_id,$status,$company_id,$isteamlead,$start_date,$end_date,$date_created,$created_by)
+   public function addTeamMembers($user_id,$project_id,$status,$company_id,$isteamlead,$start_date,$end_date,$date_created,$created_by,$team_id)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_team_members(user_id,project_id,status,company_id,isteamlead,start_date,end_date,date_created,created_by)VALUES(:user_id,:project_id,:status,:company_id,:isteamlead,:start_date,:end_date,:date_created,:created_by)";
+   		$query="INSERT INTO uni_team_members(user_id,project_id,status,company_id,isteamlead,start_date,end_date,date_created,created_by,team_id)VALUES(:user_id,:project_id,:status,:company_id,:isteamlead,:start_date,:end_date,:date_created,:created_by,:team_id)";
    		
-   		$bind_array=array("user_id"=>$user_id,"project_id"=>$project_id,"status"=>$status,"company_id"=>$company_id,"isteamlead"=>$isteamlead,"start_date"=>$start_date,"end_date"=>$end_date,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("user_id"=>$user_id,"project_id"=>$project_id,"status"=>$status,"company_id"=>$company_id,"isteamlead"=>$isteamlead,"start_date"=>$start_date,"end_date"=>$end_date,"date_created"=>$date_created,"created_by"=>$created_by,"team_id"=>$team_id);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -1350,12 +1360,12 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$start_date,$end_date,$last_updated,$updated_by)
+   public static function updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$start_date,$end_date,$last_updated,$updated_by,$team_id)
    {
    	try{
-   		$query="UPDATE  uni_team_members SET user_id=:user_id,isteamlead=:isteamlead,start_date=:start_date,end_date=:end_date,company_id=:company_id,project_id=:project_id,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		$query="UPDATE  uni_team_members SET user_id=:user_id,isteamlead=:isteamlead,start_date=:start_date,end_date=:end_date,company_id=:company_id,project_id=:project_id,last_updated=:last_updated,updated_by=:updated_by,team_id=:team_id WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"user_id"=>$user_id,"isteamlead"=>$isteamlead,"start_date"=>$start_date,"end_date"=>$end_date,"company_id"=>$company_id,"project_id"=>$project_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"user_id"=>$user_id,"isteamlead"=>$isteamlead,"start_date"=>$start_date,"end_date"=>$end_date,"company_id"=>$company_id,"project_id"=>$project_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"team_id"=>$team_id));
    		if ($rslt) {
    			
    			return $rslt;
@@ -2309,6 +2319,346 @@ class DataDAO extends AbstractDAO {
    	
    }
    
+   //***************************************************************PermissionMaster*********************************************************************************************************//
+   /**
+    * Adding permissionmaster
+    * url - /addpermissions
+    * method - POST
+    * params-	permission_name,status,date_created,created_by,start_date,end_date
+    */
+   
+   public function addpermissionmaster($permission_name,$status,$date_created,$created_by,$start_date,$end_date)
+   {
+   	$response = array();
+   	
+   	try
+   	{
+   		$query="INSERT INTO  uni_permission_master(permission_name,status,date_created,created_by,start_date,end_date)VALUES(:permission_name,:status,:date_created,:created_by,:start_date,:end_date)";
+   		
+   		$bind_array=array("permission_name"=>$permission_name,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+   		
+   		$rslt=self::insertQuery($query,$bind_array);
+   		if ($rslt)
+   		{
+   			return $rslt;
+   		}
+   		else
+   		{
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde)
+   	{
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Updating permissionmaster
+    * url - /updatepermissionmaster
+    * method - PUT
+    * params -id
+    */
+   public static function updatepermissionmaster($id,$permission_name,$last_updated,$updated_by,$start_date,$end_date)
+   {
+   	try{
+   		$query="UPDATE  uni_permission_master SET permission_name=:permission_name,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
+   		
+   		$rslt= self::updateQuery($query,array("id"=>$id,"permission_name"=>$permission_name,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Updating permissionmaster by Making Status Inactive
+    * url - /deletepermissionmaster
+    * method - PUT
+    * params -id
+    */
+   public static function deletepermissionmaster($id)
+   {
+   	try{
+   		$query="UPDATE  uni_permission_master SET status=0 WHERE id=:id";
+   		$rslt= self::updateQuery($query,array("id"=>$id));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Fetching All permissionmaster
+    * url-/getAllpermissionmasterList
+    * method - GET All
+    * params
+    */
+   public  function getAllpermissionmasterList() {
+   	$query = "SELECT * FROM uni_permission_master";
+   	$rslt = self::fetchQuery($query,array());
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching permissionmaster list based on the id
+    * url-/getpermissionmasterListById
+    * method - GET by Id
+    * params - id
+    */
+   public function getpermissionmasterListById($id) {
+   	$query = "SELECT * FROM uni_permission_master where id =:id";
+   	$rslt = self::fetchQuery($query,array("id"=>$id));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching permissionmaster List based on the company_id
+    * url-/getAllpermissionmasterByCId
+    * method - GET by company_id
+    * params - id
+    */
+   
+   public function getAllpermissionmasterByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_permission_master where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   }
+   
+   //***************************************************************Role Permission*********************************************************************************************************//
+   /**
+    * Adding  rolepermission
+    * url - /addrolepermission
+    * method - POST
+    * params-role_id,permission_id,page_name,status,date_created,created_by,start_date,end_date
+    */
+   
+   public function addrolepermission($role_id,$permission_id,$page_name,$status,$date_created,$created_by,$start_date,$end_date)
+   {
+   	$response = array();
+   	
+   	try
+   	{
+   		$query="INSERT INTO  uni_role_permission(role_id,permission_id,page_name,status,date_created,created_by,start_date,end_date)VALUES(:role_id,:permission_id,:page_name,:status,:date_created,:created_by,:start_date,:end_date)";
+   		
+   		$bind_array=array("role_id"=>$role_id,"permission_id"=>$permission_id,"page_name"=>$page_name,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+   		
+   		$rslt=self::insertQuery($query,$bind_array);
+   		if ($rslt)
+   		{
+   			return $rslt;
+   		}
+   		else
+   		{
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde)
+   	{
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Updating rolepermission
+    * url - /updaterolepermission
+    * method - PUT
+    * params -id
+    */
+   public static function updaterolepermission($id,$role_id,$page_name,$permission_id,$last_updated,$updated_by,$start_date,$end_date)
+   {
+   	try{
+   		$query="UPDATE  uni_role_permission SET role_id=:role_id,page_name=:page_name,permission_id=:permission_id,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
+   		
+   		$rslt= self::updateQuery($query,array("id"=>$id,"role_id"=>$role_id,"page_name"=>$page_name,"permission_id"=>$permission_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Updating rolepermission by Making Status Inactive
+    * url - /deleterolepermission
+    * method - PUT
+    * params -id
+    */
+   public static function deleterolepermission($id)
+   {
+   	try{
+   		$query="UPDATE  uni_role_permission SET status=0 WHERE id=:id";
+   		$rslt= self::updateQuery($query,array("id"=>$id));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+   
+   /**
+    * Fetching All rolepermission
+    * url-/getAllRolePermissionList
+    * method - GET All
+    * params
+    */
+   public  function getAllRolePermissionList() {
+   	$query = "SELECT * FROM uni_role_permission";
+   	$rslt = self::fetchQuery($query,array());
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching rolepermission list based on the id
+    * url-/getRolePermissionListById
+    * method - GET by Id
+    * params - id
+    */
+   public function getRolePermissionListById($id) {
+   	$query = "SELECT * FROM uni_role_permission where id =:id";
+   	$rslt = self::fetchQuery($query,array("id"=>$id));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   }
+   
+   /**
+    * Fetching rolepermission List based on the company_id
+    * url-/getAllRolePermissionByCId
+    * method - GET by company_id
+    * params - id
+    */
+   
+   public function getAllRolePermissionByCId($company_id,$cDate) {
+   	
+   	
+   	$query = "SELECT * FROM uni_role_permission where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   }
+   
+   //***************************************************************Sprint History************************************************************************************************************************************************************************************//
+   /**
+    * Fetching Sprint History based on the team_id,Sprint,Project
+    * url-/getAllSprintHistory
+    * method - GET by team_id,sprint_name,created_by
+    * params - id
+    */
+   
+   
+   public function getAllSprintHistory($team_id,$company_id,$cDate) {
+   	
+   	$query=	"select sp.sprint_name,pm.project_name,t.id team_id,tm.isteamlead,tm.user_id,sp.created_by,t.teamlead,t.team_name,tk.ticket_id,tk.id task_id,sp.start_date,sp.end_date
+from uni_sprint_plan sp
+left join uni_sprint_projects sproj on sp.id=sproj.sprint_id
+join uni_project_master pm on pm.id=sproj.project_id
+ join uni_team t on pm.team_id=t.id
+ join uni_team_members tm on pm.id=tm.project_id
+join uni_tasks tk on sp.id=tk.sprint_id";
+   	//$query = "SELECT * FROM uni_role_permission where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array("team_id"=>$team_id,"company_id"=>$company_id,"cDate"=>$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   }
+   //***************************************************************Current Sprint************************************************************************************************************************************************************************************//
+   /**
+    * Fetching Current Sprint by comparing current_date with start_date and end_date of uni_sprint_plan
+    * url-/getAllCurrentSprint
+    * method - GET by team_id,company_id,created_by
+    * params - id
+    */
+   public function  getAllCurrentSprint($team_id,$company_id,$cDate) {
+   	
+   	
+   	//$query = "SELECT * FROM uni_role_permission where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+   	$rslt = self::fetchQuery($query,array($team_id,$company_id,$cDate));
+   	if (sizeof($rslt))
+   	{
+   		return $rslt;
+   	}
+   	else
+   	{
+   		return NULL;
+   	}
+   	
+   }
 //***************************************************************Forgot Password*********************************************************************************************************//   
 
    

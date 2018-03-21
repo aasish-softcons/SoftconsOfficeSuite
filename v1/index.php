@@ -1438,7 +1438,8 @@ $app->post('/deleteRole',  function() use($app) {
  			{
  				$response["error"] = false;
  				$response["message"] = "Teams are created successfully";
- 			} else
+ 			}
+ 			else
  			{
  				$response["error"] = true;
  				$response["message"] = "Oops! An error occurred while creating Teams";
@@ -1555,6 +1556,9 @@ $app->post('/deleteRole',  function() use($app) {
  			}
  			
  		});
+ 		
+
+
  			
 //***************************************************************Team Members*************************************************************************************************************************************************//
  		/**
@@ -1579,9 +1583,9 @@ $app->post('/deleteRole',  function() use($app) {
  			//$date_created= $TeamMemData->date_created;
  			$date_created = $db->ISTConversion();
  			$created_by= $TeamMemData->created_by;
+ 			$team_id = $TeamMemData->team_id;
  			
- 			
- 			$res = $db->addTeamMembers($user_id,$project_id,$status,$company_id,$isteamlead,$start_date,$end_date,$date_created,$created_by);
+ 			$res = $db->addTeamMembers($user_id,$project_id,$status,$company_id,$isteamlead,$start_date,$end_date,$date_created,$created_by,$team_id);
  			if ($res)
  			{
  				$response["error"] = false;
@@ -1595,7 +1599,7 @@ $app->post('/deleteRole',  function() use($app) {
  		});	
 		
 /**
- * Updating Team
+ * Updating TeamMembers
  * url - /updateTeamMembers
  * method - PUT
   * params -id
@@ -1616,8 +1620,8 @@ $app->post('/deleteRole',  function() use($app) {
 							//$last_updated= $TeamMemData->last_updated;
 							$last_updated = $db->ISTConversion();
 							$updated_by= $TeamMemData->updated_by;
- 							
-							$result = $db->updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$start_date,$end_date,$last_updated,$updated_by);
+							$team_id = $TeamMemData->team_id;
+							$result = $db->updateTeamMembers($id,$user_id,$company_id,$project_id,$isteamlead,$start_date,$end_date,$last_updated,$updated_by,$team_id);
  							
  							if ($result)
  							{
@@ -2617,12 +2621,342 @@ $app->post('/deleteRole',  function() use($app) {
  															
  														});
  															
- 											
+//***************************************************************Permission Master*************************************************************************************************************************************************//
+/**
+ 	* Adding permissionmaster
+ 	* url - /addpermissions
+ 	* method - POST
+ 	* params-	permission_name,status,date_created,created_by,start_date,end_date
+*/
+ 	$app->post('/addpermissionmaster', function() use ($app) {
+ 		$response = array();
+ 		$db = new DataDAO();
+ 		$permissionmasterDetails=json_decode(file_get_contents("php://input"));
+ 		$permissionmaster=$permissionmasterDetails->PermissionMasterInfo;
+ 		$permissionmasterData=json_decode($permissionmaster);
+ 		$permission_name = $permissionmasterData->permission_name;
+ 		$status = 1;
+ 		//$date_created= $permissionmasterData->date_created;
+ 		$date_created = $db->ISTConversion();
+ 		$created_by= $permissionmasterData->created_by;
+ 		$start_date= $permissionmasterData->start_date;
+ 		$end_date= $permissionmasterData->end_date;
+ 		$res = $db->addpermissionmaster($permission_name,$status,$date_created,$created_by,$start_date,$end_date);
+ 		if ($res)
+ 		{
+ 			$response["error"] = false;
+ 			$response["message"] = "PermissionMaster are created successfully";
+ 		} else
+ 		{
+ 		   $response["error"] = true;
+ 		   $response["message"] = "Oops! An error occurred while creating PermissionMaster";
+ 		}
+ 		 echoRespnse(201, $response);
+ 	});
+   /**
+    * Updating permissionmaster
+    * url - /updatepermissionmaster
+    * method - PUT
+    * params -id
+    */
+ 		$app->post('/updatepermissionmaster',function() use($app) {
+ 			$db = new DataDAO();
+ 			$response = array();
+ 			$permissionmasterDetails=json_decode(file_get_contents("php://input"));
+ 			$permissionmaster=$permissionmasterDetails->PermissionMasterInfo;
+ 			$permissionmasterData=json_decode($permissionmaster);
+ 			$permission_name = $permissionmasterData->permission_name;
+ 		
+ 			$id = $permissionmasterData->id;
+ 			
+ 			//$last_updated= $permissionmasterData->last_updated;
+ 			$last_updated = $db->ISTConversion();
+ 			$updated_by= $permissionmasterData->updated_by;
+ 			$start_date= $permissionmasterData->start_date;
+ 			$end_date= $permissionmasterData->end_date;
+ 			$result = $db->updatepermissionmaster($id,$permission_name,$last_updated,$updated_by,$start_date,$end_date);
+ 			
+ 			if ($result)
+ 			{
+ 				$response["error"] = false;
+ 				$response["message"] = "You are successfully updated PermissionMaster";
+ 			} else
+ 			{
+ 				$response["error"] = true;
+ 				$response["message"] = "Oops! An error occurred while updating PermissionMaster";
+ 			}
+ 			echoRespnse(201, $response);
+ 		});
+ 			
+/**
+ 	* Updating permissionmaster by Making Status Inactive
+ 	* url - /deletepermissions
+ 	* method - PUT
+ 	* params -id
+ */
+ 			$app->post('/deletepermissionmaster',function() use($app) {
+ 				$db = new DataDAO();
+ 				$response = array();
+ 				$permissionmasterDetails=json_decode(file_get_contents("php://input"));
+ 				$permissionmaster=$permissionmasterDetails->PermissionMasterInfo;
+ 				$permissionmasterData=json_decode($permissionmaster);
+ 				$id = $permissionmasterData->id;
+ 				$result = $db->deletepermissionmaster($id);
+ 				
+ 				if ($result)
+ 				{
+ 					$response["error"] = false;
+ 					$response["message"] = "You are successfully made Inactive";
+ 				} else
+ 				{
+ 					$response["error"] = true;
+ 					$response["message"] = "Oops! An error occurred while making status Inactive";
+ 				}
+ 				echoRespnse(201, $response);
+ 			});
+ 				
+ /**
+ 	* Fetching All permissionmaster List
+ 	* url - /getAllpermissionmasterList
+ 	* method - GET
+ 	* params
+ */
+ 				$app->get('/getAllpermissionmasterList/',function() use($app){
+ 					$db = new DataDAO();
+ 					$res = $db->getAllpermissionmasterList();
+ 					if(sizeof($res))
+ 					{
+ 						echoRespnse(201, $res);
+ 					}
+ 				});
+ 					
+/**
+  * Fetching permissionmaster List based on the id
+  * url-/getpermissionmasterListById
+  * method - GET by Id
+  * params - id
+*/
+ 					$app->get('/getpermissionmasterListById/:id',function($id) use($app){
+ 						$db = new DataDAO();
+ 						$res = $db->getpermissionmasterListById($id);
+ 						if(sizeof($res))
+ 						{
+ 							echoRespnse(201, $res);
+ 						}
+ 					});
+ 						
+/**
+ 	* Fetching permissionmaster List based on the company_id
+ 	* url-/getAllpermissionmasterByCId
+ 	* method - GET by company_id
+ 	* params - id
+*/
+ 						$app->get('/getAllpermissionmasterByCId/:company_id',function($company_id) use($app){
+ 							$db = new DataDAO();
+ 							$cDate = $db->ISTConversion();
+ 							$res = $db->getAllpermissionmasterByCId($company_id,$cDate);
+ 							if(sizeof($res))
+ 							{
+ 								echoRespnse(201, $res);
+ 							}
+ 							
+ 							
+ 						});
+ 							
+ 														
+//***************************************************************Role Permission*************************************************************************************************************************************************//
+ /**
+ 	* Adding  rolepermission
+ 	* url - /addrolepermission
+ 	* method - POST
+ 	* params-	role_id	,permission_id,page_name,status,date_created,created_by,start_date,end_date
+ */
+ 		$app->post('/addrolepermission', function() use ($app) {
+ 		$response = array();
+ 		$db = new DataDAO();
+ 		$rolepermissionDetails=json_decode(file_get_contents("php://input"));
+ 		$rolepermission=$rolepermissionDetails->RolePermissionInfo;
+ 		$rolepermissionData=json_decode($rolepermission);
+ 		$role_id = $rolepermissionData->role_id;
+ 		$permission_id= $rolepermissionData->permission_id;
+ 		$page_name= $rolepermissionData->page_name;
+ 		$status = 1;
+ 		//$date_created= $rolepermissionData->date_created;
+ 		$date_created = $db->ISTConversion();
+ 		$created_by= $rolepermissionData->created_by;
+ 		$start_date= $rolepermissionData->start_date;
+ 		$end_date= $rolepermissionData->end_date;
+ 		$res = $db->addrolepermission($role_id,$permission_id,$page_name,$status,$date_created,$created_by,$start_date,$end_date);
+ 		if ($res)
+ 		{
+ 		$response["error"] = false;
+ 		$response["message"] = "Role Permission are created successfully";
+ 		} else
+ 		{
+ 		$response["error"] = true;
+ 		$response["message"] = "Oops! An error occurred while creating Role Permission";
+ 		}
+ 		echoRespnse(201, $response);
+ 		});
+ 														
+/**
+ 	* Updating rolepermission
+ 	* url - /updaterolepermission
+ 	* method - PUT
+ 	* params -id
+*/
+ 			$app->post('/updaterolepermission',function() use($app) {
+ 				$db = new DataDAO();
+ 				$response = array();
+ 				$rolepermissionDetails=json_decode(file_get_contents("php://input"));
+ 				$rolepermission=$rolepermissionDetails->RolePermissionInfo;
+ 				$rolepermissionData=json_decode($rolepermission);
+ 				$role_id = $rolepermissionData->role_id;
+ 				$permission_id= $rolepermissionData->permission_id;
+ 				$id = $rolepermissionData->id;
+ 				$page_name= $rolepermissionData->page_name;
+ 				//$last_updated= $rolepermissionData->last_updated;
+ 				$last_updated = $db->ISTConversion();
+ 				$updated_by= $rolepermissionData->updated_by;
+ 				$start_date= $rolepermissionData->start_date;
+ 				$end_date= $rolepermissionData->end_date;
+ 				$result = $db->updaterolepermission($id,$role_id,$page_name,$permission_id,$last_updated,$updated_by,$start_date,$end_date);
+ 				
+ 				if ($result)
+ 				{
+ 					$response["error"] = false;
+ 					$response["message"] = "You are successfully updated Role Permission";
+ 				} else
+ 				{
+ 					$response["error"] = true;
+ 					$response["message"] = "Oops! An error occurred while updating Role Permission";
+ 				}
+ 				echoRespnse(201, $response);
+ 			});
+ 			
+/**
+ * Updating rolepermission by Making Status Inactive
+ * url - /deleterolepermission
+ * method - PUT
+ * params -id
+ */
+ 				$app->post('/deleterolepermission',function() use($app) {
+ 					$db = new DataDAO();
+ 					$response = array();
+ 					$rolepermissionDetails=json_decode(file_get_contents("php://input"));
+ 					$rolepermission=$rolepermissionDetails->RolePermissionInfo;
+ 					$rolepermissionData=json_decode($rolepermission);
+ 					$id = $rolepermissionData->id;
+ 					$result = $db->deleterolepermission($id);
+ 					
+ 					if ($result)
+ 					{
+ 						$response["error"] = false;
+ 						$response["message"] = "You are successfully made Inactive";
+ 					} else
+ 					{
+ 						$response["error"] = true;
+ 						$response["message"] = "Oops! An error occurred while making status Inactive";
+ 					}
+ 					echoRespnse(201, $response);
+ 				});
+ 					
+/**
+ 	* Fetching All rolepermission List
+ 	* url - /getAllRolePermissionList
+ 	* method - GET
+ 	* params
+ */
+ 					$app->get('/getAllRolePermissionList/',function() use($app){
+ 						$db = new DataDAO();
+ 						$res = $db->getAllRolePermissionList();
+ 						if(sizeof($res))
+ 						{
+ 							echoRespnse(201, $res);
+ 						}
+ 					});
+ 						
+/**
+ 	* Fetching rolepermission List based on the id
+ 	* url-/getRolePermissionListById
+ 	* method - GET by Id
+ 	* params - id
+*/
+ 						$app->get('/getRolePermissionListById/:id',function($id) use($app){
+ 							$db = new DataDAO();
+ 							$res = $db->getrolepermissionListById($id);
+ 							if(sizeof($res))
+ 							{
+ 								echoRespnse(201, $res);
+ 							}
+ 						});
+ 							
+/**
+ 	* Fetching rolepermission List based on the company_id
+ 	* url-/getAllRolePermissionByCId
+ 	* method - GET by company_id
+ 	* params - id
+*/
+ 							$app->get('/getAllRolePermissionByCId/:company_id',function($company_id) use($app){
+ 								$db = new DataDAO();
+ 								$cDate = $db->ISTConversion();
+ 								$res = $db->getAllRolePermissionByCId($company_id,$cDate);
+ 								if(sizeof($res))
+ 								{
+ 									echoRespnse(201, $res);
+ 								}
+ 								
+ 								
+ 							});
+//***************************************************************Sprint History *************************************************************************************************************************************************//	
+/**
+ 	* Fetching Sprint History based on the team_id,Sprint,Project 
+ 	* url-/getAllSprintHistory
+ 	* method - GET by team_id,company_id
+ 	* params - id
+ */
+ 								$app->get('/getAllSprintHistory/:team_id/:company_id',function($team_id,$company_id) use($app){
+ 									$db = new DataDAO();
+ 									$cDate = $db->ISTConversion();
+ 									$res = $db->getAllSprintHistory($team_id,$company_id,$cDate);
+ 									if(sizeof($res))
+ 									{
+ 										echoRespnse(201, $res);
+ 									}
+ 									
+ 									
+ 								});
+ 							
+ 							
+ 							
+ 							
+//***************************************************************Current Sprint*************************************************************************************************************************************************//	
+/**
+ 	* Fetching Current Sprint by comparing current_date with start_date and end_date of uni_sprint_plan
+ 	* url-/getAllCurrentSprint
+ 	* method - GET by team_id,company_id
+ 	* params - id
+*/
+ 		$app->get('/getAllCurrentSprint/:team_id/:company_id',function($team_id,$company_id) use($app){
+ 		$db = new DataDAO();
+ 		$cDate = $db->ISTConversion();
+ 		$res = $db->getAllCurrentSprint($team_id,$company_id,$cDate);
+ 		if(sizeof($res))
+ 		{
+ 			echoRespnse(201, $res);
+ 		}
+ 		});
+ 										
+ 										
+ 								
+ 								
+ 							
+ 							
 //***************************************************************Forgot Password*************************************************************************************************************************************************//	
 
 
  		
-   /**
+/**
  * User Login
  * url - /login
  * method - POST
