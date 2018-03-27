@@ -168,7 +168,7 @@ $app->post('/login', function() use ($app) {
 	 * Adding timesheet_config
 	 * url - /addTimesheetConfig
 	 * method - POST
-	 * params-company_id,timesheet_frequency,status,date_created,created_by,start_date,end_date
+	 * params-company_id,timesheet_type,status,date_created,created_by,start_date,end_date
 	 */
 	$app->post('/addTimesheetConfig', function() use ($app) {
 		$response = array();
@@ -177,15 +177,16 @@ $app->post('/login', function() use ($app) {
 		$timesheet=$timesheetDetails->TimesheetInfo;
 		$timesheetData=json_decode($timesheet);
 		$company_id = $timesheetData->company_id;
-		$timesheet_frequency= $timesheetData->timesheet_frequency;
+		$timesheet_type= $timesheetData->timesheet_type;
 		$status = 1;
 		$date_created= $timesheetData->date_created;
 		$created_by= $timesheetData->created_by;
-		$start_date = $timesheetData->start_date;
-		$end_date = $timesheetData->end_date;
+		//$start_date = $timesheetData->start_date;
+		//$end_date = $timesheetData->end_date;
+		$start_date= $db->ISTConversion();
+		$end_date= '2100-12-31 23:59:59';
 		
-		
-		$res = $db->addTimesheetConfig($company_id,$timesheet_frequency,$status,$date_created,$created_by,$start_date,$end_date);
+		$res = $db->addTimesheetConfig($company_id,$timesheet_type,$status,$date_created,$created_by,$start_date,$end_date);
 		if ($res)
 		{
 			$response["error"] = false;
@@ -212,12 +213,14 @@ $app->post('/login', function() use ($app) {
 			$timesheetData=json_decode($timesheet);
 			$id = $timesheetData->id;
 			$company_id=$timesheetData->company_id;
-			$timesheet_frequency=$timesheetData->timesheet_frequency;
+			$timesheet_type=$timesheetData->timesheet_type;
 			$last_updated=$timesheetData->last_updated;
 			$updated_by= $timesheetData->updated_by;
-			$start_date = $timesheetData->start_date;
-			$end_date = $timesheetData->end_date;
-			$result = $db->updateTimesheetConfig($id,$company_id,$timesheet_frequency,$last_updated,$updated_by,$start_date,$end_date);
+			//$start_date = $timesheetData->start_date;
+			//$end_date = $timesheetData->end_date;
+			$start_date= $db->ISTConversion();
+			$end_date= '2100-12-31 23:59:59';
+			$result = $db->updateTimesheetConfig($id,$company_id,$timesheet_type,$last_updated,$updated_by,$start_date,$end_date);
 			if ($result)
 			{
 				$response["error"] = false;
@@ -227,7 +230,7 @@ $app->post('/login', function() use ($app) {
 				$response["error"] = true;
 				$response["message"] = "Oops! An error occurred while updating Timesheet_config";
 			}
-			echoRespnse(201, $id);
+			echoRespnse(201, $response);
 		});
 		
 /**
@@ -487,9 +490,9 @@ $app->post('/login', function() use ($app) {
 			$department_members = $DepartmentData->department_members;
 			$status = 1;
 			//$date_created= $DepartmentData->date_created;
-			$created_by= $DepartmentData->created_by;
-			$start_date= $DepartmentData->start_date;
-			$end_date= $DepartmentData->end_date;
+			$created_by = $DepartmentData->created_by;
+			$start_date= $db->ISTConversion();
+			$end_date= '2100-12-31 23:59:59';
 			$date_created = $db->ISTConversion();
 			$res = $db->addDepartment($company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$status,$date_created,$created_by,$start_date,$end_date);
 			if ($res)
@@ -527,8 +530,10 @@ $app->post('/login', function() use ($app) {
 				//$last_updated=$DepartmentData->last_updated;
 				$last_updated = $db->ISTConversion();
 				$updated_by= $DepartmentData->updated_by;
-				$start_date= $DepartmentData->start_date;
-				$end_date= $DepartmentData->end_date;
+				//$start_date= $DepartmentData->start_date;
+				//$end_date= $DepartmentData->end_date;
+				$start_date= $db->ISTConversion();
+				$end_date= '2100-12-31 23:59:59';
 				$result = $db->updateDepartment($id,$company_id,$department_name,$department_head,$department_location,$department_function,$department_members,$last_updated,$updated_by,$start_date,$end_date);
 				if ($result)
 				{
@@ -966,8 +971,10 @@ $app->post('/deleteRole',  function() use($app) {
 					$date_created = $db->ISTConversion();
 					$created_by= $clientData->created_by;
 					$status = 1;
-					$start_date= $clientData->start_date;
-					$end_date= $clientData->end_date;
+					$start_date= $db->ISTConversion();
+					$end_date= '2100-12-31 23:59:59';
+					//$start_date= $clientData->start_date;
+					//$end_date= $clientData->end_date;
 					$res = $db->addClients($client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$status,$date_created,$created_by,$start_date,$end_date);
 					if ($res)
 					{
@@ -1009,10 +1016,10 @@ $app->post('/deleteRole',  function() use($app) {
 						//$last_updated= $clientData->last_updated;
 						$last_updated = $db->ISTConversion();
 						$updated_by=$clientData->updated_by;
-						$start_date= $clientData->start_date;
-						$end_date= $clientData->end_date;
-						$start_date= $clientData->start_date;
-						$end_date= $clientData->end_date;
+						//$start_date= $clientData->start_date;
+						//$end_date= $clientData->end_date;
+						$start_date= $db->ISTConversion();
+						$end_date= '2100-12-31 23:59:59';
 						//$status = 1;
 						$res = $db->updateClients($id,$client_name,$company_id,$website_url,$pan,$gstn,$registered_address,$managing_director,$mailing_address,$contact_person,$phone_number,$email_id,$last_updated,$updated_by,$start_date,$end_date);
 						if ($res)
@@ -1412,7 +1419,7 @@ $app->post('/deleteRole',  function() use($app) {
  		 * Adding Team
  		 * url - /addTeams
  		 * method - POST
- 		 * params-team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members
+ 		 * params-team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members,department_id
  		 */
  		$app->post('/addTeams', function() use ($app) {
  			$response = array();
@@ -1423,17 +1430,20 @@ $app->post('/deleteRole',  function() use($app) {
  			$team_name = $TeamData->team_name;
  			$status = 1;
  			$company_id =$TeamData->company_id;
- 			//$project_id = $TeamData->project_id;
+ 			$department_id = $TeamData->department_id;
  			//$date_created= $TeamData->date_created;
  			$date_created = $db->ISTConversion();
  			$created_by= $TeamData->created_by;
- 			$start_date= $TeamData->start_date;
- 			$end_date= $TeamData->end_date;
+ 			//$start_date= $TeamData->start_date;
+ 			//$end_date= $TeamData->end_date;
  			$location= $TeamData->location;
  			$function= $TeamData->function;
  			$teamlead= $TeamData->teamlead;
  			$members= $TeamData->members;
- 			$res = $db->addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date,$location,$function,$teamlead,$members);
+ 			$start_date= $db->ISTConversion();
+ 			$end_date= '2100-12-31 23:59:59';
+ 			
+ 			$res = $db->addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date,$location,$function,$teamlead,$members,$department_id);
  			if ($res)
  			{
  				$response["error"] = false;
@@ -1460,19 +1470,21 @@ $app->post('/deleteRole',  function() use($app) {
  							$TeamData=json_decode($Teams);
  							$id = $TeamData->id;
  							$team_name = $TeamData->team_name;
- 							//$status = 1;
+ 							$department_id = $TeamData->department_id;
  							$company_id =$TeamData->company_id;
  							//$project_id = $TeamData->project_id;
  							//$last_updated= $TeamData->last_updated;
  							$last_updated = $db->ISTConversion();
  							$updated_by= $TeamData->updated_by;
- 							$start_date= $TeamData->start_date;
- 							$end_date= $TeamData->end_date;
+ 							//$start_date= $TeamData->start_date;
+ 							//$end_date= $TeamData->end_date;
  							$location= $TeamData->location;
  							$function= $TeamData->function;
  							$teamlead= $TeamData->teamlead;
  							$members= $TeamData->members;
- 							$result = $db->updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date,$location,$function,$teamlead,$members);
+ 							$start_date= $db->ISTConversion();
+ 							$end_date= '2100-12-31 23:59:59';
+ 							$result = $db->updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date,$location,$function,$teamlead,$members,$department_id);
  							
  							if ($result)
  							{
@@ -1865,7 +1877,7 @@ $app->post('/deleteRole',  function() use($app) {
  			 * Adding Tags
  			 * url - /addTags
  			 * method - POST
- 			 * params-tag_name,tag_description,start_date,end_date,status,date_created,created_by
+ 			 * params-tag_name,tag_description,start_date,end_date,status,date_created,created_by,company_id
  			 */
  			$app->post('/addTags', function() use ($app) {
  				$response = array();
@@ -1881,9 +1893,9 @@ $app->post('/deleteRole',  function() use($app) {
  				//$date_created= $TagData->date_created;
  				$date_created = $db->ISTConversion();
  				$created_by= $TagData->created_by;
+ 				$company_id =$TagData->company_id;
  				
- 				
- 				$res = $db->addTags($tag_name,$tag_description,$start_date,$end_date,$status,$date_created,$created_by);
+ 				$res = $db->addTags($tag_name,$tag_description,$start_date,$end_date,$status,$date_created,$created_by,$company_id);
  				if ($res)
  				{
  					$response["error"] = false;
@@ -1916,8 +1928,8 @@ $app->post('/deleteRole',  function() use($app) {
  					//$last_updated= $TagData->last_updated;
  					$last_updated = $db->ISTConversion();
  					$updated_by= $TagData->updated_by;
- 					
- 					$result = $db->updateTags($id,$tag_name,$tag_description,$start_date,$end_date,$last_updated,$updated_by);
+ 					$company_id =$TagData->company_id;
+ 					$result = $db->updateTags($id,$tag_name,$tag_description,$start_date,$end_date,$last_updated,$updated_by,$company_id);
  					
  					if ($result)
  					{
@@ -2029,9 +2041,9 @@ $app->post('/deleteRole',  function() use($app) {
  										$start_date = $TokenMasterData->start_date;
  										$end_date = $TokenMasterData->end_date;
  										///$date_created= $SprintData->date_created;
- 								
+ 										$company_id =$TokenMasterData->company_id;
  										
- 										$res = $db->addTokenMaster($user_id,$auth_token,$auth_token,$issued_on,$issued_for,$expireson,$date_created,$created_by,$start_date,$end_date);
+ 										$res = $db->addTokenMaster($user_id,$auth_token,$auth_token,$issued_on,$issued_for,$expireson,$date_created,$created_by,$start_date,$end_date,$company_id);
  										if ($res)
  										{
  											$response["error"] = false;
@@ -2067,8 +2079,8 @@ $app->post('/deleteRole',  function() use($app) {
  											//$last_updated= $SprintData->last_updated;
  											$last_updated = $db->ISTConversion();
  											$updated_by= $TokenMasterData->updated_by;
- 											
- 											$result = $db->updateTokenMaster($id,$user_id,$auth_token,$issued_on,$issued_for,$expireson,$start_date,$end_date,$last_updated,$updated_by);
+ 											$company_id =$TokenMasterData->company_id;
+ 											$result = $db->updateTokenMaster($id,$user_id,$auth_token,$issued_on,$issued_for,$expireson,$start_date,$end_date,$last_updated,$updated_by,$company_id);
  											
  											if ($result)
  											{
@@ -2162,55 +2174,54 @@ $app->post('/deleteRole',  function() use($app) {
  		* Adding Tickets
  		* url - /addTickets
  		* method - POST
- 		* params-ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by
+ 		* params-ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by,company_id
  	*/
- 															$app->post('/addTickets', function() use ($app) {
- 																$response = array();
- 																$db = new DataDAO();
- 																$TicketDetails=json_decode(file_get_contents("php://input"));
- 																$Ticket=$TicketDetails->TicketInfo;
- 																$TicketData=json_decode($Ticket);
- 																$ticket_number = $TicketData->ticket_number;
- 																$is_billable = $TicketData->is_billable;
- 																$sprint_id = $TicketData->sprint_id;
- 																$ticket_type = $TicketData->ticket_type;
- 																$project_id = $TicketData->project_id;
- 																$ticket_description = $TicketData->ticket_description;
- 																$ticket_date = $TicketData->ticket_date;
- 																$priority = $TicketData->priority;
- 																$ticket_status = $TicketData->ticket_status;
- 																$due_date = $TicketData->due_date;
- 																$team_id = $TicketData->team_id;
- 																$external_ticket_id = $TicketData->external_ticket_id;
- 																$estimated_hours = $TicketData->estimated_hours;
- 																$tag_id = $TicketData->tag_id;
- 																$start_date = $TicketData->start_date;
- 																$end_date = $TicketData->end_date;
- 																$status = 1;
- 																//$date_created= $TagData->date_created;
- 																$date_created = $db->ISTConversion();
- 																$created_by= $TicketData->created_by;
+ 			$app->post('/addTickets', function() use ($app) {
+ 			$response = array();
+ 			$db = new DataDAO();
+ 			$TicketDetails=json_decode(file_get_contents("php://input"));
+ 			$Ticket=$TicketDetails->TicketInfo;
+ 			$TicketData=json_decode($Ticket);
+ 			$ticket_number = $TicketData->ticket_number;
+ 			$is_billable = $TicketData->is_billable;
+ 			$sprint_id = $TicketData->sprint_id;
+ 			$ticket_type = $TicketData->ticket_type;
+ 			$project_id = $TicketData->project_id;
+ 			$ticket_description = $TicketData->ticket_description;
+ 			$ticket_date = $TicketData->ticket_date;
+ 			$priority = $TicketData->priority;
+ 			$ticket_status = $TicketData->ticket_status;
+ 			$due_date = $TicketData->due_date;
+ 			$team_id = $TicketData->team_id;
+ 			$external_ticket_id = $TicketData->external_ticket_id;
+ 			$estimated_hours = $TicketData->estimated_hours;
+ 			$tag_id = $TicketData->tag_id;
+ 			$start_date = $TicketData->start_date;
+ 			$end_date = $TicketData->end_date;
+ 			$status = 1;
+ 			//$date_created= $TagData->date_created;
+ 			$date_created = $db->ISTConversion();
+ 			$created_by= $TicketData->created_by;
+ 			$company_id=$TicketData->company_id;
+ 			$res = $db->addTickets($ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$status,$date_created,$created_by,$company_id);
+ 			if ($res)
+ 			{
+ 				$response["error"] = false;
+ 				$response["message"] = "Tickets are created successfully";
+ 			} else
+ 			{
+ 				$response["error"] = true;
+ 				$response["message"] = "Oops! An error occurred while creating Tickets";
+ 			}
+ 			echoRespnse(201, $response);
+ 	});
  																
- 																
- 																$res = $db->addTickets($ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$status,$date_created,$created_by);
- 																if ($res)
- 																{
- 																	$response["error"] = false;
- 																	$response["message"] = "Tickets are created successfully";
- 																} else
- 																{
- 																	$response["error"] = true;
- 																	$response["message"] = "Oops! An error occurred while creating Tickets";
- 																}
- 																echoRespnse(201, $response);
- 															});
- 																
- 																/**
- 																 * Updating Tickets
- 																 * url - /updateTickets
- 																 * method - PUT
- 																 * params -id
- 																 */
+/**
+ 	 * Updating Tickets
+ 	 * url - /updateTickets
+ 	 * method - PUT
+ 	 * params -id
+ 	 */														
  																$app->post('/updateTickets', function() use ($app) {
  																	$response = array();
  																	$db = new DataDAO();
@@ -2237,8 +2248,8 @@ $app->post('/deleteRole',  function() use($app) {
  																	//$last_updated= $TagData->last_updated;
  																	$last_updated = $db->ISTConversion();
  																	$updated_by= $TicketData->updated_by;
- 																	
- 																	$result = $db->updateTickets($id,$ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$last_updated,$updated_by);
+ 																	$company_id=$TicketData->company_id;
+ 																	$result = $db->updateTickets($id,$ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$last_updated,$updated_by,$company_id);
  																	
  																	if ($result)
  																	{
@@ -2331,7 +2342,7 @@ $app->post('/deleteRole',  function() use($app) {
  		* Adding Sprint Projects
  		* url - /addSprintProjects
  		* method - POST
- 		* params-sprint_id,project_id,start_date,end_date,status,date_created,created_by
+ 		* params-sprint_id,project_id,start_date,end_date,status,date_created,created_by,company_id;
  */
  			$app->post('/addSprintProjects', function() use ($app) {
  			$response = array();
@@ -2347,8 +2358,8 @@ $app->post('/deleteRole',  function() use($app) {
  		    //$date_created= $SprintProjectsData->date_created;
  			$date_created = $db->ISTConversion();
  			$created_by= $SprintProjectsData->created_by;
- 			
- 			$res = $db->addSprintProjects($sprint_id,$project_id,$start_date,$end_date,$status,$date_created,$created_by);
+ 			$company_id =$SprintProjectsData->company_id;
+ 			$res = $db->addSprintProjects($sprint_id,$project_id,$start_date,$end_date,$status,$date_created,$created_by,$company_id);
  			if ($res)
  				{
  				$response["error"] = false;
@@ -2383,8 +2394,8 @@ $app->post('/deleteRole',  function() use($app) {
  					//$last_updated= $TagData->last_updated;
  					$last_updated = $db->ISTConversion();
  					$updated_by= $SprintProjectsData->updated_by;
- 					
- 					$result = $db->updateSprintProjects($id,$sprint_id,$project_id,$start_date,$end_date,$last_updated,$updated_by);
+ 					$company_id =$SprintProjectsData->company_id;
+ 					$result = $db->updateSprintProjects($id,$sprint_id,$project_id,$start_date,$end_date,$last_updated,$updated_by,$company_id);
  					
  					if ($result)
  					{
@@ -2641,7 +2652,11 @@ $app->post('/deleteRole',  function() use($app) {
  		$created_by= $permissionmasterData->created_by;
  		$start_date= $permissionmasterData->start_date;
  		$end_date= $permissionmasterData->end_date;
- 		$res = $db->addpermissionmaster($permission_name,$status,$date_created,$created_by,$start_date,$end_date);
+ 		$page_name = $permissionmasterData->page_name;
+ 		$permission = $permissionmasterData->permission;
+ 		$role_id = $permissionmasterData->role_id;
+ 		$company_id = $permissionmasterData->company_id;
+ 		$res = $db->addpermissionmaster($permission_name,$status,$date_created,$created_by,$start_date,$end_date,$page_name,$permission,$role_id,$company_id);
  		if ($res)
  		{
  			$response["error"] = false;
@@ -2674,7 +2689,12 @@ $app->post('/deleteRole',  function() use($app) {
  			$updated_by= $permissionmasterData->updated_by;
  			$start_date= $permissionmasterData->start_date;
  			$end_date= $permissionmasterData->end_date;
- 			$result = $db->updatepermissionmaster($id,$permission_name,$last_updated,$updated_by,$start_date,$end_date);
+ 			$page_name = $permissionmasterData->page_name;
+ 			$permission = $permissionmasterData->permission;
+ 			$role_id = $permissionmasterData->role_id;
+ 			$company_id = $permissionmasterData->company_id;
+ 			
+ 			$result = $db->updatepermissionmaster($id,$permission_name,$last_updated,$updated_by,$start_date,$end_date,$page_name,$permission,$role_id,$company_id);
  			
  			if ($result)
  			{
@@ -2769,7 +2789,7 @@ $app->post('/deleteRole',  function() use($app) {
  	* Adding  rolepermission
  	* url - /addrolepermission
  	* method - POST
- 	* params-	role_id	,permission_id,page_name,status,date_created,created_by,start_date,end_date
+ 	* params-	role_id	,permission_id,page_name,status,date_created,created_by,start_date,end_date,company_id
  */
  		$app->post('/addrolepermission', function() use ($app) {
  		$response = array();
@@ -2786,7 +2806,8 @@ $app->post('/deleteRole',  function() use($app) {
  		$created_by= $rolepermissionData->created_by;
  		$start_date= $rolepermissionData->start_date;
  		$end_date= $rolepermissionData->end_date;
- 		$res = $db->addrolepermission($role_id,$permission_id,$page_name,$status,$date_created,$created_by,$start_date,$end_date);
+ 		$company_id = $rolepermissionData->company_id;
+ 		$res = $db->addrolepermission($role_id,$permission_id,$page_name,$status,$date_created,$created_by,$start_date,$end_date,$company_id);
  		if ($res)
  		{
  		$response["error"] = false;
@@ -2820,7 +2841,8 @@ $app->post('/deleteRole',  function() use($app) {
  				$updated_by= $rolepermissionData->updated_by;
  				$start_date= $rolepermissionData->start_date;
  				$end_date= $rolepermissionData->end_date;
- 				$result = $db->updaterolepermission($id,$role_id,$page_name,$permission_id,$last_updated,$updated_by,$start_date,$end_date);
+ 				$company_id = $rolepermissionData->company_id;
+ 				$result = $db->updaterolepermission($id,$role_id,$page_name,$permission_id,$last_updated,$updated_by,$start_date,$end_date,$company_id);
  				
  				if ($result)
  				{
@@ -2905,9 +2927,7 @@ $app->post('/deleteRole',  function() use($app) {
  								{
  									echoRespnse(201, $res);
  								}
- 								
- 								
- 							});
+ 						});
 //***************************************************************Sprint History *************************************************************************************************************************************************//	
 /**
  	* Fetching Sprint History based on the team_id,Sprint,Project 
@@ -2923,14 +2943,12 @@ $app->post('/deleteRole',  function() use($app) {
  									{
  										echoRespnse(201, $res);
  									}
- 									
- 									
- 								});
+ 							});
  							
  							
  							
  							
-//***************************************************************Current Sprint*************************************************************************************************************************************************//	
+//***************************************************************Current Sprint***************************************************************************************************************************************************************//	
 /**
  	* Fetching Current Sprint by comparing current_date with start_date and end_date of uni_sprint_plan
  	* url-/getAllCurrentSprint
@@ -2947,10 +2965,146 @@ $app->post('/deleteRole',  function() use($app) {
  		}
  		});
  										
- 										
- 								
- 								
- 							
+//**********************************************************************************************************TasksToResources****************************************************************************************************************************************//
+/**
+ 	* Adding TasksToResources
+ 	* url - /addTasksToResources
+    * method - POST
+ 	* params-ticket_id,sprint_id,status,task,task_description,due_date,priority,task_status,team_member_id,notes,company_id,is_billable,task_type,start_date,end_date,tag_id,project_id
+ */
+ 			$app->post('/addTasksToResources', function() use ($app) {
+ 				$response = array();
+ 				$db = new DataDAO();
+ 				$TasksToResourcesDetails=json_decode(file_get_contents("php://input"));
+ 				$TasksToResources=$TasksToResourcesDetails->TasksToResourcesInfo;
+ 				$TasksToResourcesData=json_decode($TasksToResources);
+ 				$ticket_id = $TasksToResourcesData->ticket_id;
+ 				$sprint_id = $TasksToResourcesData->sprint_id;
+ 				$status = 1;
+ 				$task =$TasksToResourcesData->task;
+ 				$task_description = $TasksToResourcesData->task_description;
+ 				$due_date = $TasksToResourcesData->due_date;
+ 				$priority = $TasksToResourcesData->priority;
+ 				//$date_created= TasksToResources->date_created;
+ 				$date_created = $db->ISTConversion();
+ 				$task_status= $TasksToResourcesData->task_status;
+ 				$team_member_id = $TasksToResourcesData->team_member_id;
+ 				$notes = $TasksToResourcesData->notes;
+ 				$company_id = $TasksToResourcesData->company_id;
+ 				$is_billable = $TasksToResourcesData->is_billable;
+ 				$task_type = $TasksToResourcesData->task_type;
+ 				$tag_id = $TasksToResourcesData->tag_id;
+ 				$start_date= $db->ISTConversion();
+ 				$end_date= '2100-12-31 23:59:59';
+ 				$project_id = $TasksToResourcesData->project_id;
+ 				$res = $db->addTasksToResources($ticket_id,$sprint_id,$status,$task,$task_description,$due_date,$priority,$date_created,$task_status,$team_member_id,$notes,$company_id,$is_billable,$task_type,$tag_id,$start_date,$end_date,$project_id);
+ 				if ($res)
+ 				{
+ 					$response["error"] = false;
+ 					$response["message"] = "TasksToResources are created successfully";
+ 				} else
+ 				{
+ 					$response["error"] = true;
+ 					$response["message"] = "Oops! An error occurred while creating TasksToResources";
+ 				}
+ 				echoRespnse(201, $response);
+ 			});
+ 				
+/**
+ 	* Updating TasksToResources
+ 	* url - /updateTasksToResources
+ 	* method - PUT
+ 	* params -id
+*/
+ 			$app->post('/updateTasksToResources',function() use($app) {
+ 				$db = new DataDAO();
+ 				$response = array();
+ 				$TasksToResourcesDetails=json_decode(file_get_contents("php://input"));
+ 				$TasksToResources=$TasksToResourcesDetails->TasksToResourcesInfo;
+ 				$TasksToResourcesData=json_decode($TasksToResources);
+ 				$id = $TasksToResourcesData->id;
+ 				$ticket_id = $TasksToResourcesData->ticket_id;
+ 				$sprint_id = $TasksToResourcesData->sprint_id;
+ 				//$status = 1;
+ 				$task =$TasksToResourcesData->task;
+ 				$task_description = $TasksToResourcesData->task_description;
+ 				$due_date = $TasksToResourcesData->due_date;
+ 				$priority = $TasksToResourcesData->priority;
+ 				//$date_created= TasksToResources->date_created;
+ 				//$date_created = $db->ISTConversion();
+ 				$task_status= $TasksToResourcesData->task_status;
+ 				$team_member_id = $TasksToResourcesData->team_member_id;
+ 				$notes = $TasksToResourcesData->notes;
+ 				$company_id = $TasksToResourcesData->company_id;
+ 				$is_billable = $TasksToResourcesData->is_billable;
+ 				$task_type = $TasksToResourcesData->task_type;
+ 				$tag_id = $TasksToResourcesData->tag_id;
+ 				$start_date= $db->ISTConversion();
+ 				$end_date= '2100-12-31 23:59:59';
+ 				$project_id = $TasksToResourcesData->project_id;
+ 				$last_updated = $db->ISTConversion();
+ 				$updated_by= $TasksToResourcesData->updated_by;
+ 				
+ 				$result = $db->updateTasksToResources($id,$ticket_id,$sprint_id,$task,$task_description,$due_date,$priority,$task_status,$team_member_id,$notes,$company_id,$is_billable,$task_type,$tag_id,$start_date,$end_date,$project_id,$last_updated,$updated_by);
+ 				
+ 				if ($result)
+ 				{
+ 					$response["error"] = false;
+ 					$response["message"] = "You are successfully updated TasksToResources";
+ 				} else
+ 				{
+ 					$response["error"] = true;
+ 					$response["message"] = "Oops! An error occurred while updating TasksToResources";
+ 				}
+ 				echoRespnse(201, $response);
+ 			});
+ 			
+//**********************************************************************************************************TicketsToResources****************************************************************************************************************************************//
+ 				/**
+ 				 * Adding TicketsToResources
+ 				 * url - /addTicketsToResources
+ 				 * method - POST
+ 				 * params-is_billable,sprint_id,ticket_type,project_id,ticket_number,ticket_description,due_date,priority,ticket_status,start_date,end_date,company_id    notes,user_id,ticket_name
+ 				 */
+ 				$app->post('/addTicketsToResources', function() use ($app) {
+ 					$response = array();
+ 					$db = new DataDAO();
+ 					$TicketsToResourcesDetails=json_decode(file_get_contents("php://input"));
+ 					$TicketsToResources=$TicketsToResourcesDetails->TicketsToResources;
+ 					$TicketsToResourcesData=json_decode($TicketsToResources);
+ 					$is_billable = $TicketsToResourcesData->is_billable;
+ 					$sprint_id = $TicketsToResourcesData->sprint_id;
+ 					$status = 1;
+ 					$ticket_type =$TicketsToResourcesData->ticket_type;
+ 					$project_id = $TicketsToResourcesData->project_id;
+ 					$ticket_number = $TicketsToResourcesData->ticket_number;
+ 					$ticket_description = $TicketsToResourcesData->ticket_description;
+ 					$due_date = $TicketsToResourcesData->due_date;
+ 					$priority = $TicketsToResourcesData->priority;
+ 					//$date_created= TasksToResources->date_created;
+ 					
+ 					$ticket_status= $TicketsToResourcesData->ticket_status;
+ 					$company_id = $TicketsToResourcesData->company_id;
+ 					
+ 					//$company_id = $TicketsToResourcesData->company_id;
+ 				    $start_date= $db->ISTConversion();
+ 					$end_date= '2100-12-31 23:59:59';
+ 					$date_created = $db->ISTConversion();	
+ 					$team_id = $TicketsToResourcesData->team_id;
+ 					$tag_id = $TicketsToResourcesData->tag_id;
+ 					$res = $db->addTicketsToResources($is_billable,$sprint_id,$status,$ticket_type,$project_id,$ticket_number,$ticket_description,$due_date,$priority,$ticket_status,$start_date,$end_date,$team_id,$tag_id,$company_id);
+ 					if ($res)
+ 					{
+ 						$response["error"] = false;
+ 						$response["message"] = "TicketsToResources are created successfully";
+ 					} else
+ 					{
+ 						$response["error"] = true;
+ 						$response["message"] = "Oops! An error occurred while creating TicketsToResources";
+ 					}
+ 					echoRespnse(201, $response);
+ 				});
+ 					
  							
 //***************************************************************Forgot Password*************************************************************************************************************************************************//	
 
@@ -3048,5 +3202,5 @@ $app->post('/changePassword',  function() use($app) {
 	
 					
 		
- 	$app->run();
+$app->run();
 ?>

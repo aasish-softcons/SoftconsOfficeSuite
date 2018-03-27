@@ -78,18 +78,18 @@ class DataDAO extends AbstractDAO {
     //**************************************************Timesheet_config************************************************************************/
     /**
      * Adding addTimesheetConfig
-     * params-company_id,timesheet_frequency,status,date_created,created_by,start_date,end_date
+     * params-company_id,timesheet_type,status,date_created,created_by,start_date,end_date
      **/
     
-    public function addTimesheetConfig($company_id,$timesheet_frequency,$status,$date_created,$created_by,$start_date,$end_date)
+    public function addTimesheetConfig($company_id,$timesheet_type,$status,$date_created,$created_by,$start_date,$end_date)
     {
     	$response = array();
     	
     	try
     	{
-    		$query="INSERT INTO timesheet_config(company_id,timesheet_frequency,status,date_created,created_by,start_date,end_date)VALUES(:company_id,:timesheet_frequency,:status,:date_created,:created_by,:start_date,:end_date)";
+    		$query="INSERT INTO timesheet_config(company_id,timesheet_type,status,date_created,created_by,start_date,end_date)VALUES(:company_id,:timesheet_type,:status,:date_created,:created_by,:start_date,:end_date)";
     		
-    		$bind_array=array("company_id"=>$company_id,"timesheet_frequency"=>$timesheet_frequency,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+    		$bind_array=array("company_id"=>$company_id,"timesheet_type"=>$timesheet_type,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
     		
     		$rslt=self::insertQuery($query,$bind_array);
     		if ($rslt)
@@ -112,12 +112,12 @@ class DataDAO extends AbstractDAO {
      * method - PUT
      * params -id
      */
-    public static function updateTimesheetConfig($id,$company_id,$timesheet_frequency,$last_updated,$updated_by,$start_date,$end_date)
+    public static function updateTimesheetConfig($id,$company_id,$timesheet_type,$last_updated,$updated_by,$start_date,$end_date)
     {
     	try{
-    		$query="UPDATE  timesheet_config SET company_id=:company_id,timesheet_frequency=:timesheet_frequency,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
+    		$query="UPDATE  timesheet_config SET company_id=:company_id,timesheet_type=:timesheet_type,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
     		
-    		$rslt= self::updateQuery($query,array("id"=>$id,"company_id"=>$company_id,"timesheet_frequency"=>$timesheet_frequency,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
+    		$rslt= self::updateQuery($query,array("id"=>$id,"company_id"=>$company_id,"timesheet_type"=>$timesheet_type,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
     		if ($rslt) {
     			
     			return $rslt;
@@ -1176,18 +1176,18 @@ class DataDAO extends AbstractDAO {
    //***********************************************************************************************************************Team*************************************************************************************************************************************//
    /**
     * Adding Team
-    * params-team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members
+    * params-team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members,department_id
     **/
    
-   public function addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date,$location,$function,$teamlead,$members)
+   public function addTeams($team_name,$status,$company_id,$date_created,$created_by,$start_date,$end_date,$location,$function,$teamlead,$members,$department_id)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO  uni_team(team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members)VALUES(:team_name,:status,:company_id,:date_created,:created_by,:start_date,:end_date,:location,:function,:teamlead,:members)";
+   		$query="INSERT INTO  uni_team(team_name,status,company_id,date_created,created_by,start_date,end_date,location,function,teamlead,members,department_id)VALUES(:team_name,:status,:company_id,:date_created,:created_by,:start_date,:end_date,:location,:function,:teamlead,:members,department_id)";
    		
-   		$bind_array=array("team_name"=>$team_name,"status"=>$status,"company_id"=>$company_id,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date,"location"=>$location,"function"=>$function,"teamlead"=>$teamlead,"members"=>$members);
+   		$bind_array=array("team_name"=>$team_name,"status"=>$status,"company_id"=>$company_id,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date,"location"=>$location,"function"=>$function,"teamlead"=>$teamlead,"members"=>$members,"department_id"=>$department_id);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		/*if ($rslt)
@@ -1220,14 +1220,14 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date,$location,$function,$teamlead,$members)
+   public static function updateTeam($id,$team_name,$company_id,$last_updated,$updated_by,$start_date,$end_date,$location,$function,$teamlead,$members,$department_id)
    {
    	try{
    		$query="UPDATE  uni_team SET team_name=:team_name,company_id=:company_id,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date,location=:location,function=:function,
-         teamlead=:teamlead,members=:members WHERE id=:id";
+         teamlead=:teamlead,members=:members,department_id=:department_id WHERE id=:id";
    		
    		$rslt= self::updateQuery($query,array("id"=>$id,"team_name"=>$team_name,"company_id"=>$company_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date,"location"=>$location,
-   				"function"=>$function,"teamlead"=>$teamlead,"members"=>$members));
+   				"function"=>$function,"teamlead"=>$teamlead,"members"=>$members,"department_id"=>$department_id));
    		if ($rslt) {
    			
    			return $rslt;
@@ -1342,6 +1342,7 @@ class DataDAO extends AbstractDAO {
    		if ($rslt)
    		{
    			return $rslt;
+   			
    		}
    		else
    		{
@@ -1609,18 +1610,18 @@ class DataDAO extends AbstractDAO {
    //***************************************************************Tags*********************************************************************************************************//
    /**
     * Adding Tags
-    * params-tag_name,tag_description,start_date,end_date,status,date_created,created_by
+    * params-tag_name,tag_description,start_date,end_date,status,date_created,created_by,company_id
     **/
    
-   public function addTags($tag_name,$tag_description,$start_date,$end_date,$status,$date_created,$created_by)
+   public function addTags($tag_name,$tag_description,$start_date,$end_date,$status,$date_created,$created_by,$company_id)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_tags(tag_name,tag_description,start_date,end_date,status,date_created,created_by)VALUES(:tag_name,:tag_description,:start_date,:end_date,:status,:date_created,:created_by)";
+   		$query="INSERT INTO uni_tags(tag_name,tag_description,start_date,end_date,status,date_created,created_by,company_id)VALUES(:tag_name,:tag_description,:start_date,:end_date,:status,:date_created,:created_by,:company_id)";
    		
-   		$bind_array=array("tag_name"=>$tag_name,"tag_description"=>$tag_description,"start_date"=>$start_date,"end_date"=>$end_date,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("tag_name"=>$tag_name,"tag_description"=>$tag_description,"start_date"=>$start_date,"end_date"=>$end_date,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"company_id"=>$company_id);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -1644,12 +1645,12 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateTags($id,$tag_name,$tag_description,$start_date,$end_date,$last_updated,$updated_by)
+   public static function updateTags($id,$tag_name,$tag_description,$start_date,$end_date,$last_updated,$updated_by,$company_id)
    {
    	try{
-   		$query="UPDATE  uni_tags SET tag_name=:tag_name,tag_description=:tag_description,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		$query="UPDATE  uni_tags SET tag_name=:tag_name,tag_description=:tag_description,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by,company_id=:company_id WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"tag_name"=>$tag_name,"tag_description"=>$tag_description,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"tag_name"=>$tag_name,"tag_description"=>$tag_description,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"company_id"=>$company_id));
    		if ($rslt) {
    			
    			return $rslt;
@@ -1752,18 +1753,18 @@ class DataDAO extends AbstractDAO {
    //***************************************************************Token Master*********************************************************************************************************//
    /**
     * Adding Token Master
-    * params-user_id,auth_token,issued_on,issued_for,expireson,date_created,created_by,start_date,end_date
+    * params-user_id,auth_token,issued_on,issued_for,expireson,date_created,created_by,start_date,end_date,company_id 
     **/
    
-   public function addTokenMaster($user_id,$auth_token,$auth_token,$issued_on,$issued_for,$expireson,$date_created,$created_by,$start_date,$end_date)
+   public function addTokenMaster($user_id,$auth_token,$auth_token,$issued_on,$issued_for,$expireson,$date_created,$created_by,$start_date,$end_date,$company_id )
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_tokenmaster(user_id,auth_token,issued_on,issued_for,expireson,date_created,created_by,start_date,end_date)VALUES(:user_id,:auth_token,:issued_on,:issued_for,:expireson,:date_created,:created_by,:start_date,:end_date)";
+   		$query="INSERT INTO uni_tokenmaster(user_id,auth_token,issued_on,issued_for,expireson,date_created,created_by,start_date,end_date,company_id)VALUES(:user_id,:auth_token,:issued_on,:issued_for,:expireson,:date_created,:created_by,:start_date,:end_date,:company_id)";
    		
-   		$bind_array=array("user_id"=>$user_id,"auth_token"=>$auth_token,"issued_on"=>$issued_on,"issued_for"=>$issued_for,"expireson"=>$expireson,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+   		$bind_array=array("user_id"=>$user_id,"auth_token"=>$auth_token,"issued_on"=>$issued_on,"issued_for"=>$issued_for,"expireson"=>$expireson,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date,"company_id"=>$company_id);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -1787,12 +1788,12 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateTokenMaster($id,$user_id,$auth_token,$issued_on,$issued_for,$expireson,$start_date,$end_date,$last_updated,$updated_by)
+   public static function updateTokenMaster($id,$user_id,$auth_token,$issued_on,$issued_for,$expireson,$start_date,$end_date,$last_updated,$updated_by,$company_id)
    {
    	try{
-   		$query="UPDATE  uni_tokenmaster SET user_id=:user_id,auth_token=:auth_token,issued_on=:issued_on,issued_for=:issued_for,expireson=:expireson,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		$query="UPDATE  uni_tokenmaster SET user_id=:user_id,auth_token=:auth_token,issued_on=:issued_on,issued_for=:issued_for,expireson=:expireson,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by,company_id=:company_id WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"user_id"=>$user_id,"auth_token"=>$auth_token,"issued_on"=>$issued_on,"issued_for"=>$issued_for,"expireson"=>$expireson,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"user_id"=>$user_id,"auth_token"=>$auth_token,"issued_on"=>$issued_on,"issued_for"=>$issued_for,"expireson"=>$expireson,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"company_id"=>$company_id));
    		if ($rslt) {
    			
    			return $rslt;
@@ -1894,19 +1895,19 @@ class DataDAO extends AbstractDAO {
    /** Adding Tickets
    * url - /addTickets
    * method - POST
-   * params-ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by
+   * params-ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by,company_id
    */
    
-   public function addTickets($ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$status,$date_created,$created_by)
+   public function addTickets($ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$status,$date_created,$created_by,$company_id)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_tickets(ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by)
-                VALUES(:ticket_number,:is_billable,:sprint_id,:ticket_type,:project_id,:ticket_description,:ticket_date,:priority,:ticket_status,:due_date,:team_id,:external_ticket_id,:estimated_hours,:tag_id,:start_date,:end_date,:status,:date_created,:created_by)";
+   		$query="INSERT INTO uni_tickets(ticket_number,is_billable,sprint_id,ticket_type,project_id,ticket_description,ticket_date,priority,ticket_status,due_date,team_id,external_ticket_id,estimated_hours,tag_id,start_date,end_date,status,date_created,created_by,company_id)
+                VALUES(:ticket_number,:is_billable,:sprint_id,:ticket_type,:project_id,:ticket_description,:ticket_date,:priority,:ticket_status,:due_date,:team_id,:external_ticket_id,:estimated_hours,:tag_id,:start_date,:end_date,:status,:date_created,:created_by,:company_id)";
    		
-   		$bind_array=array("ticket_number"=>$ticket_number,"is_billable"=>$is_billable,"sprint_id"=>$sprint_id,"ticket_type"=>$ticket_type,"project_id"=>$project_id,"ticket_description"=>$ticket_description,"ticket_date"=>$ticket_date,"priority"=>$priority,"ticket_status"=>$ticket_status,"due_date"=>$due_date,"team_id"=>$team_id,"external_ticket_id"=>$external_ticket_id,"estimated_hours"=>$estimated_hours,"tag_id"=>$tag_id,"start_date"=>$start_date,"end_date"=>$end_date,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("ticket_number"=>$ticket_number,"is_billable"=>$is_billable,"sprint_id"=>$sprint_id,"ticket_type"=>$ticket_type,"project_id"=>$project_id,"ticket_description"=>$ticket_description,"ticket_date"=>$ticket_date,"priority"=>$priority,"ticket_status"=>$ticket_status,"due_date"=>$due_date,"team_id"=>$team_id,"external_ticket_id"=>$external_ticket_id,"estimated_hours"=>$estimated_hours,"tag_id"=>$tag_id,"start_date"=>$start_date,"end_date"=>$end_date,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"company_id"=>$company_id);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -1929,13 +1930,13 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updateTickets($id,$ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$last_updated,$updated_by)
+   public static function updateTickets($id,$ticket_number,$is_billable,$sprint_id,$ticket_type,$project_id,$ticket_description,$ticket_date,$priority,$ticket_status,$due_date,$team_id,$external_ticket_id,$estimated_hours,$tag_id,$start_date,$end_date,$last_updated,$updated_by,$company_id)
    {
    	try{
    		$query="UPDATE  uni_tickets SET ticket_number=:ticket_number,is_billable=:is_billable,sprint_id=:sprint_id,ticket_type=:ticket_type,project_id=:project_id,ticket_description=:ticket_description,
-        ticket_date=:ticket_date,ticket_date=:ticket_date,priority=:priority,ticket_status=:ticket_status,due_date=:due_date,team_id=:team_id,external_ticket_id=:external_ticket_id,tag_id=:tag_id,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+        ticket_date=:ticket_date,ticket_date=:ticket_date,priority=:priority,ticket_status=:ticket_status,due_date=:due_date,team_id=:team_id,external_ticket_id=:external_ticket_id,tag_id=:tag_id,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by,company_id=:company_id WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"ticket_number"=>$ticket_number,"is_billable"=>$is_billable,"sprint_id"=>$sprint_id,"ticket_type"=>$ticket_type,"project_id"=>$project_id,"ticket_description"=>$ticket_description,"ticket_date"=>$ticket_date,"priority"=>$priority,"ticket_status"=>$ticket_status,"due_date"=>$due_date,"team_id"=>$team_id,"external_ticket_id"=>$external_ticket_id,"estimated_hours"=>$estimated_hours,"tag_id"=>$tag_id,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"ticket_number"=>$ticket_number,"is_billable"=>$is_billable,"sprint_id"=>$sprint_id,"ticket_type"=>$ticket_type,"project_id"=>$project_id,"ticket_description"=>$ticket_description,"ticket_date"=>$ticket_date,"priority"=>$priority,"ticket_status"=>$ticket_status,"due_date"=>$due_date,"team_id"=>$team_id,"external_ticket_id"=>$external_ticket_id,"estimated_hours"=>$estimated_hours,"tag_id"=>$tag_id,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"company_id"=>$company_id));
    		if ($rslt) {
    			
    			return $rslt;
@@ -2033,18 +2034,18 @@ class DataDAO extends AbstractDAO {
    //***************************************************************Sprint Projects*********************************************************************************************************//
    /**
     * Adding Sprint Projects
-    * params-sprint_id,project_id,start_date,end_date,status,date_created,created_by
+    * params-sprint_id,project_id,start_date,end_date,status,date_created,created_by,company_id
     **/
    
-   public function addSprintProjects($sprint_id,$project_id,$start_date,$end_date,$status,$date_created,$created_by)
+   public function addSprintProjects($sprint_id,$project_id,$start_date,$end_date,$status,$date_created,$created_by,$company_id)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO uni_sprint_projects(sprint_id,project_id,start_date,end_date,status,date_created,created_by)VALUES(:sprint_id,:project_id,:start_date,:end_date,:status,:date_created,:created_by)";
+   		$query="INSERT INTO uni_sprint_projects(sprint_id,project_id,start_date,end_date,status,date_created,created_by,company_id)VALUES(:sprint_id,:project_id,:start_date,:end_date,:status,:date_created,:created_by,:company_id)";
    		
-   		$bind_array=array("sprint_id"=>$sprint_id,"project_id"=>$project_id,"start_date"=>$start_date,"end_date"=>$end_date,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by);
+   		$bind_array=array("sprint_id"=>$sprint_id,"project_id"=>$project_id,"start_date"=>$start_date,"end_date"=>$end_date,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"company_id"=>$company_id);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -2063,17 +2064,17 @@ class DataDAO extends AbstractDAO {
    }
    
     /**
- 	 * Updating Tags
+ 	 * Updating SprintProjects
  	 * url - /updateSprintProjects
  	 * method - PUT
  	 * params -id
   */
-   public static function updateSprintProjects($id,$sprint_id,$project_id,$start_date,$end_date,$last_updated,$updated_by)
+   public static function updateSprintProjects($id,$sprint_id,$project_id,$start_date,$end_date,$last_updated,$updated_by,$company_id)
    {
    	try{
-   		$query="UPDATE  uni_sprint_projects SET sprint_id=:sprint_id,project_id=:project_id,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		$query="UPDATE  uni_sprint_projects SET sprint_id=:sprint_id,project_id=:project_id,start_date=:start_date,end_date=:end_date,last_updated=:last_updated,updated_by=:updated_by,company_id=:company_id WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"sprint_id"=>$sprint_id,"project_id"=>$project_id,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"sprint_id"=>$sprint_id,"project_id"=>$project_id,"start_date"=>$start_date,"end_date"=>$end_date,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"company_id"=>$company_id));
    		if ($rslt) {
    			
    			return $rslt;
@@ -2090,7 +2091,7 @@ class DataDAO extends AbstractDAO {
    
    
    /**
-    * Updating Token Master by Making Status Inactive
+    * Updating SprintProjects by Making Status Inactive
     * url - /deleteSprintProjects
     * method - PUT
     * params -id
@@ -2324,18 +2325,18 @@ class DataDAO extends AbstractDAO {
     * Adding permissionmaster
     * url - /addpermissions
     * method - POST
-    * params-	permission_name,status,date_created,created_by,start_date,end_date
+    * params-	permission_name,status,date_created,created_by,start_date,end_date,page_name,permission,role_id,company_id
     */
    
-   public function addpermissionmaster($permission_name,$status,$date_created,$created_by,$start_date,$end_date)
+   public function addpermissionmaster($permission_name,$status,$date_created,$created_by,$start_date,$end_date,$page_name,$permission,$role_id,$company_id)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO  uni_permission_master(permission_name,status,date_created,created_by,start_date,end_date)VALUES(:permission_name,:status,:date_created,:created_by,:start_date,:end_date)";
+   		$query="INSERT INTO  uni_permission_master(permission_name,status,date_created,created_by,start_date,end_date,page_name,permission,role_id,company_id)VALUES(:permission_name,:status,:date_created,:created_by,:start_date,:end_date,:page_name,:permission,:role_id,:company_id)";
    		
-   		$bind_array=array("permission_name"=>$permission_name,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+   		$bind_array=array("permission_name"=>$permission_name,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date,"page_name"=>$page_name,"permission"=>$permission_name,"role_id"=>$role_id,"company_id"=>$company_id);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -2359,12 +2360,12 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updatepermissionmaster($id,$permission_name,$last_updated,$updated_by,$start_date,$end_date)
+   public static function updatepermissionmaster($id,$permission_name,$last_updated,$updated_by,$start_date,$end_date,$page_name,$permission,$role_id,$company_id)
    {
    	try{
-   		$query="UPDATE  uni_permission_master SET permission_name=:permission_name,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
+   		$query="UPDATE  uni_permission_master SET permission_name=:permission_name,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date,page_name=:page_name,permission=:permission,role_id=:role_id,company_id=:company_id WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"permission_name"=>$permission_name,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"permission_name"=>$permission_name,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date,"page_name"=>$page_name,"permission"=>$permission,"role_id"=>$role_id,"company_id"=>$company_id));
    		if ($rslt) {
    			
    			return $rslt;
@@ -2468,18 +2469,18 @@ class DataDAO extends AbstractDAO {
     * Adding  rolepermission
     * url - /addrolepermission
     * method - POST
-    * params-role_id,permission_id,page_name,status,date_created,created_by,start_date,end_date
+    * params-role_id,permission_id,page_name,status,date_created,created_by,start_date,end_date,company_id
     */
    
-   public function addrolepermission($role_id,$permission_id,$page_name,$status,$date_created,$created_by,$start_date,$end_date)
+   public function addrolepermission($role_id,$permission_id,$page_name,$status,$date_created,$created_by,$start_date,$end_date,$company_id)
    {
    	$response = array();
    	
    	try
    	{
-   		$query="INSERT INTO  uni_role_permission(role_id,permission_id,page_name,status,date_created,created_by,start_date,end_date)VALUES(:role_id,:permission_id,:page_name,:status,:date_created,:created_by,:start_date,:end_date)";
+   		$query="INSERT INTO  uni_role_permission(role_id,permission_id,page_name,status,date_created,created_by,start_date,end_date,company_id)VALUES(:role_id,:permission_id,:page_name,:status,:date_created,:created_by,:start_date,:end_date,:company_id)";
    		
-   		$bind_array=array("role_id"=>$role_id,"permission_id"=>$permission_id,"page_name"=>$page_name,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date);
+   		$bind_array=array("role_id"=>$role_id,"permission_id"=>$permission_id,"page_name"=>$page_name,"status"=>$status,"date_created"=>$date_created,"created_by"=>$created_by,"start_date"=>$start_date,"end_date"=>$end_date,"company_id"=>$company_id);
    		
    		$rslt=self::insertQuery($query,$bind_array);
    		if ($rslt)
@@ -2503,12 +2504,12 @@ class DataDAO extends AbstractDAO {
     * method - PUT
     * params -id
     */
-   public static function updaterolepermission($id,$role_id,$page_name,$permission_id,$last_updated,$updated_by,$start_date,$end_date)
+   public static function updaterolepermission($id,$role_id,$page_name,$permission_id,$last_updated,$updated_by,$start_date,$end_date,$company_id)
    {
    	try{
-   		$query="UPDATE  uni_role_permission SET role_id=:role_id,page_name=:page_name,permission_id=:permission_id,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date WHERE id=:id";
+   		$query="UPDATE  uni_role_permission SET role_id=:role_id,page_name=:page_name,permission_id=:permission_id,last_updated=:last_updated,updated_by=:updated_by,start_date=:start_date,end_date=:end_date,company_id=:company_id WHERE id=:id";
    		
-   		$rslt= self::updateQuery($query,array("id"=>$id,"role_id"=>$role_id,"page_name"=>$page_name,"permission_id"=>$permission_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date));
+   		$rslt= self::updateQuery($query,array("id"=>$id,"role_id"=>$role_id,"page_name"=>$page_name,"permission_id"=>$permission_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by,"start_date"=>$start_date,"end_date"=>$end_date,"company_id"=>$company_id));
    		if ($rslt) {
    			
    			return $rslt;
@@ -2618,13 +2619,15 @@ class DataDAO extends AbstractDAO {
    
    public function getAllSprintHistory($team_id,$company_id,$cDate) {
    	
-   	$query=	"select sp.sprint_name,pm.project_name,t.id team_id,tm.isteamlead,tm.user_id,sp.created_by,t.teamlead,t.team_name,tk.ticket_id,tk.id task_id,sp.start_date,sp.end_date
-from uni_sprint_plan sp
-left join uni_sprint_projects sproj on sp.id=sproj.sprint_id
-join uni_project_master pm on pm.id=sproj.project_id
- join uni_team t on pm.team_id=t.id
- join uni_team_members tm on pm.id=tm.project_id
-join uni_tasks tk on sp.id=tk.sprint_id";
+   	$query=	"select sp.sprint_name,pm.project_name,t.id team_id,tm.isteamlead,tm.user_id,sp.created_by,t.teamlead,t.team_name,tk.ticket_id,tk.id task_id,sp.start_date,sp.end_date,tk.sprint_id,tk.task,tk.task_description,tk.task_date,tk.is_billable,tk.task_type,tk.priority,tk.task_status,tk.tag_id,tkt.ticket_number,tkt.sprint_id ticketsprint_id,tkt.ticket_type,tkt.project_id,tkt.ticket_date,tkt.ticket_status,tkt.start_date ticketstart_date,tkt.created_by ticketcreated_by
+   	from uni_sprint_plan sp
+   	left join uni_sprint_projects sproj on sp.id=sproj.sprint_id
+   	join uni_project_master pm on pm.id=sproj.project_id
+   	join uni_team t on pm.team_id=t.id
+   	join uni_team_members tm on pm.id=tm.project_id
+   	join uni_tasks tk on sp.id=tk.sprint_id
+   	join uni_tickets tkt on tkt.id=tk.ticket_id";
+   	
    	//$query = "SELECT * FROM uni_role_permission where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
    	$rslt = self::fetchQuery($query,array("team_id"=>$team_id,"company_id"=>$company_id,"cDate"=>$cDate));
    	if (sizeof($rslt))
@@ -2647,7 +2650,16 @@ join uni_tasks tk on sp.id=tk.sprint_id";
    public function  getAllCurrentSprint($team_id,$company_id,$cDate) {
    	
    	
-   	//$query = "SELECT * FROM uni_role_permission where start_date <= '$cDate' AND end_date >= '$cDate' AND company_id ='$company_id' AND status=1";
+ $query = "select sp.sprint_name,pm.project_name,t.id team_id,tm.isteamlead,tm.user_id,sp.created_by,t.teamlead,t.team_name,tk.ticket_id,tk.id task_id,sp.start_date,sp.end_date,tk.sprint_id,tk.task,tk.task_description,tk.task_date,tk.is_billable,tk.task_type,tk.priority,tk.task_status,tk.tag_id,tkt.ticket_number,tkt.sprint_id ticketsprint_id,tkt.ticket_type,tkt.project_id,tkt.ticket_date,tkt.ticket_status,tkt.start_date ticketstart_date,tkt.created_by ticketcreated_by
+from uni_sprint_plan sp
+left join uni_sprint_projects sproj on sp.id=sproj.sprint_id
+join uni_project_master pm on pm.id=sproj.project_id
+ join uni_team t on pm.team_id=t.id
+ join uni_team_members tm on pm.id=tm.project_id
+join uni_tasks tk on sp.id=tk.sprint_id
+join uni_tickets tkt on tkt.id=tk.ticket_id
+
+WHERE sp.end_date >= curdate() and sp.start_date < curdate()";
    	$rslt = self::fetchQuery($query,array($team_id,$company_id,$cDate));
    	if (sizeof($rslt))
    	{
@@ -2659,6 +2671,99 @@ join uni_tasks tk on sp.id=tk.sprint_id";
    	}
    	
    }
+   
+   //***************************************************************TasksToResources*********************************************************************************************************//
+   /**
+    * Adding TasksToResources
+    * url - /addTasksToResources
+    * method - POST
+    * params-ticket_id,sprint_id,status,task,task_description,due_date,priority,task_status,team_member_id,notes,company_id,is_billable,task_type,start_date,end_date,tag_id,project_id
+    */
+   
+   public function addTasksToResources($ticket_id,$sprint_id,$status,$task,$task_description,$due_date,$priority,$date_created,$task_status,$team_member_id,$notes,$company_id,$is_billable,$task_type,$tag_id,$start_date,$end_date,$project_id)
+   {
+   	$response = array();
+   	
+   	try
+   	{
+   		$query="INSERT INTO  uni_tasks(ticket_id,sprint_id,status,task,task_description,due_date,priority,date_created,task_status,team_member_id,notes,company_id,is_billable,task_type,start_date,end_date,tag_id,project_id)VALUES(:ticket_id,:sprint_id,:status,:task,:task_description,:due_date,:priority,:date_created,:task_status,:team_member_id,:notes,:company_id,:is_billable,:task_type,:start_date,:end_date,:tag_id,:project_id)";
+   		
+   		$bind_array=array("ticket_id"=>$ticket_id,"sprint_id"=>$sprint_id,"status"=>$status,"task"=>$task,"task_description"=>$task_description,"due_date"=>$due_date,"priority"=>$priority,"date_created"=>$date_created,"task_status"=>$task_status,"team_member_id"=>$team_member_id,"notes"=>$notes,"company_id"=>$company_id,"is_billable"=>$is_billable,"task_type"=>$task_type,"start_date"=>$start_date,"end_date"=>$end_date,"tag_id"=>$tag_id,"project_id"=>$project_id);
+   		
+   		$rslt=self::insertQuery($query,$bind_array);
+   		if ($rslt)
+   		{
+   			return $rslt;
+   		}
+   		else
+   		{
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde)
+   	{
+   		throw $pde;
+   	}
+   }
+   /**
+    * Updating TasksToResources
+    * url - /updateTasksToResources
+    * method - PUT
+    * params -id
+    */
+   
+   public static function updateTasksToResources($id,$ticket_id,$sprint_id,$task,$task_description,$due_date,$priority,$task_status,$team_member_id,$notes,$company_id,$is_billable,$task_type,$tag_id,$start_date,$end_date,$project_id,$last_updated,$updated_by)
+   {
+   	try{
+   		$query="UPDATE  uni_tasks SET ticket_id=:ticket_id,sprint_id=:sprint_id,task=:task,task_description=:task_description,due_date=:due_date,priority=:priority,task_status=:task_status,team_member_id=:team_member_id,notes=:notes,company_id=:company_id,is_billable=:is_billable,task_type=:task_type,tag_id=:tag_id,start_date=:start_date,end_date=:end_date,project_id=:project_id,last_updated=:last_updated,updated_by=:updated_by WHERE id=:id";
+   		
+   		$rslt= self::updateQuery($query,array("id"=>$id,"ticket_id"=>$ticket_id,"sprint_id"=>$sprint_id,"task"=>$task,"task_description"=>$task_description,"due_date"=>$due_date,"priority"=>$priority,"task_status"=>$task_status,"team_member_id"=>$team_member_id,"notes"=>$notes,"company_id"=>$company_id,"is_billable"=>$is_billable,"task_type"=>$task_type,"tag_id"=>$tag_id,"start_date"=>$start_date,"end_date"=>$end_date,"project_id"=>$project_id,"last_updated"=>$last_updated,"updated_by"=>$updated_by));
+   		if ($rslt) {
+   			
+   			return $rslt;
+   		} else {
+   			
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde) {
+   		throw $pde;
+   	}
+   }
+ //**********************************************************************************************************TicketsToResources****************************************************************************************************************************************//
+   /**
+    * Adding TicketsToResources
+    * url - /addTicketsToResources
+    * method - POST
+    * params-is_billable,sprint_id,ticket_type,project_id,ticket_number,ticket_description,due_date,priority,ticket_status,start_date,end_date,team_id,tag_id,company_id    notes,user_id,ticket_name
+    * 
+    */
+   public function addTicketsToResources($is_billable,$sprint_id,$status,$ticket_type,$project_id,$ticket_number,$ticket_description,$due_date,$priority,$ticket_status,$start_date,$end_date,$team_id,$tag_id,$company_id)
+   {
+   	$response = array();
+   	
+   	try
+   	{
+   		$query="INSERT INTO  uni_tickets(is_billable,sprint_id,status,ticket_type,project_id,ticket_number,ticket_description,due_date,priority,ticket_status,start_date,end_date,team_id,tag_id,company_id)VALUES(:is_billable,:sprint_id,:status,:ticket_type,:project_id,:ticket_number,:ticket_description,:due_date,:priority,:ticket_status,:start_date,:end_date,:team_id,:tag_id,:company_id)";
+   		
+   		$bind_array=array("is_billable"=>$is_billable,"sprint_id"=>$sprint_id,"status"=>$status,"ticket_type"=>$ticket_type,"project_id"=>$project_id,"ticket_number"=>$ticket_number,"ticket_description"=>$ticket_description,"due_date"=>$due_date,"priority"=>$priority,"ticket_status"=>$ticket_status,"start_date"=>$start_date,"end_date"=>$end_date,"team_id"=>$team_id,"tag_id"=>$tag_id,"company_id"=>$company_id);
+   		
+   		$rslt=self::insertQuery($query,$bind_array);
+   		if ($rslt)
+   		{
+   			return $rslt;
+   		}
+   		else
+   		{
+   			return $rslt;
+   		}
+   	}
+   	catch (PDOException $pde)
+   	{
+   		throw $pde;
+   	}
+   }
+   
 //***************************************************************Forgot Password*********************************************************************************************************//   
 
    
